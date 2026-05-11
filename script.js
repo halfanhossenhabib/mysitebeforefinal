@@ -1,3 +1,8 @@
+/* =========================================================
+   Halfan Hossen Habib - Portfolio
+   "Midnight Lab" - interactive 3D + premium UX
+   ========================================================= */
+
 const header = document.querySelector("#siteHeader");
 const menuToggle = document.querySelector(".menu-toggle");
 const navMenu = document.querySelector("#navMenu");
@@ -8,19 +13,27 @@ const dangerBtn = document.querySelector("#dangerBtn");
 const eggMessage = document.querySelector("#eggMessage");
 const particleCanvas = document.querySelector("#particleCanvas");
 const heroCanvas = document.querySelector("#heroCanvas");
+const cursorEl = document.querySelector("#cursor");
+const scrollProgress = document.querySelector("#scrollProgress");
+const liveClock = document.querySelector("#liveClock");
+const navClock = document.querySelector("#navClock");
+const backTop = document.querySelector("#backTop");
+const yearEl = document.querySelector(".year");
+const magneticEls = [...document.querySelectorAll("[data-magnetic]")];
 
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
 
+/* --------------- Header / Nav --------------- */
 function setHeaderState() {
+  if (!header) return;
   header.classList.toggle("is-scrolled", window.scrollY > 20);
 }
-
 function closeMenu() {
   menuToggle.classList.remove("is-open");
   navMenu.classList.remove("is-open");
   menuToggle.setAttribute("aria-expanded", "false");
 }
-
 function setupNavigation() {
   setHeaderState();
   window.addEventListener("scroll", setHeaderState, { passive: true });
@@ -31,48 +44,49 @@ function setupNavigation() {
     menuToggle.setAttribute("aria-expanded", String(isOpen));
   });
 
-  navLinks.forEach((link) => {
-    link.addEventListener("click", closeMenu);
-  });
+  navLinks.forEach((link) => link.addEventListener("click", closeMenu));
 
   const sections = navLinks
     .map((link) => document.querySelector(link.getAttribute("href")))
     .filter(Boolean);
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      navLinks.forEach((link) => {
-        link.classList.toggle("is-active", link.getAttribute("href") === `#${entry.target.id}`);
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        navLinks.forEach((link) => {
+          link.classList.toggle("is-active", link.getAttribute("href") === `#${entry.target.id}`);
+        });
       });
-    });
-  }, { rootMargin: "-45% 0px -45% 0px" });
-
+    },
+    { rootMargin: "-45% 0px -45% 0px" }
+  );
   sections.forEach((section) => observer.observe(section));
 }
 
+/* --------------- Reveal on scroll --------------- */
 function setupReveal() {
   if (prefersReducedMotion) {
     revealItems.forEach((item) => item.classList.add("is-visible"));
     return;
   }
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("is-visible");
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.16 });
-
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add("is-visible"), i * 40);
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.12 }
+  );
   revealItems.forEach((item) => observer.observe(item));
 }
 
+/* --------------- Tilt cards + bento spotlight --------------- */
 function setupTiltCards() {
   if (prefersReducedMotion) return;
-
-  const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
 
   tiltCards.forEach((card) => {
     if (hasFinePointer) {
@@ -80,22 +94,14 @@ function setupTiltCards() {
         const rect = card.getBoundingClientRect();
         const x = (event.clientX - rect.left) / rect.width - 0.5;
         const y = (event.clientY - rect.top) / rect.height - 0.5;
-        card.style.transform = `perspective(900px) rotateX(${y * -8}deg) rotateY(${x * 10}deg) translateY(-4px)`;
+        card.style.setProperty("--mx", `${(x + 0.5) * 100}%`);
+        card.style.setProperty("--my", `${(y + 0.5) * 100}%`);
+        card.style.transform = `perspective(900px) rotateX(${y * -6}deg) rotateY(${x * 8}deg) translateY(-4px)`;
       });
     }
-
-    card.addEventListener("pointerdown", () => {
-      card.classList.add("is-touched");
-    });
-
-    card.addEventListener("pointerup", () => {
-      window.setTimeout(() => card.classList.remove("is-touched"), 140);
-    });
-
-    card.addEventListener("pointercancel", () => {
-      card.classList.remove("is-touched");
-    });
-
+    card.addEventListener("pointerdown", () => card.classList.add("is-touched"));
+    card.addEventListener("pointerup", () => setTimeout(() => card.classList.remove("is-touched"), 140));
+    card.addEventListener("pointercancel", () => card.classList.remove("is-touched"));
     card.addEventListener("pointerleave", () => {
       card.style.transform = "";
       card.classList.remove("is-touched");
@@ -103,7 +109,94 @@ function setupTiltCards() {
   });
 }
 
+/* --------------- Custom cursor --------------- */
+function setupCursor() {
+  if (!cursorEl || !hasFinePointer || prefersReducedMotion) return;
+  document.documentElement.classList.add("cursor-active");
+
+  const dot = cursorEl.querySelector(".cursor-dot");
+  const ring = cursorEl.querySelector(".cursor-ring");
+  const pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+  const ringPos = { x: pos.x, y: pos.y };
+
+  window.addEventListener("pointermove", (e) => {
+    pos.x = e.clientX;
+    pos.y = e.clientY;
+    dot.style.transform = `translate(${pos.x}px, ${pos.y}px) translate(-50%, -50%)`;
+  }, { passive: true });
+
+  const hoverables = "a, button, [data-magnetic], .project-card, .bento-card, .contact-card, .danger-btn, .nav-menu a, .icon-link, .hero-scroll";
+  document.addEventListener("pointerover", (e) => {
+    if (e.target.closest(hoverables)) cursorEl.classList.add("is-hover");
+  });
+  document.addEventListener("pointerout", (e) => {
+    if (e.target.closest(hoverables)) cursorEl.classList.remove("is-hover");
+  });
+
+  function ringLoop() {
+    ringPos.x += (pos.x - ringPos.x) * 0.18;
+    ringPos.y += (pos.y - ringPos.y) * 0.18;
+    ring.style.transform = `translate(${ringPos.x}px, ${ringPos.y}px) translate(-50%, -50%)`;
+    requestAnimationFrame(ringLoop);
+  }
+  ringLoop();
+}
+
+/* --------------- Magnetic buttons --------------- */
+function setupMagnetic() {
+  if (!hasFinePointer || prefersReducedMotion) return;
+  magneticEls.forEach((el) => {
+    const strength = 0.32;
+    el.addEventListener("pointermove", (e) => {
+      const rect = el.getBoundingClientRect();
+      const mx = e.clientX - rect.left - rect.width / 2;
+      const my = e.clientY - rect.top - rect.height / 2;
+      el.style.transform = `translate(${mx * strength}px, ${my * strength}px)`;
+    });
+    el.addEventListener("pointerleave", () => {
+      el.style.transform = "";
+    });
+  });
+}
+
+/* --------------- Scroll progress + Back to top --------------- */
+function setupScrollUI() {
+  function update() {
+    const max = (document.documentElement.scrollHeight - window.innerHeight) || 1;
+    const pct = Math.min(100, Math.max(0, (window.scrollY / max) * 100));
+    if (scrollProgress) scrollProgress.style.width = `${pct}%`;
+    if (backTop) backTop.classList.toggle("is-visible", window.scrollY > 600);
+  }
+  window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update, { passive: true });
+  update();
+
+  if (backTop) {
+    backTop.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
+    });
+  }
+}
+
+/* --------------- Clocks --------------- */
+function setupClocks() {
+  function pad(n) { return String(n).padStart(2, "0"); }
+  function tick() {
+    const d = new Date();
+    const full = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    const short = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    if (liveClock) liveClock.textContent = full;
+    if (navClock) navClock.textContent = short;
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+}
+
+/* --------------- Easter egg --------------- */
 function setupEasterEgg() {
+  if (!dangerBtn) return;
   const messages = [
     "Curiosity mode unlocked.",
     "Neon boost activated.",
@@ -111,7 +204,6 @@ function setupEasterEgg() {
     "You clicked it. Respect."
   ];
   let count = 0;
-
   dangerBtn.addEventListener("click", (event) => {
     count += 1;
     dangerBtn.classList.remove("is-active");
@@ -121,18 +213,16 @@ function setupEasterEgg() {
     releaseSparks(event.clientX, event.clientY);
   });
 }
-
 function releaseSparks(x, y) {
   if (prefersReducedMotion) return;
-
-  for (let index = 0; index < 16; index += 1) {
+  for (let i = 0; i < 18; i++) {
     const spark = document.createElement("span");
-    const angle = (Math.PI * 2 * index) / 16;
-    const distance = 36 + Math.random() * 48;
+    const angle = (Math.PI * 2 * i) / 18;
+    const distance = 40 + Math.random() * 52;
     spark.className = "spark";
     spark.style.left = `${x}px`;
     spark.style.top = `${y}px`;
-    spark.style.color = index % 3 === 0 ? "var(--pink)" : index % 3 === 1 ? "var(--cyan)" : "var(--mint)";
+    spark.style.color = i % 3 === 0 ? "#10b981" : i % 3 === 1 ? "#2dd4bf" : "#06b6d4";
     spark.style.setProperty("--tx", `${Math.cos(angle) * distance}px`);
     spark.style.setProperty("--ty", `${Math.sin(angle) * distance}px`);
     document.body.appendChild(spark);
@@ -140,81 +230,75 @@ function releaseSparks(x, y) {
   }
 }
 
+/* --------------- Ambient particle canvas --------------- */
 function setupParticles() {
-  const context = particleCanvas.getContext("2d");
-  let width = 0;
-  let height = 0;
-  let particles = [];
-  let animationFrame = 0;
+  if (!particleCanvas) return;
+  const ctx = particleCanvas.getContext("2d");
+  let w = 0, h = 0, particles = [], rafId = 0;
 
   function resize() {
     const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
-    width = window.innerWidth;
-    height = window.innerHeight;
-    particleCanvas.width = Math.floor(width * ratio);
-    particleCanvas.height = Math.floor(height * ratio);
-    particleCanvas.style.width = `${width}px`;
-    particleCanvas.style.height = `${height}px`;
-    context.setTransform(ratio, 0, 0, ratio, 0, 0);
-
-    const count = Math.min(95, Math.max(38, Math.floor(width / 18)));
+    w = window.innerWidth;
+    h = window.innerHeight;
+    particleCanvas.width = Math.floor(w * ratio);
+    particleCanvas.height = Math.floor(h * ratio);
+    particleCanvas.style.width = `${w}px`;
+    particleCanvas.style.height = `${h}px`;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    const count = Math.min(100, Math.max(40, Math.floor(w / 16)));
     particles = Array.from({ length: count }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.28,
-      vy: (Math.random() - 0.5) * 0.28,
-      size: 0.8 + Math.random() * 1.8
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.26,
+      vy: (Math.random() - 0.5) * 0.26,
+      s: 0.7 + Math.random() * 1.7,
+      hue: Math.random() > 0.6 ? "violet" : Math.random() > 0.5 ? "cyan" : "pink"
     }));
   }
-
   function draw() {
-    context.clearRect(0, 0, width, height);
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach((p, i) => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.s, 0, Math.PI * 2);
+      ctx.fillStyle = p.hue === "violet" ? "rgba(16,185,129,0.65)"
+        : p.hue === "cyan" ? "rgba(6,182,212,0.7)"
+        : "rgba(45,212,191,0.7)";
+      ctx.fill();
 
-    particles.forEach((particle, index) => {
-      particle.x += particle.vx;
-      particle.y += particle.vy;
-
-      if (particle.x < 0 || particle.x > width) particle.vx *= -1;
-      if (particle.y < 0 || particle.y > height) particle.vy *= -1;
-
-      context.beginPath();
-      context.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-      context.fillStyle = index % 4 === 0 ? "rgba(255, 79, 216, 0.62)" : "rgba(56, 232, 255, 0.72)";
-      context.fill();
-
-      for (let otherIndex = index + 1; otherIndex < particles.length; otherIndex += 1) {
-        const other = particles[otherIndex];
-        const distance = Math.hypot(particle.x - other.x, particle.y - other.y);
-        if (distance > 118) continue;
-        context.strokeStyle = `rgba(120, 205, 255, ${0.12 * (1 - distance / 118)})`;
-        context.lineWidth = 1;
-        context.beginPath();
-        context.moveTo(particle.x, particle.y);
-        context.lineTo(other.x, other.y);
-        context.stroke();
+      for (let j = i + 1; j < particles.length; j++) {
+        const o = particles[j];
+        const d = Math.hypot(p.x - o.x, p.y - o.y);
+        if (d > 120) continue;
+        ctx.strokeStyle = `rgba(45,212,191,${0.12 * (1 - d / 120)})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(o.x, o.y);
+        ctx.stroke();
       }
     });
-
-    animationFrame = requestAnimationFrame(draw);
+    rafId = requestAnimationFrame(draw);
   }
-
   resize();
   window.addEventListener("resize", resize, { passive: true });
-
-  if (!prefersReducedMotion) {
-    draw();
-  } else {
-    context.fillStyle = "rgba(56, 232, 255, 0.24)";
-    particles.forEach((particle) => {
-      context.fillRect(particle.x, particle.y, 2, 2);
-    });
+  if (!prefersReducedMotion) draw();
+  else {
+    ctx.fillStyle = "rgba(45,212,191,0.28)";
+    particles.forEach((p) => ctx.fillRect(p.x, p.y, 2, 2));
   }
-
-  return () => cancelAnimationFrame(animationFrame);
+  return () => cancelAnimationFrame(rafId);
 }
 
+/* --------------- Interactive 3D hero crystal --------------- */
 async function setupThreeHero() {
-  if (!heroCanvas || prefersReducedMotion) return;
+  if (!heroCanvas) return;
+  if (prefersReducedMotion) {
+    heroCanvas.classList.add("is-ready");
+    return;
+  }
 
   try {
     const THREE = await loadThree();
@@ -223,234 +307,326 @@ async function setupThreeHero() {
       canvas: heroCanvas,
       alpha: true,
       antialias: true,
-      powerPreference: "high-performance",
-      preserveDrawingBuffer: true
+      powerPreference: "high-performance"
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
-    if (THREE.SRGBColorSpace) {
-      renderer.outputColorSpace = THREE.SRGBColorSpace;
-    } else if (THREE.sRGBEncoding) {
-      renderer.outputEncoding = THREE.sRGBEncoding;
-    }
+    if (THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
-    const laptop = new THREE.Group();
-    const pointer = { x: 0, y: 0 };
-    const targetRotation = { x: -0.1, y: -0.34 };
-    const heroPlacement = { baseY: 0.12 };
-    const clock = new THREE.Clock();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
+    camera.position.set(0, 0, 7);
 
-    camera.position.set(0, 1.1, 6.2);
-    scene.add(laptop);
+    const group = new THREE.Group();
+    scene.add(group);
 
-    const keyMaterial = new THREE.MeshStandardMaterial({
-      color: 0x13243c,
-      roughness: 0.48,
-      metalness: 0.72
-    });
-    const bodyMaterial = new THREE.MeshStandardMaterial({
-      color: 0x0a1526,
-      roughness: 0.32,
-      metalness: 0.88,
-      emissive: 0x06111f,
-      emissiveIntensity: 0.35
-    });
-    const edgeMaterial = new THREE.MeshStandardMaterial({
-      color: 0x38e8ff,
-      roughness: 0.25,
-      metalness: 0.45,
-      emissive: 0x15b8ff,
-      emissiveIntensity: 1.6
-    });
-    const screenGlowMaterial = new THREE.MeshBasicMaterial({
-      color: 0x38e8ff,
+    /* ---------- Crystal: icosahedron wireframe + inner core ---------- */
+    const crystal = new THREE.Group();
+    group.add(crystal);
+
+    // Outer wireframe crystal (teal)
+    const geo = new THREE.IcosahedronGeometry(1.35, 1);
+    const basePositions = new Float32Array(geo.attributes.position.array);
+    const wireMat = new THREE.MeshBasicMaterial({
+      color: 0x2dd4bf,
+      wireframe: true,
       transparent: true,
-      opacity: 0.48,
+      opacity: 0.6
+    });
+    const wireMesh = new THREE.Mesh(geo, wireMat);
+    crystal.add(wireMesh);
+
+    // Second shell (cyan)
+    const geo2 = new THREE.IcosahedronGeometry(1.55, 1);
+    const wireMat2 = new THREE.MeshBasicMaterial({
+      color: 0x06b6d4,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.32
+    });
+    const wireMesh2 = new THREE.Mesh(geo2, wireMat2);
+    crystal.add(wireMesh2);
+
+    // Solid inner core - deep teal, teal emissive
+    const coreGeo = new THREE.IcosahedronGeometry(0.95, 0);
+    const coreMat = new THREE.MeshStandardMaterial({
+      color: 0x062824,
+      roughness: 0.2,
+      metalness: 0.9,
+      emissive: 0x0f766e,
+      emissiveIntensity: 0.65,
+      flatShading: true
+    });
+    const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+    crystal.add(coreMesh);
+
+    // Inner bright orb (mint)
+    const orbGeo = new THREE.SphereGeometry(0.38, 24, 24);
+    const orbMat = new THREE.MeshBasicMaterial({
+      color: 0x10b981,
+      transparent: true,
+      opacity: 0.78
+    });
+    const orbMesh = new THREE.Mesh(orbGeo, orbMat);
+    crystal.add(orbMesh);
+
+    // Ring halos
+    const ringMat1 = new THREE.MeshBasicMaterial({
+      color: 0x2dd4bf,
+      transparent: true,
+      opacity: 0.4,
       side: THREE.DoubleSide
     });
-    const violetGlowMaterial = new THREE.MeshBasicMaterial({
-      color: 0xa06bff,
+    const ring1 = new THREE.Mesh(new THREE.TorusGeometry(2.1, 0.008, 10, 140), ringMat1);
+    ring1.rotation.x = Math.PI / 2.2;
+    group.add(ring1);
+
+    const ringMat2 = new THREE.MeshBasicMaterial({
+      color: 0x10b981,
       transparent: true,
       opacity: 0.28,
       side: THREE.DoubleSide
     });
+    const ring2 = new THREE.Mesh(new THREE.TorusGeometry(2.55, 0.007, 10, 140), ringMat2);
+    ring2.rotation.x = Math.PI / 1.8;
+    ring2.rotation.y = Math.PI / 6;
+    group.add(ring2);
 
-    const base = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.14, 1.92), bodyMaterial);
-    base.position.y = -0.54;
-    laptop.add(base);
+    const ringMat3 = new THREE.MeshBasicMaterial({
+      color: 0x06b6d4,
+      transparent: true,
+      opacity: 0.22,
+      side: THREE.DoubleSide
+    });
+    const ring3 = new THREE.Mesh(new THREE.TorusGeometry(3.05, 0.006, 10, 140), ringMat3);
+    ring3.rotation.x = Math.PI / 3;
+    ring3.rotation.z = Math.PI / 4;
+    group.add(ring3);
 
-    const trackpad = new THREE.Mesh(new THREE.BoxGeometry(0.76, 0.018, 0.48), edgeMaterial);
-    trackpad.position.set(0, -0.45, 0.46);
-    laptop.add(trackpad);
-
-    const screenShell = new THREE.Mesh(new THREE.BoxGeometry(2.72, 1.72, 0.08), bodyMaterial);
-    screenShell.position.set(0, 0.36, -0.72);
-    screenShell.rotation.x = -0.18;
-    laptop.add(screenShell);
-
-    const screen = new THREE.Mesh(new THREE.PlaneGeometry(2.42, 1.36), screenGlowMaterial);
-    screen.position.set(0, 0.37, -0.66);
-    screen.rotation.x = -0.18;
-    laptop.add(screen);
-
-    const screenCore = new THREE.Mesh(new THREE.PlaneGeometry(1.55, 0.62), violetGlowMaterial);
-    screenCore.position.set(0.05, 0.42, -0.61);
-    screenCore.rotation.x = -0.18;
-    laptop.add(screenCore);
-
-    const hinge = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 2.35, 24), edgeMaterial);
-    hinge.rotation.z = Math.PI / 2;
-    hinge.position.set(0, -0.42, -0.74);
-    laptop.add(hinge);
-
-    const keyGeometry = new THREE.BoxGeometry(0.18, 0.025, 0.12);
-    for (let row = 0; row < 4; row += 1) {
-      for (let column = 0; column < 10; column += 1) {
-        const key = new THREE.Mesh(keyGeometry, keyMaterial);
-        key.position.set(-1.04 + column * 0.23, -0.43, -0.28 + row * 0.18);
-        laptop.add(key);
-      }
-    }
-
-    const ringOne = new THREE.Mesh(new THREE.TorusGeometry(1.92, 0.009, 12, 120), edgeMaterial);
-    const ringTwo = new THREE.Mesh(new THREE.TorusGeometry(2.34, 0.008, 12, 120), violetGlowMaterial);
-    ringOne.rotation.x = Math.PI / 2.4;
-    ringTwo.rotation.x = Math.PI / 2.1;
-    laptop.add(ringOne, ringTwo);
-
-    const particleGeometry = new THREE.BufferGeometry();
-    const particlePositions = [];
-    for (let index = 0; index < 180; index += 1) {
-      const radius = 1.8 + Math.random() * 1.3;
+    /* ---------- Starfield ---------- */
+    const starGeo = new THREE.BufferGeometry();
+    const starCount = 520;
+    const starPos = [];
+    const starCol = [];
+    for (let i = 0; i < starCount; i++) {
+      const r = 8 + Math.random() * 14;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
-      particlePositions.push(
-        radius * Math.sin(phi) * Math.cos(theta),
-        radius * Math.cos(phi) * 0.55,
-        radius * Math.sin(phi) * Math.sin(theta)
+      starPos.push(
+        r * Math.sin(phi) * Math.cos(theta),
+        r * Math.cos(phi) * 0.9,
+        r * Math.sin(phi) * Math.sin(theta)
       );
+      const pick = Math.random();
+      if (pick < 0.4) starCol.push(0.17, 0.83, 0.75);       // teal #2dd4bf
+      else if (pick < 0.75) starCol.push(0.02, 0.71, 0.83);  // cyan #06b6d4
+      else starCol.push(0.06, 0.72, 0.51);                   // mint #10b981
     }
-    particleGeometry.setAttribute("position", new THREE.Float32BufferAttribute(particlePositions, 3));
-    const particleMaterial = new THREE.PointsMaterial({
-      color: 0x7eeeff,
-      size: 0.025,
+    starGeo.setAttribute("position", new THREE.Float32BufferAttribute(starPos, 3));
+    starGeo.setAttribute("color", new THREE.Float32BufferAttribute(starCol, 3));
+    const starMat = new THREE.PointsMaterial({
+      size: 0.045,
+      vertexColors: true,
       transparent: true,
-      opacity: 0.8
+      opacity: 0.85,
+      sizeAttenuation: true
     });
-    const particleField = new THREE.Points(particleGeometry, particleMaterial);
-    laptop.add(particleField);
+    const stars = new THREE.Points(starGeo, starMat);
+    scene.add(stars);
 
-    const cyanLight = new THREE.PointLight(0x38e8ff, 8, 8);
-    cyanLight.position.set(-2.5, 2.4, 2.2);
-    scene.add(cyanLight);
+    /* ---------- Orbiting small crystals ---------- */
+    const satellites = [];
+    const satMat = new THREE.MeshStandardMaterial({
+      color: 0x2dd4bf,
+      emissive: 0x2dd4bf,
+      emissiveIntensity: 0.85,
+      metalness: 0.8,
+      roughness: 0.3,
+      flatShading: true
+    });
+    for (let i = 0; i < 5; i++) {
+      const g = new THREE.OctahedronGeometry(0.14, 0);
+      const m = new THREE.Mesh(g, satMat.clone());
+      m.material.color.setHex(i % 2 ? 0x10b981 : 0x2dd4bf);
+      m.material.emissive.setHex(i % 2 ? 0x10b981 : 0x2dd4bf);
+      m.userData = {
+        angle: Math.random() * Math.PI * 2,
+        speed: 0.4 + Math.random() * 0.6,
+        radius: 2.3 + Math.random() * 0.8,
+        tilt: (Math.random() - 0.5) * 0.8,
+        phase: Math.random() * Math.PI * 2
+      };
+      satellites.push(m);
+      group.add(m);
+    }
 
-    const violetLight = new THREE.PointLight(0xa06bff, 6, 7);
-    violetLight.position.set(2.8, 1.6, 1.8);
-    scene.add(violetLight);
-
-    const ambient = new THREE.AmbientLight(0xffffff, 1.2);
+    /* ---------- Lights ---------- */
+    const ambient = new THREE.AmbientLight(0xffffff, 0.4);
     scene.add(ambient);
+    const lightTeal = new THREE.PointLight(0x2dd4bf, 12, 20);
+    lightTeal.position.set(-4, 3, 4);
+    scene.add(lightTeal);
+    const lightMint = new THREE.PointLight(0x10b981, 10, 20);
+    lightMint.position.set(4, -2, 3);
+    scene.add(lightMint);
+    const lightCyan = new THREE.PointLight(0x06b6d4, 8, 18);
+    lightCyan.position.set(0, 4, -3);
+    scene.add(lightCyan);
 
-    function resize() {
-      const rect = heroCanvas.getBoundingClientRect();
-      const width = Math.max(1, rect.width);
-      const height = Math.max(1, rect.height);
-      renderer.setSize(width, height, false);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
+    /* ---------- Interaction state ---------- */
+    const pointer = { x: 0, y: 0 };
+    const target = { x: 0, y: 0 };
+    let scrollFactor = 0;
+    let mouseDown = false;
+    const clock = new THREE.Clock();
 
-      const isSmall = width < 760;
-      heroPlacement.baseY = isSmall ? 2.42 : 0.12;
-      laptop.scale.setScalar(isSmall ? 0.52 : 0.9);
-      laptop.position.set(isSmall ? 0.42 : 1.55, heroPlacement.baseY, 0);
+    function onPointerMove(e) {
+      pointer.x = (e.clientX / window.innerWidth - 0.5) * 2;
+      pointer.y = (e.clientY / window.innerHeight - 0.5) * 2;
+      target.x = pointer.x * 0.6;
+      target.y = pointer.y * -0.4;
     }
-
-    function updatePointer(clientX, clientY) {
-      pointer.x = (clientX / window.innerWidth - 0.5) * 2;
-      pointer.y = (clientY / window.innerHeight - 0.5) * 2;
-      targetRotation.y = -0.34 + pointer.x * 0.18;
-      targetRotation.x = -0.1 + pointer.y * -0.12;
-    }
-
-    function onPointerMove(event) {
-      updatePointer(event.clientX, event.clientY);
-    }
-
-    function onTouchMove(event) {
-      const touch = event.touches[0];
-      if (touch) {
-        updatePointer(touch.clientX, touch.clientY);
+    function onTouchMove(e) {
+      const t = e.touches[0];
+      if (t) {
+        pointer.x = (t.clientX / window.innerWidth - 0.5) * 2;
+        pointer.y = (t.clientY / window.innerHeight - 0.5) * 2;
+        target.x = pointer.x * 0.6;
+        target.y = pointer.y * -0.4;
       }
     }
+    function onScroll() {
+      scrollFactor = Math.min(1, window.scrollY / (window.innerHeight || 1));
+    }
+
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    heroCanvas.addEventListener("pointerdown", () => { mouseDown = true; });
+    window.addEventListener("pointerup", () => { mouseDown = false; });
+
+    /* ---------- Resize ---------- */
+    function resize() {
+      const rect = heroCanvas.getBoundingClientRect();
+      const w = Math.max(1, rect.width);
+      const h = Math.max(1, rect.height);
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      // On smaller screens, shrink the crystal and move it
+      const small = w < 760;
+      group.scale.setScalar(small ? 0.68 : 1);
+      group.position.set(small ? 0 : 1.4, small ? 1.1 : 0, 0);
+    }
+    resize();
+    window.addEventListener("resize", resize, { passive: true });
+
+    /* ---------- Animate (with vertex distortion) ---------- */
+    const posAttr = wireMesh.geometry.attributes.position;
+    const vertexCount = posAttr.count;
 
     function animate() {
-      const elapsed = clock.getElapsedTime();
-      laptop.rotation.x += (targetRotation.x - laptop.rotation.x) * 0.045;
-      laptop.rotation.y += (targetRotation.y - laptop.rotation.y) * 0.045;
-      laptop.rotation.z = Math.sin(elapsed * 0.7) * 0.025;
-      laptop.position.y += (Math.sin(elapsed * 1.05) * 0.07 - laptop.position.y + heroPlacement.baseY) * 0.015;
-      ringOne.rotation.z = elapsed * 0.34;
-      ringTwo.rotation.z = -elapsed * 0.22;
-      particleField.rotation.y = elapsed * 0.08;
-      particleField.rotation.x = Math.sin(elapsed * 0.2) * 0.12;
-      screen.material.opacity = 0.42 + Math.sin(elapsed * 2.4) * 0.06;
+      const t = clock.getElapsedTime();
+
+      // Easing the crystal rotation toward the pointer
+      crystal.rotation.y += (target.x - crystal.rotation.y) * 0.05;
+      crystal.rotation.x += (target.y - crystal.rotation.x) * 0.05;
+      crystal.rotation.z = Math.sin(t * 0.3) * 0.08;
+
+      // Parallax whole group on scroll
+      group.position.y += ((0 - scrollFactor * 2.2) - (group.position.y - (window.innerWidth < 760 ? 1.1 : 0))) * 0.06;
+
+      // Vertex noise distortion on outer wireframe
+      const distort = mouseDown ? 0.28 : 0.12;
+      for (let i = 0; i < vertexCount; i++) {
+        const ix = i * 3;
+        const bx = basePositions[ix];
+        const by = basePositions[ix + 1];
+        const bz = basePositions[ix + 2];
+        const n = Math.sin(t * 1.3 + bx * 1.8) * Math.cos(t * 1.1 + by * 1.7) * Math.sin(t * 0.9 + bz * 2.1);
+        const f = 1 + n * distort;
+        posAttr.array[ix]     = bx * f;
+        posAttr.array[ix + 1] = by * f;
+        posAttr.array[ix + 2] = bz * f;
+      }
+      posAttr.needsUpdate = true;
+      wireMesh.geometry.computeVertexNormals?.();
+
+      // Core subtle pulse
+      const corePulse = 1 + Math.sin(t * 2.4) * 0.04;
+      coreMesh.scale.setScalar(corePulse);
+      orbMesh.scale.setScalar(1 + Math.sin(t * 3.2) * 0.1);
+      orbMat.opacity = 0.6 + Math.sin(t * 2.1) * 0.2;
+
+      // Second shell counter-rotation
+      wireMesh2.rotation.x = t * 0.12;
+      wireMesh2.rotation.y = -t * 0.18;
+
+      // Rings
+      ring1.rotation.z = t * 0.3;
+      ring2.rotation.z = -t * 0.22;
+      ring3.rotation.z = t * 0.15;
+
+      // Satellites
+      satellites.forEach((s) => {
+        const d = s.userData;
+        d.angle += d.speed * 0.01;
+        s.position.x = Math.cos(d.angle) * d.radius;
+        s.position.z = Math.sin(d.angle) * d.radius;
+        s.position.y = Math.sin(d.angle * 0.9 + d.phase) * d.tilt;
+        s.rotation.x += 0.02;
+        s.rotation.y += 0.03;
+      });
+
+      // Starfield drift
+      stars.rotation.y = t * 0.02;
+      stars.rotation.x = Math.sin(t * 0.08) * 0.1;
+
       renderer.render(scene, camera);
       requestAnimationFrame(animate);
     }
-
-    resize();
-    window.addEventListener("resize", resize, { passive: true });
-    window.addEventListener("pointermove", onPointerMove, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: true });
 
     heroCanvas.classList.add("is-ready");
     animate();
   } catch (error) {
     heroCanvas.classList.add("is-ready");
-    heroCanvas.dataset.fallback = "true";
     console.warn("3D hero could not load:", error);
   }
 }
 
+/* --------------- Load Three.js CDN lazily --------------- */
 function loadThree() {
-  if (window.THREE) {
-    return Promise.resolve(window.THREE);
-  }
-
+  if (window.THREE) return Promise.resolve(window.THREE);
   return new Promise((resolve, reject) => {
-    const existingScript = document.querySelector("script[data-threejs]");
-    if (existingScript) {
-      existingScript.addEventListener("load", () => resolve(window.THREE), { once: true });
-      existingScript.addEventListener("error", reject, { once: true });
+    const existing = document.querySelector("script[data-threejs]");
+    if (existing) {
+      existing.addEventListener("load", () => resolve(window.THREE), { once: true });
+      existing.addEventListener("error", reject, { once: true });
       return;
     }
-
-    const script = document.createElement("script");
-    script.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.149.0/three.min.js";
-    script.async = true;
-    script.dataset.threejs = "true";
-    script.onload = () => {
-      if (window.THREE) {
-        resolve(window.THREE);
-      } else {
-        reject(new Error("Three.js loaded, but window.THREE was not found."));
-      }
-    };
-    script.onerror = () => reject(new Error("Three.js CDN failed to load."));
-    document.head.appendChild(script);
+    const s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.149.0/three.min.js";
+    s.async = true;
+    s.dataset.threejs = "true";
+    s.onload = () => (window.THREE ? resolve(window.THREE) : reject(new Error("Three.js load failed")));
+    s.onerror = () => reject(new Error("Three.js CDN failed"));
+    document.head.appendChild(s);
   });
 }
 
+/* --------------- Boot --------------- */
 setupNavigation();
 setupReveal();
 setupTiltCards();
 setupEasterEgg();
 setupParticles();
+setupCursor();
+setupMagnetic();
+setupScrollUI();
+setupClocks();
 
 const startHero = () => setupThreeHero();
 if ("requestIdleCallback" in window) {
   requestIdleCallback(startHero, { timeout: 900 });
 } else {
-  window.setTimeout(startHero, 120);
+  setTimeout(startHero, 120);
 }
