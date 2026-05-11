@@ -2,28 +2,42 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="Personal portfolio of Halfan Hossen Habib, learner and tech enthusiast building creative web projects.">
-  <meta name="theme-color" content="#07111f">
+  <meta name="theme-color" content="#02110f">
   <title>Halfan Hossen Habib | Learner, Tech Enthusiast</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <script>document.documentElement.classList.add("js");</script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+  <!-- Ambient layers -->
   <canvas id="particleCanvas" aria-hidden="true"></canvas>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <!-- Custom cursor (fine pointers only) -->
+  <div class="cursor" id="cursor" aria-hidden="true">
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+  </div>
+
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header" id="siteHeader">
     <nav class="nav-shell" aria-label="Primary navigation">
-      <a class="brand-mark" href="#hero" aria-label="Halfan Hossen Habib home">
+      <a class="brand-mark" href="#hero" aria-label="Halfan Hossen Habib home" data-magnetic>
         <span class="brand-orbit" aria-hidden="true"></span>
-        <span class="brand-name">Halfan Hossen Habib</span>
+        <span class="brand-meta">
+          <span class="brand-name">Halfan Hossen Habib</span>
+          <span class="brand-role">Learner &middot; Tech Enthusiast</span>
+        </span>
       </a>
 
       <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navMenu">
@@ -33,125 +47,278 @@
       </button>
 
       <div class="nav-menu" id="navMenu">
-        <a href="#about">About</a>
-        <a href="#projects">Projects</a>
-        <a href="#contact">Contact</a>
+        <a href="#about"><span class="nav-num">01</span><span>About</span></a>
+        <a href="#projects"><span class="nav-num">02</span><span>Projects</span></a>
+        <a href="#contact"><span class="nav-num">03</span><span>Contact</span></a>
+      </div>
+
+      <div class="nav-status" aria-hidden="true">
+        <span class="nav-status-dot"></span>
+        <span class="nav-status-label">Online</span>
+        <span class="nav-status-clock" id="navClock">--:--</span>
       </div>
     </nav>
   </header>
 
   <main id="main">
-    <section class="hero-section" id="hero">
-      <canvas id="heroCanvas" aria-label="Interactive 3D glowing laptop"></canvas>
-      <div class="hero-grid">
-        <div class="hero-copy reveal">
-          <h1>Hey, I am Halfan Hossen Habib</h1>
-          <p class="hero-subtitle">Learner, Tech Enthusiast</p>
-          <p class="hero-text">
-            Welcome! Thanks for visiting my space for learning, experimenting, and building creative technology projects for the web.
-          </p>
 
-          <div class="hero-actions" aria-label="Hero actions">
-            <a class="btn btn-primary" href="#projects">
-              <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
-              <span>View Projects</span>
-            </a>
-            <a class="btn btn-ghost" href="#contact">
-              <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
-              <span>Contact Me</span>
-            </a>
-            <a class="icon-link" href="https://www.instagram.com/halfan_hossen_habib/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-              <i class="fa-brands fa-instagram" aria-hidden="true"></i>
-            </a>
-            <a class="icon-link" href="https://www.facebook.com/halfanhossenhabib" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-              <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+    <!-- ============== HERO ============== -->
+    <section class="hero-section" id="hero">
+      <canvas id="heroCanvas" aria-label="Interactive 3D crystal"></canvas>
+      <div class="hero-vignette" aria-hidden="true"></div>
+
+      <div class="hero-inner">
+        <div class="hero-title-block">
+          <p class="hero-greet reveal">Hey, I am</p>
+          <h1 class="hero-name" aria-label="Halfan Hossen Habib">
+            <span class="line reveal"><span class="word">Halfan</span></span>
+            <span class="line reveal"><span class="word">Hossen</span></span>
+            <span class="line reveal"><span class="word word--outline">Habib</span></span>
+          </h1>
+          <p class="hero-subtitle reveal">
+            <span class="hero-subtitle-mark" aria-hidden="true"></span>
+            Learner, Tech Enthusiast
+          </p>
+        </div>
+
+        <div class="hero-bottom">
+          <div class="hero-bottom-left reveal">
+            <p class="hero-text">
+              Welcome! Thanks for visiting my space for learning, experimenting, and building creative technology projects for the web.
+            </p>
+            <div class="hero-actions" aria-label="Hero actions">
+              <a class="btn btn-primary" href="#projects" data-magnetic>
+                <span>View Projects</span>
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+              </a>
+              <a class="btn btn-ghost" href="#contact" data-magnetic>
+                <span>Contact Me</span>
+                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="hero-bottom-right reveal">
+            <div class="hero-socials" aria-label="Social links">
+              <a class="icon-link" href="https://www.instagram.com/halfan_hossen_habib/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" data-magnetic>
+                <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+              </a>
+              <a class="icon-link" href="https://www.facebook.com/halfanhossenhabib" target="_blank" rel="noopener noreferrer" aria-label="Facebook" data-magnetic>
+                <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+              </a>
+              <a class="icon-link" href="mailto:halfanhossenhabib02@gmail.com" aria-label="Email" data-magnetic>
+                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+              </a>
+            </div>
+            <a class="hero-scroll" href="#about" aria-label="Scroll to about section">
+              <span class="hero-scroll-line" aria-hidden="true"></span>
+              <span class="hero-scroll-label">Scroll</span>
+              <i class="fa-solid fa-arrow-down hero-scroll-icon" aria-hidden="true"></i>
             </a>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- ============== ABOUT / BENTO ============== -->
     <section class="section about-section" id="about">
       <div class="section-heading reveal">
-        <p class="eyebrow">About</p>
-        <h2>Curious mind, creative builder.</h2>
+        <div class="eyebrow-row">
+          <span class="section-num" aria-hidden="true">01 /</span>
+          <p class="eyebrow">About</p>
+        </div>
+        <h2>Curious mind, <span class="grad-text">creative builder.</span></h2>
       </div>
 
-      <div class="about-layout">
-        <div class="about-copy reveal">
+      <div class="bento">
+        <article class="bento-card bento-about tilt-card reveal">
+          <span class="bento-tag">// intro</span>
           <p>
             I am a tech enthusiast who loves exploring technology and AI tools. I am also a lifelong learner, always curious and eager to grow my skills.
           </p>
           <p>
             I also like vibe coding, creative web design, and turning ideas into small projects that feel useful, modern, and fun to explore.
           </p>
-        </div>
+        </article>
 
-        <div class="badge-cloud reveal" aria-label="Animated interest badges">
-          <span style="--delay: 0s">Creative Web</span>
-          <span style="--delay: .1s">AI Tools</span>
-          <span style="--delay: .2s">Vibe Coding</span>
-          <span style="--delay: .3s">Learning</span>
-          <span style="--delay: .4s">Technology</span>
-          <span style="--delay: .5s">Web Design</span>
-        </div>
+        <article class="bento-card bento-status tilt-card reveal">
+          <span class="bento-tag">// status</span>
+          <div class="status-rows">
+            <div class="status-row">
+              <span class="status-dot" aria-hidden="true"></span>
+              <span>Online &amp; Learning</span>
+            </div>
+            <div class="status-clock" id="liveClock" aria-live="off">--:--:--</div>
+            <div class="status-sub">Local time &middot; right now</div>
+          </div>
+        </article>
+
+        <article class="bento-card bento-orb tilt-card reveal">
+          <div class="orb-stage" aria-hidden="true">
+            <span class="orb"></span>
+            <span class="orb-ring orb-ring-1"></span>
+            <span class="orb-ring orb-ring-2"></span>
+            <span class="orb-ring orb-ring-3"></span>
+          </div>
+          <span class="bento-tag orb-tag">// always exploring</span>
+        </article>
+
+        <article class="bento-card bento-interests reveal">
+          <span class="bento-tag">// interests</span>
+          <div class="chips" aria-label="Animated interest badges">
+            <span style="--d: 0s">Creative Web</span>
+            <span style="--d: .08s">AI Tools</span>
+            <span style="--d: .16s">Vibe Coding</span>
+            <span style="--d: .24s">Learning</span>
+            <span style="--d: .32s">Technology</span>
+            <span style="--d: .40s">Web Design</span>
+          </div>
+        </article>
+
+        <article class="bento-card bento-stats reveal">
+          <div class="stat">
+            <strong>&infin;</strong>
+            <span>Curiosity</span>
+          </div>
+          <div class="stat">
+            <strong>24 / 7</strong>
+            <span>Learning mode</span>
+          </div>
+          <div class="stat">
+            <strong>03+</strong>
+            <span>Live mini-sites</span>
+          </div>
+        </article>
       </div>
     </section>
 
+    <!-- ============== PROJECTS ============== -->
     <section class="section projects-section" id="projects">
       <div class="section-heading reveal">
-        <p class="eyebrow">Projects / Links</p>
-        <h2>Experiments worth opening.</h2>
+        <div class="eyebrow-row">
+          <span class="section-num" aria-hidden="true">02 /</span>
+          <p class="eyebrow">Projects / Links</p>
+        </div>
+        <h2>Experiments <span class="grad-text">worth opening.</span></h2>
       </div>
 
       <div class="project-grid">
-        <a class="project-card tilt-card reveal" href="https://halfanhossenhabib.github.io/mysite-games" target="_blank" rel="noopener noreferrer">
-          <span class="project-icon"><i class="fa-solid fa-gamepad" aria-hidden="true"></i></span>
+        <a class="project-card tilt-card reveal" href="https://halfanhossenhabib.github.io/mysite-games" target="_blank" rel="noopener noreferrer" data-magnetic>
+          <div class="project-visual project-visual-1" aria-hidden="true">
+            <span class="project-grid-bg"></span>
+            <span class="project-orb project-orb-1"></span>
+            <span class="project-icon"><i class="fa-solid fa-gamepad"></i></span>
+          </div>
+          <div class="project-meta">
+            <span class="project-num">01</span>
+            <span class="project-tag">Play</span>
+          </div>
           <h3>Games</h3>
           <p>A playful section for game experiments and interactive ideas.</p>
-          <span class="card-link">Launch <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
+          <span class="card-link">
+            <span>Launch</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+          </span>
         </a>
 
-        <a class="project-card tilt-card reveal" href="https://halfanhossenhabib.github.io/mysite-tricks/" target="_blank" rel="noopener noreferrer">
-          <span class="project-icon"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i></span>
+        <a class="project-card tilt-card reveal" href="https://halfanhossenhabib.github.io/mysite-tricks/" target="_blank" rel="noopener noreferrer" data-magnetic>
+          <div class="project-visual project-visual-2" aria-hidden="true">
+            <span class="project-grid-bg"></span>
+            <span class="project-orb project-orb-2"></span>
+            <span class="project-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+          </div>
+          <div class="project-meta">
+            <span class="project-num">02</span>
+            <span class="project-tag">Craft</span>
+          </div>
           <h3>Tricks</h3>
           <p>A place for useful tricks, creative web tests, and clever details.</p>
-          <span class="card-link">Explore <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
+          <span class="card-link">
+            <span>Explore</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+          </span>
         </a>
 
-        <a class="project-card tilt-card reveal" href="https://halfanhossenhabib.github.io/mysite-test" target="_blank" rel="noopener noreferrer">
-          <span class="project-icon"><i class="fa-solid fa-flask" aria-hidden="true"></i></span>
+        <a class="project-card tilt-card reveal" href="https://halfanhossenhabib.github.io/mysite-test" target="_blank" rel="noopener noreferrer" data-magnetic>
+          <div class="project-visual project-visual-3" aria-hidden="true">
+            <span class="project-grid-bg"></span>
+            <span class="project-orb project-orb-3"></span>
+            <span class="project-icon"><i class="fa-solid fa-flask"></i></span>
+          </div>
+          <div class="project-meta">
+            <span class="project-num">03</span>
+            <span class="project-tag">Lab</span>
+          </div>
           <h3>Test Site</h3>
           <p>A sandbox for trying layouts, code ideas, and new website features.</p>
-          <span class="card-link">Visit <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
+          <span class="card-link">
+            <span>Visit</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+          </span>
         </a>
       </div>
     </section>
 
+    <!-- ============== MARQUEE ============== -->
+    <section class="marquee-section" aria-hidden="true">
+      <div class="marquee">
+        <div class="marquee-track">
+          <span>Learner</span><span class="marquee-dot">&#9679;</span>
+          <span>Tech Enthusiast</span><span class="marquee-dot">&#9679;</span>
+          <span>Creative Web</span><span class="marquee-dot">&#9679;</span>
+          <span>Vibe Coding</span><span class="marquee-dot">&#9679;</span>
+          <span>AI Tools</span><span class="marquee-dot">&#9679;</span>
+          <span>Always Building</span><span class="marquee-dot">&#9679;</span>
+          <span>Learner</span><span class="marquee-dot">&#9679;</span>
+          <span>Tech Enthusiast</span><span class="marquee-dot">&#9679;</span>
+          <span>Creative Web</span><span class="marquee-dot">&#9679;</span>
+          <span>Vibe Coding</span><span class="marquee-dot">&#9679;</span>
+          <span>AI Tools</span><span class="marquee-dot">&#9679;</span>
+          <span>Always Building</span><span class="marquee-dot">&#9679;</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== CONTACT ============== -->
     <section class="section contact-section" id="contact">
-      <div class="contact-layout">
+      <div class="contact-wrap">
         <div class="section-heading reveal">
-          <p class="eyebrow">Contact</p>
-          <h2>Let us connect and build something bright.</h2>
+          <div class="eyebrow-row">
+            <span class="section-num" aria-hidden="true">03 /</span>
+            <p class="eyebrow">Contact</p>
+          </div>
+          <h2>Let us connect and <span class="grad-text">build something bright.</span></h2>
         </div>
 
-        <div class="contact-actions reveal" aria-label="Contact links">
-          <a class="contact-button" href="mailto:halfanhossenhabib02@gmail.com">
-            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
-            <span>Email Me</span>
+        <div class="contact-grid">
+          <a class="contact-card reveal" href="mailto:halfanhossenhabib02@gmail.com" data-magnetic>
+            <div class="contact-icon"><i class="fa-solid fa-envelope" aria-hidden="true"></i></div>
+            <div class="contact-body">
+              <span class="contact-label">Email</span>
+              <span class="contact-value">halfanhossenhabib02@gmail.com</span>
+            </div>
+            <i class="fa-solid fa-arrow-up-right-from-square contact-cta" aria-hidden="true"></i>
           </a>
-          <a class="contact-button" href="https://www.instagram.com/halfan_hossen_habib/" target="_blank" rel="noopener noreferrer">
-            <i class="fa-brands fa-instagram" aria-hidden="true"></i>
-            <span>Instagram</span>
+          <a class="contact-card reveal" href="https://www.instagram.com/halfan_hossen_habib/" target="_blank" rel="noopener noreferrer" data-magnetic>
+            <div class="contact-icon"><i class="fa-brands fa-instagram" aria-hidden="true"></i></div>
+            <div class="contact-body">
+              <span class="contact-label">Instagram</span>
+              <span class="contact-value">@halfan_hossen_habib</span>
+            </div>
+            <i class="fa-solid fa-arrow-up-right-from-square contact-cta" aria-hidden="true"></i>
           </a>
-          <a class="contact-button" href="https://www.facebook.com/halfanhossenhabib" target="_blank" rel="noopener noreferrer">
-            <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
-            <span>Facebook</span>
+          <a class="contact-card reveal" href="https://www.facebook.com/halfanhossenhabib" target="_blank" rel="noopener noreferrer" data-magnetic>
+            <div class="contact-icon"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></div>
+            <div class="contact-body">
+              <span class="contact-label">Facebook</span>
+              <span class="contact-value">/halfanhossenhabib</span>
+            </div>
+            <i class="fa-solid fa-arrow-up-right-from-square contact-cta" aria-hidden="true"></i>
           </a>
         </div>
 
         <div class="easter-egg reveal">
-          <button class="danger-btn" id="dangerBtn" type="button">
+          <button class="danger-btn" id="dangerBtn" type="button" data-magnetic>
             <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
             <span>Do not Click!</span>
           </button>
@@ -159,31 +326,38 @@
         </div>
       </div>
     </section>
+
   </main>
 
   <footer class="site-footer">
-    <p>&copy; 2026 Halfan Hossen Habib</p>
-    <div class="visit-counter-wrap">
+    <div class="footer-col footer-left">
+      <p>&copy; <span class="year">2026</span> Halfan Hossen Habib</p>
+    </div>
+    <div class="footer-col footer-center visit-counter-wrap">
       <img
         class="visit-counter"
-        src="https://hits.sh/halfanhossenhabib.github.io/mysite.svg?label=Total%20Visits&color=38e8ff&labelColor=07111f"
+        src="https://hits.sh/halfanhossenhabib.github.io/mysite.svg?label=Total%20Visits&color=2dd4bf&labelColor=02110f"
         alt="Total website visits"
         loading="eager"
       />
-      <span class="visit-counter-meta">Since 29 April 2026 | Powered by hits.sh</span>
+      <span class="visit-counter-meta">Since 29 April 2026 | Powered by <a href="https://hits.sh/" target="_blank" rel="noopener noreferrer">hits.sh</a></span>
     </div>
-    <div class="footer-links" aria-label="Social links">
-      <a href="https://www.instagram.com/halfan_hossen_habib/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+    <div class="footer-col footer-right footer-links" aria-label="Social links">
+      <a href="https://www.instagram.com/halfan_hossen_habib/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" data-magnetic>
         <i class="fa-brands fa-instagram" aria-hidden="true"></i>
       </a>
-      <a href="https://www.facebook.com/halfanhossenhabib" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+      <a href="https://www.facebook.com/halfanhossenhabib" target="_blank" rel="noopener noreferrer" aria-label="Facebook" data-magnetic>
         <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
       </a>
-      <a href="mailto:halfanhossenhabib02@gmail.com" aria-label="Email">
+      <a href="mailto:halfanhossenhabib02@gmail.com" aria-label="Email" data-magnetic>
         <i class="fa-solid fa-envelope" aria-hidden="true"></i>
       </a>
     </div>
   </footer>
+
+  <button class="back-top" id="backTop" type="button" aria-label="Back to top" data-magnetic>
+    <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+  </button>
 
   <script defer src="script.js"></script>
 </body>
