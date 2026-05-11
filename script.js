@@ -20,6 +20,16 @@ const navClock = document.querySelector("#navClock");
 const backTop = document.querySelector("#backTop");
 const yearEl = document.querySelector(".year");
 const magneticEls = [...document.querySelectorAll("[data-magnetic]")];
+const visitCountEl = document.querySelector("#visitCount");
+const visitCounterEl = document.querySelector("#visitCounter");
+
+/* Visit counter config.
+   Displayed count = max(START_DISPLAY_AT, (hits.sh real count) + OFFSET).
+   The site should "start counting from 136" on deploy.
+   Real hits.sh count at deploy is ~144, so OFFSET = 136 - 144 = -8. */
+const VISIT_START = 136;
+const VISIT_OFFSET = -8;
+const VISIT_BADGE_URL = "https://hits.sh/halfanhossenhabib.github.io/mysite.svg";
 
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
@@ -192,6 +202,50 @@ function setupClocks() {
   setInterval(tick, 1000);
 
   if (yearEl) yearEl.textContent = new Date().getFullYear();
+}
+
+/* --------------- Visit counter (hits.sh, every page load) --------------- */
+function setupVisitCounter() {
+  if (!visitCountEl) return;
+
+  // Fire-and-forget: fetching the SVG counts the visit.
+  // Parsing its aria-label gives us the real count to display.
+  const url = `${VISIT_BADGE_URL}?t=${Date.now()}`;
+
+  fetch(url, { cache: "no-store", mode: "cors" })
+    .then((res) => (res.ok ? res.text() : Promise.reject(new Error("hits.sh error"))))
+    .then((svg) => {
+      // aria-label looks like: aria-label="Total Visits: 123"
+      const match = svg.match(/aria-label="[^"]*:\s*(\d+)"/i);
+      if (!match) return;
+      const real = parseInt(match[1], 10);
+      const display = Math.max(VISIT_START, real + VISIT_OFFSET);
+      animateCount(visitCountEl, display);
+      if (visitCounterEl) {
+        visitCounterEl.classList.add("is-pulse");
+        setTimeout(() => visitCounterEl.classList.remove("is-pulse"), 650);
+      }
+    })
+    .catch(() => {
+      // Network / CORS issue - keep the SSR default (136) so the badge still reads nicely.
+    });
+}
+
+function animateCount(el, target) {
+  const start = parseInt(el.textContent, 10) || 0;
+  if (target === start) return;
+  const duration = 900;
+  const startTime = performance.now();
+
+  function step(now) {
+    const t = Math.min(1, (now - startTime) / duration);
+    // ease-out cubic
+    const eased = 1 - Math.pow(1 - t, 3);
+    const value = Math.round(start + (target - start) * eased);
+    el.textContent = value.toLocaleString();
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
 }
 
 /* --------------- Easter egg --------------- */
@@ -623,6 +677,7 @@ setupCursor();
 setupMagnetic();
 setupScrollUI();
 setupClocks();
+setupVisitCounter();
 
 const startHero = () => setupThreeHero();
 if ("requestIdleCallback" in window) {

@@ -68,17 +68,6 @@
       <div class="hero-vignette" aria-hidden="true"></div>
 
       <div class="hero-inner">
-        <div class="hero-top reveal">
-          <span class="hero-chip">
-            <span class="hero-chip-dot" aria-hidden="true"></span>
-            <span>Portfolio &middot; 2026</span>
-          </span>
-          <span class="hero-meta">
-            <span aria-hidden="true">EST.</span>
-            <span>29 &middot; 04 &middot; 2026</span>
-          </span>
-        </div>
-
         <div class="hero-title-block">
           <p class="hero-greet reveal">Hey, I am</p>
           <h1 class="hero-name" aria-label="Halfan Hossen Habib">
@@ -345,13 +334,16 @@
       <p>&copy; <span class="year">2026</span> Halfan Hossen Habib</p>
     </div>
     <div class="footer-col footer-center visit-counter-wrap">
-      <img
-        class="visit-counter"
-        src="https://hits.sh/halfanhossenhabib.github.io/mysite.svg?label=Total%20Visits&color=2dd4bf&labelColor=02110f"
-        alt="Total website visits"
-        loading="eager"
-      />
-      <span class="visit-counter-meta">Since 29 April 2026 | Powered by hits.sh</span>
+      <div class="visit-counter" id="visitCounter" aria-live="polite">
+        <span class="visit-counter-icon" aria-hidden="true">
+          <i class="fa-solid fa-eye"></i>
+        </span>
+        <span class="visit-counter-body">
+          <span class="visit-counter-label">Total Visits</span>
+          <span class="visit-counter-value" id="visitCount">136</span>
+        </span>
+      </div>
+      <span class="visit-counter-meta">Since 29 April 2026 &middot; Powered by <a href="https://hits.sh/" target="_blank" rel="noopener noreferrer">hits.sh</a></span>
     </div>
     <div class="footer-col footer-right footer-links" aria-label="Social links">
       <a href="https://www.instagram.com/halfan_hossen_habib/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" data-magnetic>
