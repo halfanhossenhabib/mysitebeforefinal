@@ -346,27 +346,283 @@ async function setupThreeHero() {
     const wireMesh2 = new THREE.Mesh(geo2, wireMat2);
     crystal.add(wireMesh2);
 
-    // Solid inner core - deep teal, teal emissive
-    const coreGeo = new THREE.IcosahedronGeometry(0.95, 0);
-    const coreMat = new THREE.MeshStandardMaterial({
-      color: 0x062824,
-      roughness: 0.2,
-      metalness: 0.9,
-      emissive: 0x0f766e,
-      emissiveIntensity: 0.65,
-      flatShading: true
+    // =============================================================
+    // Premium procedural human BRAIN ("cosmic neural brain")
+    // - Two cerebral hemispheres with a dark longitudinal fissure
+    // - Glowing gyri tubes (CatmullRomCurve3 + TubeGeometry)
+    // - Cerebellum lobe with transverse folia and a small brain stem
+    // Wrapped in a THREE.Group called coreMesh so the existing
+    // coreMesh.scale.setScalar(...) pulse animation keeps working.
+    // =============================================================
+    const BRAIN_TEAL = 0x2dd4bf;
+    const BRAIN_CYAN = 0x06b6d4;
+    const BRAIN_MINT = 0x10b981;
+
+    // Body material: deep teal with mint emissive so it glows subtly
+    // and picks up the existing point-light rig.
+    const brainMat = new THREE.MeshStandardMaterial({
+      color: 0x093a34,
+      roughness: 0.48,
+      metalness: 0.22,
+      emissive: 0x0d6e62,
+      emissiveIntensity: 0.55,
+      transparent: true,
+      opacity: 0.97,
+      flatShading: false
     });
-    const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+
+    // Very dark teal, almost black, used for the longitudinal fissure
+    // strip so it reads as a recessed groove.
+    const fissureMat = new THREE.MeshBasicMaterial({
+      color: 0x01100e,
+      transparent: true,
+      opacity: 0.95,
+      depthWrite: false
+    });
+
+    // Three additive glow materials for the neural gyri tubes so they
+    // feel like circuit traces on the cortex.
+    const gyriMatTeal = new THREE.MeshBasicMaterial({
+      color: BRAIN_TEAL,
+      transparent: true,
+      opacity: 0.9,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    const gyriMatMint = new THREE.MeshBasicMaterial({
+      color: BRAIN_MINT,
+      transparent: true,
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    const gyriMatCyan = new THREE.MeshBasicMaterial({
+      color: BRAIN_CYAN,
+      transparent: true,
+      opacity: 0.8,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+
+    // Hemisphere proportions: narrower in X so two fit side by side,
+    // taller in Y, deepest in Z to produce an elongated brain silhouette.
+    const HEMI_SCALE = new THREE.Vector3(0.48, 0.72, 0.92);
+    const HEMI_X_OFFSET = 0.13;
+
+    // Build a single cerebral hemisphere. A gentle frontal-lobe bulge
+    // and a mild temporal tuck are applied via vertex displacement,
+    // not noise spam, so the silhouette stays clean.
+    function makeHemisphere(side) {
+      const geo = new THREE.SphereGeometry(1, 64, 48);
+      const pos = geo.attributes.position;
+      const seedA = side > 0 ? 1.1 : 2.6;
+      const seedB = side > 0 ? 3.7 : 0.9;
+      for (let i = 0; i < pos.count; i++) {
+        const x = pos.getX(i);
+        const y = pos.getY(i);
+        const z = pos.getZ(i);
+
+        // Frontal lobe: expand the +Z hemisphere slightly.
+        const front = Math.max(0, z) * 0.10;
+        // Temporal tuck: pull in the lower-front a touch.
+        const temporal = Math.max(0, 0.4 - z) * Math.max(0, -y) * 0.08;
+        // Low-frequency organic waver so L/R are not identical.
+        const waver = 0.018 *
+          Math.sin(2.4 * x + seedA) *
+          Math.cos(2.1 * y - seedA) *
+          Math.sin(1.7 * z + seedB);
+
+        const f = 1 + front - temporal + waver;
+        pos.setXYZ(i, x * f, y * f, z * f);
+      }
+      geo.computeVertexNormals();
+
+      const mesh = new THREE.Mesh(geo, brainMat);
+      mesh.scale.copy(HEMI_SCALE);
+      mesh.position.x = side * HEMI_X_OFFSET;
+      return mesh;
+    }
+
+    // Return a point just outside the hemisphere ellipsoid at spherical
+    // coords (theta, phi). Used to route gyri tubes along the cortex.
+    function hemisphereSurface(side, theta, phi, inflate = 1.025) {
+      const cp = Math.cos(phi), sp = Math.sin(phi);
+      const ct = Math.cos(theta), st = Math.sin(theta);
+      const frontBulge = Math.max(0, ct) * 0.10;
+      return new THREE.Vector3(
+        HEMI_SCALE.x * inflate * st * cp + side * HEMI_X_OFFSET,
+        HEMI_SCALE.y * inflate * sp,
+        (HEMI_SCALE.z + frontBulge) * inflate * ct * cp
+      );
+    }
+
+    // Build 5 asymmetric gyri curves per hemisphere, each sweeping
+    // anterior to posterior across a band of latitude with a little
+    // lateral wiggle for organic feel.
+    function makeGyriTubes(side) {
+      const group = new THREE.Group();
+      const palette = [gyriMatTeal, gyriMatMint, gyriMatCyan];
+      const seed = side > 0 ? 0 : Math.PI * 0.37;
+
+      // Bias folds slightly toward the side-facing surface of each
+      // hemisphere (theta around ±π/2) and sweep them front-to-back.
+      const sideTheta = side * (Math.PI / 2);
+
+      const BANDS = 5;
+      for (let b = 0; b < BANDS; b++) {
+        // Top band high, lower bands progressively closer to equator.
+        const latBase = 0.78 - b * 0.26;
+        const segments = 10;
+        const pts = [];
+        for (let i = 0; i < segments; i++) {
+          const u = i / (segments - 1);          // 0 anterior → 1 posterior
+          const sweep = (u - 0.5) * 1.55;         // azimuth sweep
+          const theta = sideTheta + sweep * side;
+          const wiggle = Math.sin(u * Math.PI * 2 + seed + b * 0.95) * 0.11;
+          const phi = latBase + wiggle - u * 0.07;
+          pts.push(hemisphereSurface(side, theta, phi, 1.028));
+        }
+        const curve = new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.5);
+        const tubeGeo = new THREE.TubeGeometry(curve, 48, 0.0085, 8, false);
+        group.add(new THREE.Mesh(tubeGeo, palette[b % palette.length]));
+      }
+      return group;
+    }
+
+    // Two short frontal "crown" tubes that arch across the top-front of
+    // each hemisphere to make the frontal lobe read more clearly.
+    function makeFrontalAccents(side) {
+      const group = new THREE.Group();
+      const seed = side > 0 ? 0.5 : 1.9;
+      for (let k = 0; k < 2; k++) {
+        const pts = [];
+        for (let i = 0; i < 7; i++) {
+          const u = i / 6;
+          const theta = side * (0.25 + u * 1.0);
+          const phi = 0.55 + k * 0.12 + Math.sin(u * Math.PI + seed) * 0.06;
+          pts.push(hemisphereSurface(side, theta, phi, 1.028));
+        }
+        const curve = new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.5);
+        const geo = new THREE.TubeGeometry(curve, 36, 0.007, 6, false);
+        group.add(new THREE.Mesh(geo, k === 0 ? gyriMatMint : gyriMatTeal));
+      }
+      return group;
+    }
+
+    // Dark longitudinal fissure: a thin tube that arcs along the dorsal
+    // midline from the frontal pole to the occipital pole. Seen from the
+    // default 3/4 angle, it reads unmistakably as the gap between the
+    // two cerebral hemispheres.
+    function makeFissure() {
+      const pts = [];
+      const SEG = 14;
+      for (let i = 0; i < SEG; i++) {
+        const u = i / (SEG - 1);
+        const alpha = u * Math.PI;                  // 0 front → π back
+        // Stay just above the hemisphere surface along the top midline.
+        const r = 1.01;
+        const y = HEMI_SCALE.y * Math.sin(alpha) * r;
+        const z = HEMI_SCALE.z * Math.cos(alpha) * r;
+        // Tiny S-jitter so the fissure isn't perfectly straight.
+        const x = Math.sin(alpha * 2) * 0.008;
+        pts.push(new THREE.Vector3(x, y, z));
+      }
+      const curve = new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.5);
+      const geo = new THREE.TubeGeometry(curve, 72, 0.022, 8, false);
+      return new THREE.Mesh(geo, fissureMat);
+    }
+
+    // Cerebellum: smaller, flatter ellipsoid with tight transverse folia
+    // ridges produced by low-amplitude vertex displacement.
+    const CEREB_SCALE = new THREE.Vector3(0.42, 0.22, 0.3);
+    const CEREB_POS = new THREE.Vector3(0, -0.33, -0.46);
+    function makeCerebellum() {
+      const geo = new THREE.SphereGeometry(1, 48, 32);
+      const pos = geo.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        const x = pos.getX(i);
+        const y = pos.getY(i);
+        const z = pos.getZ(i);
+        const folia =
+          0.020 * Math.sin(18 * y + 4 * x) +
+          0.012 * Math.cos(22 * z + 6 * y);
+        const f = 1 + folia;
+        pos.setXYZ(i, x * f, y * f, z * f);
+      }
+      geo.computeVertexNormals();
+      const mesh = new THREE.Mesh(geo, brainMat);
+      mesh.scale.copy(CEREB_SCALE);
+      mesh.position.copy(CEREB_POS);
+      return mesh;
+    }
+
+    // Glowing folia tubes wrapping the cerebellum left to right so the
+    // "striped" look of a real cerebellum reads immediately.
+    function makeCerebellumFolia() {
+      const group = new THREE.Group();
+      for (let k = 0; k < 3; k++) {
+        const pts = [];
+        for (let i = 0; i < 11; i++) {
+          const u = i / 10;
+          const theta = Math.PI - u * Math.PI;     // left (π) to right (0)
+          const phi = 0.08 + (k - 1) * 0.25 + Math.sin(u * Math.PI * 2) * 0.05;
+          const cp = Math.cos(phi), sp = Math.sin(phi);
+          const ct = Math.cos(theta), st = Math.sin(theta);
+          const p = new THREE.Vector3(
+            CEREB_SCALE.x * 1.04 * st * cp,
+            CEREB_SCALE.y * 1.04 * sp,
+            CEREB_SCALE.z * 1.04 * ct * cp
+          ).add(CEREB_POS);
+          pts.push(p);
+        }
+        const curve = new THREE.CatmullRomCurve3(pts, false, "catmullrom", 0.5);
+        const geo = new THREE.TubeGeometry(curve, 36, 0.005, 6, false);
+        group.add(new THREE.Mesh(geo, k % 2 === 0 ? gyriMatTeal : gyriMatCyan));
+      }
+      return group;
+    }
+
+    // Small tapered brain stem descending from behind the cerebellum.
+    function makeBrainStem() {
+      const geo = new THREE.CylinderGeometry(0.07, 0.095, 0.36, 24, 1, false);
+      const mesh = new THREE.Mesh(geo, brainMat);
+      mesh.position.set(0, -0.58, -0.34);
+      mesh.rotation.x = 0.32;
+      return mesh;
+    }
+
+    // Assemble into the coreMesh group. The downstream animate() loop
+    // calls coreMesh.scale.setScalar(...) which works on any Object3D.
+    const coreMesh = new THREE.Group();
+    coreMesh.add(makeHemisphere(+1));
+    coreMesh.add(makeHemisphere(-1));
+    coreMesh.add(makeGyriTubes(+1));
+    coreMesh.add(makeGyriTubes(-1));
+    coreMesh.add(makeFrontalAccents(+1));
+    coreMesh.add(makeFrontalAccents(-1));
+    coreMesh.add(makeFissure());
+    coreMesh.add(makeCerebellum());
+    coreMesh.add(makeCerebellumFolia());
+    coreMesh.add(makeBrainStem());
+
+    // Slight 3/4 tilt so both hemispheres, the fissure, the cerebellum,
+    // and the brain stem are all visible from the default camera.
+    coreMesh.rotation.y = -0.28;
+    coreMesh.rotation.x = 0.06;
     crystal.add(coreMesh);
 
-    // Inner bright orb (mint)
-    const orbGeo = new THREE.SphereGeometry(0.38, 24, 24);
+    // Inner bright orb (mint) - tucked BEHIND the brain as a soft
+    // backlight halo so it doesn't obscure the fissure/hemispheres.
+    const orbGeo = new THREE.SphereGeometry(0.22, 24, 24);
     const orbMat = new THREE.MeshBasicMaterial({
       color: 0x10b981,
       transparent: true,
-      opacity: 0.78
+      opacity: 0.22,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
     });
     const orbMesh = new THREE.Mesh(orbGeo, orbMat);
+    orbMesh.position.set(0, 0.02, -0.55);
     crystal.add(orbMesh);
 
     // Ring halos
@@ -554,8 +810,8 @@ async function setupThreeHero() {
       // Core subtle pulse
       const corePulse = 1 + Math.sin(t * 2.4) * 0.04;
       coreMesh.scale.setScalar(corePulse);
-      orbMesh.scale.setScalar(1 + Math.sin(t * 3.2) * 0.1);
-      orbMat.opacity = 0.6 + Math.sin(t * 2.1) * 0.2;
+      orbMesh.scale.setScalar(1 + Math.sin(t * 3.2) * 0.08);
+      orbMat.opacity = 0.14 + Math.sin(t * 2.1) * 0.08;
 
       // Second shell counter-rotation
       wireMesh2.rotation.x = t * 0.12;
