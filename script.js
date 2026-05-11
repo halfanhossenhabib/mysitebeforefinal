@@ -346,17 +346,93 @@ async function setupThreeHero() {
     const wireMesh2 = new THREE.Mesh(geo2, wireMat2);
     crystal.add(wireMesh2);
 
-    // Solid inner core - deep teal, teal emissive
-    const coreGeo = new THREE.IcosahedronGeometry(0.95, 0);
-    const coreMat = new THREE.MeshStandardMaterial({
-      color: 0x062824,
-      roughness: 0.2,
-      metalness: 0.9,
+    // Solid inner core - a procedural human BRAIN
+    // Two hemispheres with a longitudinal fissure, gyri/sulci surface folds,
+    // a cerebellum lobe, and a short brain stem.
+    const brainMat = new THREE.MeshStandardMaterial({
+      color: 0x0a3a35,
+      roughness: 0.55,
+      metalness: 0.35,
       emissive: 0x0f766e,
-      emissiveIntensity: 0.65,
-      flatShading: true
+      emissiveIntensity: 0.45,
+      flatShading: false
     });
-    const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+
+    // Build a single cerebral hemisphere with gyri-like surface displacement.
+    // side = +1 for the right hemisphere, -1 for the left.
+    function makeHemisphere(side) {
+      const geo = new THREE.SphereGeometry(0.6, 72, 52);
+      const pos = geo.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        let x = pos.getX(i);
+        let y = pos.getY(i);
+        let z = pos.getZ(i);
+
+        const r = Math.sqrt(x * x + y * y + z * z) || 1;
+        const theta = Math.atan2(z, x);
+        const phi = Math.atan2(Math.sqrt(x * x + z * z), y);
+
+        // Multi-frequency ridges recreate the look of gyri (bulges) and sulci (grooves).
+        const ridge =
+          0.055 * Math.sin(8 * theta + 5 * phi) +
+          0.040 * Math.cos(12 * phi + 3 * theta) +
+          0.028 * Math.sin(16 * theta + 7 * phi) +
+          0.018 * Math.cos(22 * phi - 4 * theta);
+
+        const f = (r + ridge) / r;
+        pos.setXYZ(i, x * f, y * f, z * f);
+      }
+      geo.computeVertexNormals();
+
+      const mesh = new THREE.Mesh(geo, brainMat);
+      // Squash into an ellipsoid hemisphere (narrower along x so two fit side by side)
+      mesh.scale.set(0.55, 0.82, 1.05);
+      // Offset outward to create a longitudinal fissure between the two hemispheres
+      mesh.position.x = side * 0.36;
+      return mesh;
+    }
+
+    // Cerebellum: smaller lobe at the back-bottom, with finer, denser folia.
+    function makeCerebellum() {
+      const geo = new THREE.SphereGeometry(0.32, 48, 36);
+      const pos = geo.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        let x = pos.getX(i);
+        let y = pos.getY(i);
+        let z = pos.getZ(i);
+        const r = Math.sqrt(x * x + y * y + z * z) || 1;
+        // Horizontal folia pattern - more frequent, shallower ridges
+        const folia =
+          0.022 * Math.sin(20 * y + 14 * x) +
+          0.018 * Math.cos(24 * z + 6 * y) +
+          0.012 * Math.sin(30 * x);
+        const f = (r + folia) / r;
+        pos.setXYZ(i, x * f, y * f, z * f);
+      }
+      geo.computeVertexNormals();
+      const mesh = new THREE.Mesh(geo, brainMat);
+      mesh.scale.set(1.15, 0.55, 0.8);
+      mesh.position.set(0, -0.38, -0.42);
+      return mesh;
+    }
+
+    // Brain stem: short tilted cylinder descending from the cerebellum.
+    function makeBrainStem() {
+      const geo = new THREE.CylinderGeometry(0.1, 0.14, 0.42, 28, 1, false);
+      const mesh = new THREE.Mesh(geo, brainMat);
+      mesh.position.set(0, -0.62, -0.3);
+      mesh.rotation.x = 0.35;
+      return mesh;
+    }
+
+    // Group everything into coreMesh so the existing pulse / rotation code keeps working.
+    const coreMesh = new THREE.Group();
+    coreMesh.add(makeHemisphere(1));
+    coreMesh.add(makeHemisphere(-1));
+    coreMesh.add(makeCerebellum());
+    coreMesh.add(makeBrainStem());
+    // Slight yaw so the front-back axis reads nicely from the default camera
+    coreMesh.rotation.y = -0.2;
     crystal.add(coreMesh);
 
     // Inner bright orb (mint)
