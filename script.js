@@ -222,7 +222,7 @@ function releaseSparks(x, y) {
     spark.className = "spark";
     spark.style.left = `${x}px`;
     spark.style.top = `${y}px`;
-    spark.style.color = i % 3 === 0 ? "#ff4fd8" : i % 3 === 1 ? "#71f0ff" : "#b794ff";
+    spark.style.color = i % 3 === 0 ? "#10b981" : i % 3 === 1 ? "#2dd4bf" : "#06b6d4";
     spark.style.setProperty("--tx", `${Math.cos(angle) * distance}px`);
     spark.style.setProperty("--ty", `${Math.sin(angle) * distance}px`);
     document.body.appendChild(spark);
@@ -263,16 +263,16 @@ function setupParticles() {
       if (p.y < 0 || p.y > h) p.vy *= -1;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.s, 0, Math.PI * 2);
-      ctx.fillStyle = p.hue === "violet" ? "rgba(183,148,255,0.7)"
-        : p.hue === "cyan" ? "rgba(113,240,255,0.7)"
-        : "rgba(255,79,216,0.55)";
+      ctx.fillStyle = p.hue === "violet" ? "rgba(16,185,129,0.65)"
+        : p.hue === "cyan" ? "rgba(6,182,212,0.7)"
+        : "rgba(45,212,191,0.7)";
       ctx.fill();
 
       for (let j = i + 1; j < particles.length; j++) {
         const o = particles[j];
         const d = Math.hypot(p.x - o.x, p.y - o.y);
         if (d > 120) continue;
-        ctx.strokeStyle = `rgba(183,148,255,${0.1 * (1 - d / 120)})`;
+        ctx.strokeStyle = `rgba(45,212,191,${0.12 * (1 - d / 120)})`;
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(p.x, p.y);
@@ -286,7 +286,7 @@ function setupParticles() {
   window.addEventListener("resize", resize, { passive: true });
   if (!prefersReducedMotion) draw();
   else {
-    ctx.fillStyle = "rgba(183,148,255,0.25)";
+    ctx.fillStyle = "rgba(45,212,191,0.28)";
     particles.forEach((p) => ctx.fillRect(p.x, p.y, 2, 2));
   }
   return () => cancelAnimationFrame(rafId);
@@ -323,57 +323,57 @@ async function setupThreeHero() {
     const crystal = new THREE.Group();
     group.add(crystal);
 
-    // Outer wireframe crystal
+    // Outer wireframe crystal (teal)
     const geo = new THREE.IcosahedronGeometry(1.35, 1);
     const basePositions = new Float32Array(geo.attributes.position.array);
     const wireMat = new THREE.MeshBasicMaterial({
-      color: 0x71f0ff,
+      color: 0x2dd4bf,
       wireframe: true,
       transparent: true,
-      opacity: 0.55
+      opacity: 0.6
     });
     const wireMesh = new THREE.Mesh(geo, wireMat);
     crystal.add(wireMesh);
 
-    // Second shell in violet
+    // Second shell (cyan)
     const geo2 = new THREE.IcosahedronGeometry(1.55, 1);
     const wireMat2 = new THREE.MeshBasicMaterial({
-      color: 0xb794ff,
+      color: 0x06b6d4,
       wireframe: true,
       transparent: true,
-      opacity: 0.3
+      opacity: 0.32
     });
     const wireMesh2 = new THREE.Mesh(geo2, wireMat2);
     crystal.add(wireMesh2);
 
-    // Solid inner core - faceted, slightly emissive look via MeshStandardMaterial
+    // Solid inner core - deep teal, teal emissive
     const coreGeo = new THREE.IcosahedronGeometry(0.95, 0);
     const coreMat = new THREE.MeshStandardMaterial({
-      color: 0x1a1040,
+      color: 0x062824,
       roughness: 0.2,
       metalness: 0.9,
-      emissive: 0x4a1f7a,
-      emissiveIntensity: 0.6,
+      emissive: 0x0f766e,
+      emissiveIntensity: 0.65,
       flatShading: true
     });
     const coreMesh = new THREE.Mesh(coreGeo, coreMat);
     crystal.add(coreMesh);
 
-    // Inner bright orb
+    // Inner bright orb (mint)
     const orbGeo = new THREE.SphereGeometry(0.38, 24, 24);
     const orbMat = new THREE.MeshBasicMaterial({
-      color: 0xff4fd8,
+      color: 0x10b981,
       transparent: true,
-      opacity: 0.75
+      opacity: 0.78
     });
     const orbMesh = new THREE.Mesh(orbGeo, orbMat);
     crystal.add(orbMesh);
 
     // Ring halos
     const ringMat1 = new THREE.MeshBasicMaterial({
-      color: 0x71f0ff,
+      color: 0x2dd4bf,
       transparent: true,
-      opacity: 0.35,
+      opacity: 0.4,
       side: THREE.DoubleSide
     });
     const ring1 = new THREE.Mesh(new THREE.TorusGeometry(2.1, 0.008, 10, 140), ringMat1);
@@ -381,9 +381,9 @@ async function setupThreeHero() {
     group.add(ring1);
 
     const ringMat2 = new THREE.MeshBasicMaterial({
-      color: 0xff4fd8,
+      color: 0x10b981,
       transparent: true,
-      opacity: 0.25,
+      opacity: 0.28,
       side: THREE.DoubleSide
     });
     const ring2 = new THREE.Mesh(new THREE.TorusGeometry(2.55, 0.007, 10, 140), ringMat2);
@@ -392,9 +392,9 @@ async function setupThreeHero() {
     group.add(ring2);
 
     const ringMat3 = new THREE.MeshBasicMaterial({
-      color: 0xb794ff,
+      color: 0x06b6d4,
       transparent: true,
-      opacity: 0.18,
+      opacity: 0.22,
       side: THREE.DoubleSide
     });
     const ring3 = new THREE.Mesh(new THREE.TorusGeometry(3.05, 0.006, 10, 140), ringMat3);
@@ -417,9 +417,9 @@ async function setupThreeHero() {
         r * Math.sin(phi) * Math.sin(theta)
       );
       const pick = Math.random();
-      if (pick < 0.4) starCol.push(0.44, 0.94, 1);        // cyan
-      else if (pick < 0.75) starCol.push(0.72, 0.58, 1);  // violet
-      else starCol.push(1, 0.31, 0.85);                    // magenta
+      if (pick < 0.4) starCol.push(0.17, 0.83, 0.75);       // teal #2dd4bf
+      else if (pick < 0.75) starCol.push(0.02, 0.71, 0.83);  // cyan #06b6d4
+      else starCol.push(0.06, 0.72, 0.51);                   // mint #10b981
     }
     starGeo.setAttribute("position", new THREE.Float32BufferAttribute(starPos, 3));
     starGeo.setAttribute("color", new THREE.Float32BufferAttribute(starCol, 3));
@@ -436,9 +436,9 @@ async function setupThreeHero() {
     /* ---------- Orbiting small crystals ---------- */
     const satellites = [];
     const satMat = new THREE.MeshStandardMaterial({
-      color: 0x71f0ff,
-      emissive: 0x71f0ff,
-      emissiveIntensity: 0.8,
+      color: 0x2dd4bf,
+      emissive: 0x2dd4bf,
+      emissiveIntensity: 0.85,
       metalness: 0.8,
       roughness: 0.3,
       flatShading: true
@@ -446,8 +446,8 @@ async function setupThreeHero() {
     for (let i = 0; i < 5; i++) {
       const g = new THREE.OctahedronGeometry(0.14, 0);
       const m = new THREE.Mesh(g, satMat.clone());
-      m.material.color.setHex(i % 2 ? 0xff4fd8 : 0x71f0ff);
-      m.material.emissive.setHex(i % 2 ? 0xff4fd8 : 0x71f0ff);
+      m.material.color.setHex(i % 2 ? 0x10b981 : 0x2dd4bf);
+      m.material.emissive.setHex(i % 2 ? 0x10b981 : 0x2dd4bf);
       m.userData = {
         angle: Math.random() * Math.PI * 2,
         speed: 0.4 + Math.random() * 0.6,
@@ -462,15 +462,15 @@ async function setupThreeHero() {
     /* ---------- Lights ---------- */
     const ambient = new THREE.AmbientLight(0xffffff, 0.4);
     scene.add(ambient);
-    const lightCyan = new THREE.PointLight(0x71f0ff, 12, 20);
-    lightCyan.position.set(-4, 3, 4);
+    const lightTeal = new THREE.PointLight(0x2dd4bf, 12, 20);
+    lightTeal.position.set(-4, 3, 4);
+    scene.add(lightTeal);
+    const lightMint = new THREE.PointLight(0x10b981, 10, 20);
+    lightMint.position.set(4, -2, 3);
+    scene.add(lightMint);
+    const lightCyan = new THREE.PointLight(0x06b6d4, 8, 18);
+    lightCyan.position.set(0, 4, -3);
     scene.add(lightCyan);
-    const lightPink = new THREE.PointLight(0xff4fd8, 10, 20);
-    lightPink.position.set(4, -2, 3);
-    scene.add(lightPink);
-    const lightViolet = new THREE.PointLight(0xb794ff, 8, 18);
-    lightViolet.position.set(0, 4, -3);
-    scene.add(lightViolet);
 
     /* ---------- Interaction state ---------- */
     const pointer = { x: 0, y: 0 };
