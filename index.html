@@ -496,39 +496,6 @@
       margin-top: 1.9rem;
     }
 
-    .hero-stats {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 1.6rem;
-      margin-top: 2.2rem;
-      padding-top: 1.5rem;
-      border-top: 1px dashed var(--line);
-    }
-    .hero-stat { display: flex; flex-direction: column; gap: 0.15rem; }
-    .hero-stat strong {
-      font-family: "Space Grotesk", sans-serif;
-      font-size: 1.5rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      background: var(--grad);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      color: transparent;
-    }
-    .hero-stat span {
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.7rem;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-    .hero-stat-divider {
-      width: 1px; height: 1.8rem;
-      background: var(--line);
-    }
-
     /* =========================================================
        Buttons
        ========================================================= */
@@ -833,7 +800,7 @@
       padding: 0.85rem 1.3rem;
       border-radius: var(--r-pill);
       background: var(--grad);
-      color: #02110f;
+      color: #000;
       font-family: "Inter", sans-serif;
       font-size: 0.92rem;
       font-weight: 700;
@@ -853,6 +820,9 @@
       pointer-events: none;
     }
     .featured-card:hover .featured-cta::after { transform: translateX(120%); }
+    .featured-card .featured-cta,
+    .featured-card:hover .featured-cta,
+    .featured-card:focus-visible .featured-cta { color: #000; }
     .featured-card:hover .featured-cta {
       box-shadow:
         0 16px 44px rgba(6, 182, 212, 0.38),
@@ -1486,9 +1456,6 @@
       }
       .btn { flex-basis: 100%; }
 
-      .hero-stats { gap: 1rem; }
-      .hero-stat-divider { display: none; }
-
       .section { padding-block: 3.6rem; }
       .featured-card h3 { font-size: 1.55rem; }
       .game-card h3 { font-size: 1.3rem; }
@@ -1579,23 +1546,6 @@
               <i class="fa-solid fa-house" aria-hidden="true"></i>
               <span>Home</span>
             </a>
-          </div>
-
-          <div class="hero-stats" aria-hidden="true">
-            <div class="hero-stat">
-              <strong>05</strong>
-              <span>Games live</span>
-            </div>
-            <span class="hero-stat-divider"></span>
-            <div class="hero-stat">
-              <strong>04</strong>
-              <span>Vibes covered</span>
-            </div>
-            <span class="hero-stat-divider"></span>
-            <div class="hero-stat">
-              <strong>00</strong>
-              <span>Installs needed</span>
-            </div>
           </div>
         </div>
 
