@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="Games Hub by Halfan Hossen Habib, featuring playful HTML, CSS, and JavaScript games.">
+  <meta name="description" content="Simple tech tricks Halfan Hossen Habib uses while learning and building on the web.">
   <meta name="theme-color" content="#02110f">
-  <title>Games Hub | Halfan Hossen Habib</title>
+  <title>Tricks &amp; Tips | Halfan Hossen Habib</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,12 +16,12 @@
 
   <style>
     /* =========================================================
-       Games Hub - "Midnight Lab" redesign
+       Tricks & Tips - "Midnight Lab" redesign
        Visual language matched to halfanhossenhabib.github.io/mysite
+       and the Games Hub site.
        ========================================================= */
 
     :root {
-      /* Surfaces */
       --bg: #02110f;
       --bg-2: #06211f;
       --bg-3: #082f2d;
@@ -29,26 +29,22 @@
       --surface-2: rgba(6, 33, 31, 0.86);
       --surface-3: rgba(8, 47, 45, 0.42);
 
-      /* Text */
       --ink: #f0fdfa;
       --ink-2: #ccfbf1;
       --muted: #8bb8b1;
 
-      /* Lines / borders */
       --line: rgba(45, 212, 191, 0.18);
       --line-2: rgba(45, 212, 191, 0.28);
       --line-bright: rgba(45, 212, 191, 0.58);
 
-      /* Brand accents */
       --cyan: #06b6d4;
       --teal: #2dd4bf;
       --mint: #10b981;
+      --warning: #fbbf24;
 
-      /* Gradients */
       --grad: linear-gradient(135deg, #06b6d4 0%, #2dd4bf 55%, #10b981 100%);
       --grad-soft: linear-gradient(135deg, rgba(6,182,212,0.22), rgba(45,212,191,0.18), rgba(16,185,129,0.16));
 
-      /* Shape */
       --r-xs: 8px;
       --r-sm: 12px;
       --r: 18px;
@@ -56,7 +52,6 @@
       --r-xl: 32px;
       --r-pill: 999px;
 
-      /* Motion */
       --e-out: cubic-bezier(.22,.61,.36,1);
       --e-spring: cubic-bezier(.2,.8,.2,1.2);
 
@@ -386,7 +381,7 @@
       max-width: 1280px;
       margin: 0 auto;
       padding: clamp(7rem, 12vh, 9rem) clamp(1rem, 4vw, 2rem) clamp(3rem, 7vh, 5rem);
-      grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.78fr);
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.82fr);
       align-items: center;
       gap: clamp(2rem, 6vw, 5rem);
     }
@@ -451,8 +446,15 @@
     }
     .js .hero-title .word { will-change: transform, opacity; }
     .hero-title .line:nth-child(1) .word { transition-delay: 80ms; }
-    .hero-title .line:nth-child(2) .word { transition-delay: 200ms; }
+    .hero-title .line:nth-child(2) .word { transition-delay: 220ms; }
+    .hero-title .line:nth-child(2) .word.amp { transition-delay: 160ms; }
     .hero-title.is-in .word { transform: translateY(0); opacity: 1; }
+    .hero-title .amp {
+      color: var(--teal);
+      margin-right: 0.18em;
+      font-weight: 500;
+      opacity: 0.85;
+    }
     .hero-title .punct {
       display: inline-block;
       transform: translateY(0);
@@ -480,6 +482,7 @@
       width: 2.2rem; height: 2px; border-radius: 2px;
       background: var(--grad);
       box-shadow: 0 0 14px rgba(45, 212, 191, 0.6);
+      flex-shrink: 0;
     }
 
     .hero-text {
@@ -499,7 +502,7 @@
     /* =========================================================
        Buttons
        ========================================================= */
-    .btn, .play-btn, .footer-links a {
+    .btn, .icon-link, .guide-link, .footer-links a {
       display: inline-flex; align-items: center; justify-content: center;
       gap: 0.6rem;
       min-height: 2.95rem;
@@ -548,125 +551,238 @@
       background: rgba(45, 212, 191, 0.1);
       color: #fff;
     }
-    .btn:hover, .play-btn:hover { transform: translateY(-3px); }
-    .btn:active, .play-btn:active { transform: translateY(-1px) scale(0.98); }
+    .btn-youtube {
+      border-color: rgba(255, 79, 216, 0.34);
+      background:
+        linear-gradient(135deg, rgba(255, 79, 216, 0.22), rgba(45, 212, 191, 0.14)),
+        rgba(8, 47, 45, 0.72);
+      color: var(--ink);
+      box-shadow: 0 14px 40px rgba(255, 79, 216, 0.18);
+      backdrop-filter: blur(14px);
+    }
+    .btn-youtube:hover {
+      border-color: rgba(255, 79, 216, 0.6);
+      background:
+        linear-gradient(135deg, rgba(255, 79, 216, 0.32), rgba(45, 212, 191, 0.18)),
+        rgba(8, 47, 45, 0.78);
+      box-shadow: 0 18px 54px rgba(255, 79, 216, 0.28);
+    }
+    .icon-link {
+      width: 2.95rem;
+      border-color: var(--line-2);
+      border-radius: 50%;
+      background: var(--surface);
+      color: var(--ink);
+      backdrop-filter: blur(14px);
+      flex-shrink: 0;
+    }
+    .icon-link:hover {
+      border-color: var(--line-bright);
+      background: rgba(45, 212, 191, 0.12);
+      color: var(--teal);
+    }
+    .btn:hover, .icon-link:hover, .guide-link:hover { transform: translateY(-3px); }
+    .btn:active, .icon-link:active, .guide-link:active { transform: translateY(-1px) scale(0.98); }
 
     /* =========================================================
-       Hero stage (3D isometric)
+       Hero terminal panel (deploy preview)
        ========================================================= */
     .hero-visual {
       position: relative;
-      min-height: 30rem;
+      min-height: 26rem;
       display: grid;
       place-items: center;
     }
 
-    .stage {
+    .hero-panel {
       position: relative;
-      width: min(100%, 28rem);
-      aspect-ratio: 1;
-      perspective: 1100px;
-      transform-style: preserve-3d;
-    }
-
-    .stage-floor {
-      position: relative;
-      width: 100%; height: 100%;
-      transform: rotateX(58deg) rotateZ(-15deg);
-      transform-style: preserve-3d;
+      width: min(100%, 30rem);
+      overflow: hidden;
       border: 1px solid var(--line-2);
       border-radius: var(--r-lg);
-      overflow: hidden;
       background:
-        radial-gradient(circle at 25% 30%, rgba(45, 212, 191, 0.34), transparent 60%),
-        radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.30), transparent 60%),
-        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0, rgba(255, 255, 255, 0.06) 1px, transparent 1px, transparent 3rem),
-        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.06) 0, rgba(255, 255, 255, 0.06) 1px, transparent 1px, transparent 3rem),
-        linear-gradient(160deg, rgba(8, 47, 45, 0.85), rgba(6, 33, 31, 0.75));
-      box-shadow:
-        var(--shadow-lg),
-        0 0 0 1px rgba(45, 212, 191, 0.14),
-        inset 0 1px 0 rgba(255,255,255,0.04);
+        linear-gradient(160deg, rgba(8, 47, 45, 0.85), rgba(6, 33, 31, 0.78)),
+        linear-gradient(135deg, rgba(6, 182, 212, 0.18), transparent 36%);
+      box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.04);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: border-color 240ms var(--e-out), box-shadow 240ms var(--e-out), transform 240ms var(--e-out);
     }
-
-    .stage-floor::before {
+    .hero-panel::after {
       content: "";
-      position: absolute; inset: 12%;
-      border: 1px solid rgba(45, 212, 191, 0.4);
-      border-radius: var(--r);
-      transform: translateZ(28px);
-      box-shadow: inset 0 0 30px rgba(45, 212, 191, 0.18);
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(6,182,212,0), rgba(45,212,191,0.6), rgba(16,185,129,0.5), rgba(6,182,212,0));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
+      opacity: 0.55;
+      transition: opacity 320ms var(--e-out);
+      pointer-events: none;
     }
+    .hero-panel:hover { border-color: var(--line-bright); }
+    .hero-panel:hover::after { opacity: 1; }
 
-    .stage-scan {
+    .hero-panel-grid {
+      position: absolute; inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(45, 212, 191, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(45, 212, 191, 0.08) 1px, transparent 1px);
+      background-size: 26px 26px;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,0.7), transparent 80%);
+      -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0.7), transparent 80%);
+      opacity: 0.65;
+    }
+    .hero-panel-scan {
       position: absolute;
-      left: 8%; right: 8%;
+      left: 6%; right: 6%;
       top: 8%;
       height: 2px;
       border-radius: 2px;
       background: linear-gradient(90deg, transparent, var(--teal), transparent);
       box-shadow: 0 0 18px rgba(45, 212, 191, 0.7);
-      transform: translateZ(46px);
-      animation: scanSweep 5.5s var(--e-out) infinite;
+      animation: scanSweep 6s var(--e-out) infinite;
+      pointer-events: none;
     }
     @keyframes scanSweep {
       0%,100% { top: 12%; opacity: 0; }
       10%,90% { opacity: 1; }
-      50%     { top: 80%; opacity: 1; }
+      50%     { top: 86%; opacity: 1; }
     }
 
-    .stage-piece {
-      position: absolute;
-      display: inline-flex;
-      width: 4.2rem; height: 4.2rem;
-      align-items: center; justify-content: center;
-      border: 1px solid rgba(45, 212, 191, 0.32);
-      border-radius: var(--r-sm);
-      background: linear-gradient(135deg, rgba(8, 47, 45, 0.96), rgba(6, 33, 31, 0.92));
-      color: var(--teal);
-      font-size: 1.7rem;
-      box-shadow:
-        0 18px 38px rgba(0, 0, 0, 0.45),
-        0 0 28px rgba(45, 212, 191, 0.22);
-      animation: pieceFloat 5.2s ease-in-out infinite;
-      backface-visibility: hidden;
+    .terminal-window {
+      position: relative;
+      z-index: 1;
+      padding: 1.3rem;
     }
-    .piece-chess   { left: 12%;  top: 14%;    color: var(--teal);  transform: translateZ(64px); }
-    .piece-snake   { right: 10%; top: 20%;    color: var(--mint);  transform: translateZ(82px); animation-delay: -1.1s; }
-    .piece-grid    { left: 28%;  top: 50%;    color: var(--cyan);  transform: translateZ(50px); animation-delay: -2.4s; }
-    .piece-bolt    { right: 22%; bottom: 20%; color: var(--mint);  transform: translateZ(74px); animation-delay: -3.0s; }
-    .piece-stack   { left: 14%;  bottom: 12%; color: var(--cyan);  transform: translateZ(38px); animation-delay: -3.8s; }
 
-    @keyframes pieceFloat {
-      0%,100% { translate: 0 0; }
-      50%     { translate: 0 -0.5rem; }
+    .terminal-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem;
+      padding-bottom: 0.95rem;
+      border-bottom: 1px solid var(--line);
     }
-    /* Floor pieces inherit Z; we animate vertical movement via CSS translate */
-    .stage-piece.piece-chess  { transform: translateZ(64px); }
-    .stage-piece.piece-snake  { transform: translateZ(82px); }
-    .stage-piece.piece-grid   { transform: translateZ(50px); }
-    .stage-piece.piece-bolt   { transform: translateZ(74px); }
-    .stage-piece.piece-stack  { transform: translateZ(38px); }
+    .window-controls {
+      display: flex; gap: 0.42rem;
+    }
+    .window-controls span {
+      width: 0.72rem; height: 0.72rem;
+      border-radius: 50%;
+      background: #ff4fd8;
+      box-shadow: 0 0 12px currentColor;
+    }
+    .window-controls span:nth-child(2) { background: var(--warning); }
+    .window-controls span:nth-child(3) { background: var(--mint); }
 
-    .hero-hud {
-      position: absolute;
-      right: 0; bottom: 1.6rem;
-      display: inline-flex; align-items: center; gap: 0.65rem;
-      min-height: 3rem;
-      border: 1px solid var(--line-bright);
-      border-radius: var(--r-pill);
-      padding: 0.7rem 1.05rem;
-      background: var(--surface-2);
-      color: var(--ink);
+    .terminal-label {
+      margin: 0;
       font-family: "JetBrains Mono", monospace;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      box-shadow: var(--shadow), 0 0 26px rgba(45, 212, 191, 0.18);
-      backdrop-filter: blur(16px);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      color: var(--ink-2);
+      text-transform: lowercase;
     }
-    .hero-hud i { color: var(--mint); }
+    .terminal-label .dot {
+      display: inline-block;
+      width: 0.4rem; height: 0.4rem;
+      margin-right: 0.45rem;
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 10px rgba(45, 212, 191, 0.85);
+      vertical-align: 0.15em;
+    }
+
+    .terminal-body {
+      display: grid;
+      gap: 0.7rem;
+      margin-top: 1.25rem;
+    }
+    .code-line {
+      display: flex; align-items: center; gap: 0.8rem;
+      border: 1px solid var(--line);
+      border-radius: var(--r-sm);
+      padding: 0.85rem 1rem;
+      background: rgba(2, 17, 15, 0.55);
+      color: var(--ink-2);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.88rem;
+      transition: border-color 240ms var(--e-out), background 240ms var(--e-out), transform 240ms var(--e-out);
+    }
+    .code-line .step-dot {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 1.6rem; height: 1.6rem;
+      border-radius: 50%;
+      border: 1px solid var(--line-bright);
+      background: rgba(45, 212, 191, 0.08);
+      color: var(--teal);
+      font-size: 0.78rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .code-line i { color: var(--teal); font-size: 0.95rem; }
+    .code-line strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .code-line:hover {
+      border-color: var(--line-2);
+      background: rgba(45, 212, 191, 0.06);
+      transform: translateX(3px);
+    }
+
+    .publish-badge {
+      display: inline-flex; width: fit-content;
+      align-items: center; gap: 0.55rem;
+      margin-top: 1.4rem;
+      padding: 0.65rem 1rem;
+      border: 1px solid rgba(16, 185, 129, 0.42);
+      border-radius: var(--r-pill);
+      background: rgba(16, 185, 129, 0.08);
+      color: var(--mint);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      box-shadow: 0 0 28px rgba(16, 185, 129, 0.22);
+    }
+    .publish-badge i {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 1.2rem; height: 1.2rem;
+      border-radius: 50%;
+      background: var(--mint);
+      color: #02110f;
+      font-size: 0.62rem;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.85);
+    }
+
+    /* Floating accent chips around the panel */
+    .hero-chip {
+      position: absolute;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 0.8rem;
+      border: 1px solid var(--line-2);
+      border-radius: var(--r-pill);
+      background: var(--surface-2);
+      backdrop-filter: blur(14px);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--ink-2);
+      text-transform: uppercase;
+      box-shadow: var(--shadow), 0 0 18px rgba(45, 212, 191, 0.18);
+      animation: chipFloat 6s ease-in-out infinite;
+    }
+    .hero-chip i { color: var(--mint); }
+    .hero-chip-1 { left: -0.3rem; top: 1rem; animation-delay: -1s; }
+    .hero-chip-2 { right: -0.4rem; bottom: 2.4rem; animation-delay: -3s; }
+    @keyframes chipFloat {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-0.45rem); }
+    }
 
     /* =========================================================
        Sections
@@ -716,506 +832,321 @@
       text-transform: uppercase;
     }
     .chip i { color: var(--teal); font-size: 0.7rem; }
-    .chip.is-featured i { color: var(--mint); }
 
     /* =========================================================
-       Featured card
+       Guide card (featured trick)
        ========================================================= */
-    .featured-card {
+    .guide-card {
       position: relative;
-      display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.9fr);
-      gap: clamp(1.5rem, 4vw, 3rem);
       overflow: hidden;
-      margin-bottom: 1.4rem;
-      padding: clamp(1.6rem, 3.5vw, 2.6rem);
       border: 1px solid var(--line-2);
       border-radius: var(--r-lg);
       background:
         linear-gradient(160deg, rgba(8, 47, 45, 0.85), rgba(6, 33, 31, 0.78)),
-        linear-gradient(135deg, rgba(6, 182, 212, 0.18), transparent 36%);
+        linear-gradient(135deg, rgba(6, 182, 212, 0.16), transparent 40%);
       box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.04);
       backdrop-filter: blur(14px);
-      color: var(--ink);
-      text-decoration: none;
+      -webkit-backdrop-filter: blur(14px);
+      transform-style: preserve-3d;
       transition: border-color 240ms var(--e-out), box-shadow 240ms var(--e-out), transform 240ms var(--e-out);
     }
-    .featured-card::after {
+    .guide-card::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(420px 320px at var(--mx, 50%) var(--my, 0%), rgba(45, 212, 191, 0.16), transparent 60%);
+      opacity: 0;
+      transition: opacity 320ms var(--e-out);
+      pointer-events: none;
+    }
+    .guide-card::after {
       content: "";
       position: absolute; inset: 0;
       border-radius: inherit;
       padding: 1px;
-      background: linear-gradient(135deg, rgba(6,182,212,0), rgba(45,212,191,0.6), rgba(16,185,129,0.5), rgba(6,182,212,0));
+      background: linear-gradient(135deg, rgba(6,182,212,0), rgba(45,212,191,0.55), rgba(16,185,129,0.45), rgba(6,182,212,0));
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor; mask-composite: exclude;
-      opacity: 0.45;
+      opacity: 0.5;
       transition: opacity 320ms var(--e-out);
       pointer-events: none;
     }
-    .featured-card:hover, .featured-card:focus-visible {
+    .guide-card:hover, .guide-card.is-touched {
       border-color: var(--line-bright);
       box-shadow: 0 36px 90px rgba(6, 182, 212, 0.22), 0 12px 32px rgba(16, 185, 129, 0.18);
-      outline: none;
     }
-    .featured-card:hover::after, .featured-card:focus-visible::after { opacity: 1; }
+    .guide-card:hover::before, .guide-card.is-touched::before { opacity: 1; }
+    .guide-card:hover::after, .guide-card.is-touched::after { opacity: 1; }
 
-    .featured-info {
+    .guide-card-inner {
       position: relative; z-index: 1;
-      display: flex; flex-direction: column;
-      gap: 1rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(17rem, 0.65fr);
+      gap: clamp(1.5rem, 3.5vw, 2.5rem);
+      padding: clamp(1.4rem, 3vw, 2.2rem);
     }
-    .featured-card h3 {
-      max-width: 22ch;
+
+    .guide-main { min-width: 0; }
+
+    .guide-kicker {
+      display: inline-flex; align-items: center; gap: 0.7rem;
+      margin: 0 0 1.3rem;
+      color: var(--ink);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .guide-kicker .kicker-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 2.6rem; height: 2.6rem;
+      border: 1px solid var(--line-bright);
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.22), rgba(45, 212, 191, 0.18));
+      color: var(--teal);
+      font-size: 1.05rem;
+      box-shadow: 0 0 24px rgba(45, 212, 191, 0.28), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .guide-main h3.guide-title {
       margin: 0;
-      font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+      font-size: clamp(1.7rem, 3.4vw, 2.4rem);
       line-height: 1.05;
       font-weight: 600;
       letter-spacing: -0.025em;
     }
-    .featured-card p {
-      max-width: 36rem;
-      margin: 0;
+
+    .guide-summary {
+      max-width: 44rem;
+      margin: 1rem 0 0;
       color: var(--ink-2);
       font-size: 1.02rem;
-      line-height: 1.7;
+      line-height: 1.75;
     }
-    .featured-card .game-icon {
-      display: inline-flex;
-      width: 3.6rem; height: 3.6rem;
-      align-items: center; justify-content: center;
-      border: 1px solid var(--line-bright);
-      border-radius: 14px;
-      background: linear-gradient(135deg, rgba(6, 182, 212, 0.22), rgba(45, 212, 191, 0.18));
-      color: var(--teal);
-      font-size: 1.55rem;
-      box-shadow: 0 0 28px rgba(45, 212, 191, 0.32), inset 0 1px 0 rgba(255,255,255,0.08);
-      transition: transform 320ms var(--e-spring);
-    }
-    .featured-card:hover .game-icon { transform: translateY(-4px) rotate(-6deg); }
 
-    .featured-cta {
-      align-self: flex-start;
-      margin-top: 0.6rem;
-      gap: 0.55rem;
-      padding: 0.85rem 1.3rem;
-      border-radius: var(--r-pill);
-      background: var(--grad);
-      color: #000;
-      font-family: "Inter", sans-serif;
-      font-size: 0.92rem;
-      font-weight: 700;
-      box-shadow:
-        0 10px 30px rgba(6, 182, 212, 0.25),
-        0 4px 14px rgba(16, 185, 129, 0.22),
-        inset 0 1px 0 rgba(255,255,255,0.4);
-      position: relative; overflow: hidden;
-      min-height: 2.95rem;
+    /* Step timeline */
+    .step-list {
+      position: relative;
+      display: grid;
+      gap: 0.85rem;
+      margin: 2.2rem 0 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: guide-step;
     }
-    .featured-cta::after {
+    .step-list::before {
       content: "";
-      position: absolute; inset: 0;
-      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
-      transform: translateX(-120%);
-      transition: transform 800ms var(--e-out);
+      position: absolute;
+      left: 1.25rem;
+      top: 1.4rem;
+      bottom: 1rem;
+      width: 1px;
+      background: linear-gradient(180deg, rgba(6, 182, 212, 0.6), rgba(45, 212, 191, 0.4) 50%, rgba(16, 185, 129, 0.25));
       pointer-events: none;
     }
-    .featured-card:hover .featured-cta::after { transform: translateX(120%); }
-    .featured-card .featured-cta,
-    .featured-card:hover .featured-cta,
-    .featured-card:focus-visible .featured-cta { color: #000; }
-    .featured-card:hover .featured-cta {
-      box-shadow:
-        0 16px 44px rgba(6, 182, 212, 0.38),
-        0 6px 18px rgba(16, 185, 129, 0.35),
-        inset 0 1px 0 rgba(255,255,255,0.45);
+    .step-list li {
+      position: relative;
+      display: grid;
+      grid-template-columns: 2.5rem minmax(0, 1fr);
+      gap: 0.95rem;
+      align-items: start;
+      padding: 0.95rem 1.05rem;
+      border: 1px solid var(--line);
+      border-radius: var(--r-sm);
+      background: rgba(2, 17, 15, 0.45);
+      backdrop-filter: blur(8px);
+      counter-increment: guide-step;
+      transition: border-color 220ms var(--e-out), background 220ms var(--e-out), transform 220ms var(--e-out);
+    }
+    .step-list li::before {
+      content: counter(guide-step, decimal-leading-zero);
+      position: relative;
+      z-index: 1;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 2.5rem; height: 2.5rem;
+      border-radius: 50%;
+      border: 1px solid var(--line-bright);
+      background: linear-gradient(135deg, rgba(8, 47, 45, 0.96), rgba(6, 33, 31, 0.92));
+      color: var(--teal);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      box-shadow: 0 0 0 4px rgba(2, 17, 15, 0.85), 0 0 22px rgba(45, 212, 191, 0.2);
+      transition: color 220ms, background 220ms, box-shadow 220ms;
+    }
+    .step-list li:hover {
+      border-color: var(--line-2);
+      background: rgba(45, 212, 191, 0.06);
+      transform: translateX(3px);
+    }
+    .step-list li:hover::before {
+      color: #02110f;
+      background: var(--grad);
+      box-shadow: 0 0 0 4px rgba(2, 17, 15, 0.85), 0 0 30px rgba(45, 212, 191, 0.5);
     }
 
-    /* Featured visual: chessboard + glowing knight */
-    .featured-art {
-      position: relative;
-      align-self: stretch;
-      min-height: 14rem;
-      border-radius: var(--r);
-      overflow: hidden;
-      border: 1px solid var(--line);
-      background:
-        radial-gradient(circle at 70% 30%, rgba(45, 212, 191, 0.22), transparent 60%),
-        linear-gradient(160deg, rgba(2, 17, 15, 0.7), rgba(6, 33, 31, 0.75));
+    .step-copy { min-width: 0; padding-top: 0.18rem; }
+    .step-copy strong {
+      display: block;
+      color: var(--ink);
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.35;
+      letter-spacing: -0.01em;
     }
-    .chessboard {
-      position: absolute;
-      inset: 14% 18% 14% 12%;
-      display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      grid-template-rows: repeat(8, 1fr);
-      border-radius: var(--r-sm);
-      overflow: hidden;
-      border: 1px solid rgba(45, 212, 191, 0.35);
-      transform: perspective(720px) rotateX(46deg) rotateZ(-12deg);
-      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(45, 212, 191, 0.18);
+    .step-copy span {
+      display: block;
+      margin-top: 0.25rem;
+      color: var(--ink-2);
+      font-size: 0.94rem;
+      line-height: 1.65;
     }
-    .chessboard span {
-      background: rgba(8, 47, 45, 0.9);
-    }
-    .chessboard span.dark {
-      background: rgba(2, 17, 15, 0.92);
-    }
-    .chessboard span.glow {
-      box-shadow: inset 0 0 16px rgba(45, 212, 191, 0.55);
-    }
-    .featured-knight {
-      position: absolute;
-      left: 56%; top: 32%;
-      display: inline-flex;
-      width: 4.5rem; height: 4.5rem;
-      align-items: center; justify-content: center;
-      border: 1px solid var(--line-bright);
-      border-radius: 14px;
-      background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(45, 212, 191, 0.2));
+
+    .inline-code {
+      display: inline-flex; align-items: center;
+      padding: 0.05rem 0.45rem;
+      border: 1px solid rgba(45, 212, 191, 0.32);
+      border-radius: 6px;
+      background: rgba(45, 212, 191, 0.08);
       color: var(--teal);
-      font-size: 1.85rem;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5), 0 0 32px rgba(45, 212, 191, 0.45);
-      animation: pieceFloat 4s ease-in-out infinite;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.86em;
+      font-weight: 600;
     }
-    .featured-art-tag {
-      position: absolute;
-      left: 1rem; bottom: 1rem;
+
+    .note-strip {
+      display: flex; flex-wrap: wrap; gap: 0.55rem;
+      margin-top: 1.8rem;
+    }
+    .note-strip span {
       display: inline-flex; align-items: center; gap: 0.45rem;
-      padding: 0.4rem 0.8rem;
+      min-height: 2.4rem;
+      padding: 0.55rem 0.9rem;
       border: 1px solid var(--line-2);
       border-radius: var(--r-pill);
-      background: rgba(2, 17, 15, 0.55);
-      backdrop-filter: blur(12px);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.1em;
+      background: var(--surface-3);
+      backdrop-filter: blur(10px);
       color: var(--ink-2);
-      text-transform: uppercase;
-    }
-    .featured-art-tag i { color: var(--mint); }
-
-    .card-badge {
-      align-self: flex-start;
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      min-height: 2.2rem;
-      border: 1px solid var(--line-bright);
-      border-radius: var(--r-pill);
-      padding: 0.4rem 0.85rem;
-      background: rgba(45, 212, 191, 0.1);
-      color: var(--ink);
       font-family: "JetBrains Mono", monospace;
-      font-size: 0.72rem;
+      font-size: 0.74rem;
       font-weight: 600;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
     }
-    .card-badge i { color: var(--mint); }
+    .note-strip i { color: var(--mint); }
 
-    /* =========================================================
-       Games grid (2x2 with rich tile art)
-       ========================================================= */
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1.25rem;
-    }
-
-    .game-card {
+    /* Tutorial aside */
+    .guide-side {
       position: relative;
-      display: flex;
-      flex-direction: column;
-      min-height: 22rem;
-      overflow: hidden;
+      align-self: stretch;
+      display: flex; flex-direction: column;
+      padding: 1.5rem;
       border: 1px solid var(--line);
       border-radius: var(--r);
-      background: linear-gradient(160deg, rgba(8, 47, 45, 0.78), rgba(6, 33, 31, 0.7));
-      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.04);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      color: var(--ink);
-      text-decoration: none;
-      transition: border-color 240ms var(--e-out), box-shadow 240ms var(--e-out), transform 240ms var(--e-out);
-      transform-style: preserve-3d;
-      will-change: transform;
+      background:
+        radial-gradient(circle at 80% 0%, rgba(255, 79, 216, 0.16), transparent 55%),
+        linear-gradient(160deg, rgba(8, 47, 45, 0.82), rgba(6, 33, 31, 0.74));
+      overflow: hidden;
     }
-    .game-card::before {
-      content: "";
-      position: absolute; inset: 0;
-      background: radial-gradient(280px 220px at var(--mx, 50%) var(--my, 50%), rgba(45, 212, 191, 0.18), transparent 60%);
-      opacity: 0;
-      transition: opacity 320ms var(--e-out);
-      pointer-events: none;
-      z-index: 2;
-    }
-    .game-card::after {
+    .guide-side::after {
       content: "";
       position: absolute; inset: 0;
       border-radius: inherit;
       padding: 1px;
-      background: linear-gradient(135deg, rgba(6,182,212,0), rgba(45,212,191,0.58), rgba(16,185,129,0.5), rgba(6,182,212,0));
+      background: linear-gradient(135deg, rgba(255, 79, 216, 0.0), rgba(45, 212, 191, 0.45), rgba(16, 185, 129, 0.35), rgba(255, 79, 216, 0.0));
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor; mask-composite: exclude;
-      opacity: 0;
-      transition: opacity 320ms var(--e-out);
-      pointer-events: none;
-      z-index: 2;
-    }
-    .game-card:hover, .game-card:focus-visible {
-      border-color: var(--line-2);
-      box-shadow:
-        0 30px 80px rgba(6, 182, 212, 0.16),
-        0 10px 30px rgba(16, 185, 129, 0.16),
-        inset 0 1px 0 rgba(255,255,255,0.05);
-      outline: none;
-    }
-    .game-card:hover::before,
-    .game-card:focus-visible::before,
-    .game-card.is-touched::before { opacity: 1; }
-    .game-card:hover::after,
-    .game-card:focus-visible::after,
-    .game-card.is-touched::after { opacity: 1; }
-    .game-card.is-touched {
-      transform: translateY(-5px) scale(0.985);
-    }
-
-    .tile-art {
-      position: relative;
-      height: 9rem;
-      overflow: hidden;
-      border-bottom: 1px solid var(--line);
-      background:
-        radial-gradient(circle at 50% 100%, rgba(45, 212, 191, 0.18), transparent 60%),
-        linear-gradient(180deg, rgba(2, 17, 15, 0.6), rgba(6, 33, 31, 0.7));
-    }
-    .tile-art::after {
-      content: "";
-      position: absolute; inset: 0;
-      background: linear-gradient(180deg, transparent 50%, rgba(2, 17, 15, 0.65) 100%);
+      opacity: 0.4;
       pointer-events: none;
     }
-    .tile-art-grid {
-      position: absolute; inset: 0;
-      background-image:
-        linear-gradient(rgba(45, 212, 191, 0.08) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(45, 212, 191, 0.08) 1px, transparent 1px);
-      background-size: 28px 28px;
-      mask-image: linear-gradient(180deg, rgba(0,0,0,0.7), transparent);
-      -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0.7), transparent);
-    }
 
-    /* Snake serpentine trail */
-    .tile-art-snake .snake-trail {
-      position: absolute;
-      inset: 0;
-    }
-    .tile-art-snake .snake-trail span {
-      position: absolute;
-      width: 14px; height: 14px;
-      border-radius: 50%;
-      background: var(--mint);
-      box-shadow: 0 0 16px rgba(16, 185, 129, 0.85);
-      transform: translate(-50%, -50%);
-      animation: snakePulse 2.6s ease-in-out infinite;
-    }
-    .tile-art-snake .snake-trail span:nth-child(1)  { left: 10%; top: 60%; opacity: 0.55; }
-    .tile-art-snake .snake-trail span:nth-child(2)  { left: 18%; top: 50%; opacity: 0.65; animation-delay: 0.1s; }
-    .tile-art-snake .snake-trail span:nth-child(3)  { left: 26%; top: 42%; opacity: 0.7;  animation-delay: 0.2s; }
-    .tile-art-snake .snake-trail span:nth-child(4)  { left: 34%; top: 40%; opacity: 0.78; animation-delay: 0.3s; }
-    .tile-art-snake .snake-trail span:nth-child(5)  { left: 42%; top: 46%; opacity: 0.82; animation-delay: 0.4s; }
-    .tile-art-snake .snake-trail span:nth-child(6)  { left: 50%; top: 56%; opacity: 0.85; animation-delay: 0.5s; }
-    .tile-art-snake .snake-trail span:nth-child(7)  { left: 58%; top: 62%; opacity: 0.88; animation-delay: 0.6s; }
-    .tile-art-snake .snake-trail span:nth-child(8)  { left: 66%; top: 56%; opacity: 0.92; animation-delay: 0.7s; }
-    .tile-art-snake .snake-trail span:nth-child(9)  { left: 74%; top: 46%; opacity: 0.96; animation-delay: 0.8s; }
-    .tile-art-snake .snake-trail span:nth-child(10) {
-      left: 82%; top: 38%; opacity: 1;
-      width: 18px; height: 18px;
-      animation-delay: 0.9s;
-      box-shadow: 0 0 24px rgba(16, 185, 129, 1);
-    }
-    @keyframes snakePulse {
-      0%,100% { transform: translate(-50%, -50%) scale(0.85); }
-      50%     { transform: translate(-50%, -50%) scale(1); }
-    }
-
-    /* Tic Tac Toe 3x3 */
-    .tile-art-tic .tic-board {
-      position: absolute;
-      inset: 1.2rem;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-      gap: 6px;
-    }
-    .tile-art-tic .tic-board span {
-      display: inline-flex;
-      align-items: center; justify-content: center;
-      border: 1px solid rgba(45, 212, 191, 0.2);
-      border-radius: 8px;
-      background: rgba(8, 47, 45, 0.5);
-      font-family: "Space Grotesk", sans-serif;
-      font-weight: 700;
-      font-size: 1.4rem;
-      color: var(--cyan);
-    }
-    .tile-art-tic .tic-board span.x {
-      color: var(--cyan);
-      box-shadow: inset 0 0 18px rgba(6, 182, 212, 0.35);
-      text-shadow: 0 0 12px rgba(6, 182, 212, 0.85);
-    }
-    .tile-art-tic .tic-board span.o {
+    .side-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 3rem; height: 3rem;
+      border: 1px solid var(--line-bright);
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(45, 212, 191, 0.16));
       color: var(--mint);
-      box-shadow: inset 0 0 18px rgba(16, 185, 129, 0.32);
-      text-shadow: 0 0 12px rgba(16, 185, 129, 0.85);
+      font-size: 1.15rem;
+      box-shadow: 0 0 26px rgba(16, 185, 129, 0.3), inset 0 1px 0 rgba(255,255,255,0.06);
     }
-
-    /* Neon Gravity orbital rings */
-    .tile-art-gravity .orbit-rings {
-      position: absolute;
-      left: 50%; top: 50%;
-      transform: translate(-50%, -50%);
-      width: 14rem; height: 14rem;
-    }
-    .tile-art-gravity .orbit-rings span {
-      position: absolute;
-      left: 50%; top: 50%;
-      transform: translate(-50%, -50%);
-      border: 1px solid rgba(45, 212, 191, 0.32);
-      border-radius: 50%;
-    }
-    .tile-art-gravity .orbit-rings span:nth-child(1) { width: 100%; height: 100%; border-color: rgba(6, 182, 212, 0.32); }
-    .tile-art-gravity .orbit-rings span:nth-child(2) { width: 70%;  height: 70%;  border-color: rgba(45, 212, 191, 0.42); border-style: dashed; }
-    .tile-art-gravity .orbit-rings span:nth-child(3) { width: 42%;  height: 42%;  border-color: rgba(16, 185, 129, 0.5); }
-    .tile-art-gravity .orbit-rings .planet {
-      width: 18px; height: 18px; border: 0;
-      background: var(--grad);
-      box-shadow: 0 0 22px rgba(45, 212, 191, 0.85);
-      offset-path: circle(45px at center);
-      animation: planetSpin 4.8s linear infinite;
-    }
-    @supports not (offset-path: circle(0)) {
-      .tile-art-gravity .orbit-rings .planet {
-        animation: planetFallback 4.8s linear infinite;
-        transform-origin: 0 0;
-      }
-    }
-    @keyframes planetSpin { to { offset-distance: 100%; } }
-    @keyframes planetFallback {
-      from { transform: translate(-50%, -50%) rotate(0deg) translateX(45px); }
-      to   { transform: translate(-50%, -50%) rotate(360deg) translateX(45px); }
-    }
-
-    /* Neon Stack beveled stack */
-    .tile-art-stack .stack-blocks {
-      position: absolute;
-      left: 50%; bottom: 0.7rem;
-      transform: translateX(-50%);
-      display: flex; flex-direction: column;
-      gap: 4px;
-      width: 60%;
-    }
-    .tile-art-stack .stack-blocks span {
-      display: block;
-      height: 14px;
-      border-radius: 4px;
-      background: linear-gradient(90deg, rgba(45, 212, 191, 0.2), rgba(6, 182, 212, 0.45));
-      border: 1px solid rgba(45, 212, 191, 0.5);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.08);
-      animation: stackRise 3.6s var(--e-out) infinite;
-    }
-    .tile-art-stack .stack-blocks span:nth-child(1) { width: 100%; animation-delay: 0s; }
-    .tile-art-stack .stack-blocks span:nth-child(2) { width: 92%;  align-self: center; animation-delay: 0.1s; }
-    .tile-art-stack .stack-blocks span:nth-child(3) { width: 85%;  align-self: flex-start; animation-delay: 0.2s; }
-    .tile-art-stack .stack-blocks span:nth-child(4) { width: 78%;  align-self: flex-end; animation-delay: 0.3s; background: linear-gradient(90deg, rgba(16, 185, 129, 0.35), rgba(45, 212, 191, 0.5)); }
-    .tile-art-stack .stack-blocks span:nth-child(5) { width: 70%;  align-self: center; animation-delay: 0.4s; }
-    .tile-art-stack .stack-blocks span:nth-child(6) {
-      width: 60%; align-self: center;
-      animation-delay: 0.5s;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4), 0 0 22px rgba(45, 212, 191, 0.45), inset 0 1px 0 rgba(255,255,255,0.12);
-      background: var(--grad);
-      border-color: rgba(255,255,255,0.2);
-    }
-    @keyframes stackRise {
-      0%,100% { transform: translateY(0); opacity: 1; }
-      50%     { transform: translateY(-2px); opacity: 0.94; }
-    }
-
-    .tile-meta {
-      position: absolute;
-      left: 1rem; top: 1rem;
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.32rem 0.7rem;
+    .side-pill {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      width: fit-content;
+      margin-top: 1.05rem;
+      padding: 0.35rem 0.75rem;
       border: 1px solid var(--line-2);
       border-radius: var(--r-pill);
-      background: rgba(2, 17, 15, 0.5);
-      backdrop-filter: blur(12px);
+      background: rgba(2, 17, 15, 0.45);
       font-family: "JetBrains Mono", monospace;
       font-size: 0.66rem;
       letter-spacing: 0.1em;
       color: var(--ink-2);
       text-transform: uppercase;
     }
-    .tile-meta .meta-num { color: var(--teal); }
-    .tile-meta .meta-tag { color: var(--ink); }
-    .tile-meta::before {
-      content: "";
-      width: 4px; height: 4px;
-      border-radius: 50%;
-      background: var(--teal);
-      box-shadow: 0 0 8px rgba(45, 212, 191, 0.85);
-    }
+    .side-pill i { color: var(--teal); font-size: 0.65rem; }
 
-    .game-body {
-      display: flex; flex-direction: column;
-      flex: 1;
-      padding: 1.4rem 1.4rem 1.5rem;
-      gap: 0.55rem;
-      position: relative;
-      z-index: 1;
-    }
-    .game-card h3 {
-      margin: 0;
-      font-size: 1.45rem;
+    .guide-side h3 {
+      margin: 1rem 0 0.75rem;
+      font-size: clamp(1.35rem, 2.2vw, 1.6rem);
       line-height: 1.15;
       font-weight: 600;
       letter-spacing: -0.02em;
     }
-    .game-card p {
+    .guide-side p {
       margin: 0;
       color: var(--ink-2);
-      font-size: 0.96rem;
-      line-height: 1.65;
+      line-height: 1.7;
+      font-size: 0.98rem;
     }
 
-    .play-btn {
-      align-self: flex-start;
-      margin-top: auto;
-      padding-top: 1.1rem;
-      gap: 0.5rem;
-      color: var(--teal);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      transition: color 220ms, gap 220ms;
-      min-height: 0;
-    }
-    .play-btn i { transition: transform 260ms var(--e-out); }
-    .game-card:hover .play-btn,
-    .game-card:focus-visible .play-btn {
-      color: var(--ink);
+    .guide-actions {
+      display: grid;
       gap: 0.7rem;
+      margin-top: 1.4rem;
     }
-    .game-card:hover .play-btn i,
-    .game-card:focus-visible .play-btn i {
-      transform: translate(3px, -3px);
+    .guide-link {
+      justify-content: flex-start;
+      min-height: 3.05rem;
+      gap: 0.7rem;
+      padding: 0.85rem 1.05rem;
+      border-color: var(--line);
+      border-radius: var(--r-sm);
+      background: rgba(2, 17, 15, 0.45);
+      color: var(--ink);
+      font-size: 0.9rem;
+      font-weight: 700;
+      backdrop-filter: blur(12px);
     }
-
-    /* Per-card icon accents */
-    .snake-card   .play-btn { color: var(--mint); }
-    .tic-card     .play-btn { color: var(--cyan); }
-    .gravity-card .play-btn { color: var(--teal); }
-    .stack-card   .play-btn { color: var(--mint); }
+    .guide-link i {
+      width: 1.2rem;
+      color: var(--teal);
+      font-size: 1rem;
+      text-align: center;
+    }
+    .guide-link:hover {
+      border-color: var(--line-bright);
+      background: rgba(45, 212, 191, 0.1);
+      color: #fff;
+    }
+    .guide-link.is-youtube {
+      border-color: rgba(255, 79, 216, 0.34);
+      background:
+        linear-gradient(135deg, rgba(255, 79, 216, 0.20), rgba(45, 212, 191, 0.10)),
+        rgba(8, 47, 45, 0.6);
+      box-shadow: 0 12px 30px rgba(255, 79, 216, 0.16);
+    }
+    .guide-link.is-youtube i { color: #ff4fd8; }
+    .guide-link.is-youtube:hover {
+      border-color: rgba(255, 79, 216, 0.6);
+      background:
+        linear-gradient(135deg, rgba(255, 79, 216, 0.28), rgba(45, 212, 191, 0.14)),
+        rgba(8, 47, 45, 0.66);
+      color: #fff;
+    }
 
     /* =========================================================
        Marquee
@@ -1238,10 +1169,10 @@
       width: max-content;
       font-family: "Space Grotesk", sans-serif;
       font-weight: 600;
-      font-size: clamp(1.1rem, 2.4vw, 1.5rem);
+      font-size: clamp(1.05rem, 2.2vw, 1.4rem);
       letter-spacing: -0.01em;
       color: var(--ink);
-      animation: marqueeRoll 40s linear infinite;
+      animation: marqueeRoll 42s linear infinite;
     }
     .marquee:hover { animation-play-state: paused; }
     .marquee span { display: inline-flex; align-items: center; gap: 0.6rem; white-space: nowrap; }
@@ -1376,12 +1307,9 @@
         padding-top: 7rem;
       }
       .hero-visual { min-height: 22rem; order: -1; }
-      .stage { width: min(82vw, 22rem); }
+      .hero-panel { width: min(38rem, 100%); }
 
-      .featured-card { grid-template-columns: 1fr; }
-      .featured-art { min-height: 11rem; }
-
-      .games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .guide-card-inner { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 760px) {
@@ -1428,12 +1356,9 @@
       .hero-grid { min-height: auto; padding-bottom: 2.5rem; }
       .hero-actions { align-items: stretch; }
       .btn { flex: 1 1 calc(50% - 0.45rem); min-width: 0; padding-inline: 0.85rem; }
+      .icon-link { flex: 0 0 2.95rem; }
 
-      .featured-knight { width: 3.6rem; height: 3.6rem; font-size: 1.5rem; }
-
-      .games-grid { grid-template-columns: 1fr; }
-      .game-card { min-height: 18rem; }
-      .tile-art { height: 8rem; }
+      .hero-chip { display: none; }
 
       .closing-band { align-items: flex-start; flex-direction: column; }
       .site-footer { align-items: flex-start; flex-direction: column; }
@@ -1448,17 +1373,26 @@
       .hero-grid { padding-top: 5.8rem; }
 
       .hero-visual { min-height: 18rem; }
-      .stage-piece { width: 3.4rem; height: 3.4rem; font-size: 1.4rem; }
-      .hero-hud {
-        right: 0.35rem; bottom: 1rem;
-        max-width: calc(100% - 0.7rem);
-        font-size: 0.74rem;
-      }
+      .terminal-window { padding: 1rem; }
+      .code-line { padding: 0.75rem 0.85rem; font-size: 0.82rem; }
+
       .btn { flex-basis: 100%; }
 
       .section { padding-block: 3.6rem; }
-      .featured-card h3 { font-size: 1.55rem; }
-      .game-card h3 { font-size: 1.3rem; }
+      .guide-main h3.guide-title { font-size: 1.7rem; }
+
+      .step-list::before { left: 1.15rem; }
+      .step-list li {
+        grid-template-columns: 2.3rem minmax(0, 1fr);
+        gap: 0.75rem;
+        padding: 0.85rem 0.9rem;
+      }
+      .step-list li::before {
+        width: 2.3rem; height: 2.3rem;
+        font-size: 0.74rem;
+      }
+
+      .note-strip span { flex: 1 1 auto; justify-content: center; }
 
       .back-top { width: 2.7rem; height: 2.7rem; right: 0.85rem; bottom: 0.85rem; }
     }
@@ -1484,7 +1418,7 @@
     <div class="cursor-ring"></div>
   </div>
 
-  <a class="skip-link" href="#games">Skip to games</a>
+  <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header" id="siteHeader">
     <nav class="nav-shell" aria-label="Primary navigation">
@@ -1492,7 +1426,7 @@
         <span class="brand-orbit" aria-hidden="true"></span>
         <span class="brand-meta">
           <span class="brand-name">Halfan Hossen Habib</span>
-          <span class="brand-role">Games Hub</span>
+          <span class="brand-role">Tricks &amp; Tips</span>
         </span>
       </a>
 
@@ -1504,8 +1438,8 @@
 
       <div class="nav-menu" id="navMenu">
         <a href="https://halfanhossenhabib.github.io/mysite/" data-magnetic><span class="nav-num" aria-hidden="true">01</span><span>Home</span></a>
-        <a class="is-active" href="#games" aria-current="page" data-magnetic><span class="nav-num" aria-hidden="true">02</span><span>Games</span></a>
-        <a href="https://halfanhossenhabib.github.io/mysite/#contact" data-magnetic><span class="nav-num" aria-hidden="true">03</span><span>Contact</span></a>
+        <a href="#guide" data-magnetic><span class="nav-num" aria-hidden="true">02</span><span>Guide</span></a>
+        <a href="#tutorial" data-magnetic><span class="nav-num" aria-hidden="true">03</span><span>Tutorial</span></a>
       </div>
 
       <div class="nav-status" aria-hidden="true">
@@ -1523,184 +1457,230 @@
         <div class="hero-copy reveal">
           <span class="hero-eyebrow">
             <span class="hero-eyebrow-dot" aria-hidden="true"></span>
-            Games Hub
+            Tricks / Tips
           </span>
-          <h1 class="hero-title" id="heroTitle" aria-label="Games Hub.">
-            <span class="line"><span class="word">Games</span></span>
-            <span class="line"><span class="word grad-text">Hub</span><span class="punct" aria-hidden="true"></span></span>
+          <h1 class="hero-title" id="heroTitle" aria-label="Tricks & Tips.">
+            <span class="line"><span class="word">Tricks</span></span>
+            <span class="line"><span class="word amp">&amp;</span><span class="word grad-text">Tips</span><span class="punct" aria-hidden="true"></span></span>
           </h1>
           <p class="hero-subtitle">
             <span class="hero-subtitle-mark" aria-hidden="true"></span>
-            Playful web games and creative experiments
+            Simple tech tricks I actually use while learning and building.
           </p>
           <p class="hero-text">
-            Welcome to my playful corner for web games, small experiments, and arcade-style ideas built with HTML, CSS, and JavaScript.
+            A small learner-friendly guide space for useful web experiments, clean steps, and ideas worth trying in real projects.
           </p>
 
-          <div class="hero-actions" aria-label="Games Hub actions">
-            <a class="btn btn-primary" href="#games" data-magnetic>
-              <i class="fa-solid fa-gamepad" aria-hidden="true"></i>
-              <span>Explore Games</span>
+          <div class="hero-actions" aria-label="Hero actions">
+            <a class="btn btn-primary" href="#guide" data-magnetic>
+              <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+              <span>Explore Guide</span>
             </a>
             <a class="btn btn-ghost" href="https://halfanhossenhabib.github.io/mysite/" data-magnetic>
               <i class="fa-solid fa-house" aria-hidden="true"></i>
               <span>Home</span>
             </a>
+            <a class="icon-link" href="https://www.youtube.com/watch?v=EXfFBEuCAr0" target="_blank" rel="noopener noreferrer" aria-label="Watch tutorial on YouTube" data-magnetic>
+              <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+            </a>
           </div>
         </div>
 
-        <div class="hero-visual reveal" aria-hidden="true">
-          <div class="stage">
-            <div class="stage-floor">
-              <span class="stage-scan"></span>
-              <span class="stage-piece piece-chess"><i class="fa-solid fa-chess-knight"></i></span>
-              <span class="stage-piece piece-snake"><i class="fa-solid fa-worm"></i></span>
-              <span class="stage-piece piece-grid"><i class="fa-solid fa-border-all"></i></span>
-              <span class="stage-piece piece-bolt"><i class="fa-solid fa-bolt"></i></span>
-              <span class="stage-piece piece-stack"><i class="fa-solid fa-layer-group"></i></span>
+        <div class="hero-visual reveal" aria-label="Publishing preview">
+          <div class="hero-panel tilt-card">
+            <div class="hero-panel-grid" aria-hidden="true"></div>
+            <span class="hero-panel-scan" aria-hidden="true"></span>
+
+            <div class="terminal-window">
+              <div class="terminal-topbar">
+                <div class="window-controls" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <p class="terminal-label"><span class="dot" aria-hidden="true"></span>github-pages.deploy</p>
+              </div>
+
+              <div class="terminal-body">
+                <div class="code-line">
+                  <span class="step-dot" aria-hidden="true">01</span>
+                  <i class="fa-regular fa-file-code" aria-hidden="true"></i>
+                  <span>Create <strong>index.html</strong></span>
+                </div>
+                <div class="code-line">
+                  <span class="step-dot" aria-hidden="true">02</span>
+                  <i class="fa-brands fa-github" aria-hidden="true"></i>
+                  <span>Upload to a public repo</span>
+                </div>
+                <div class="code-line">
+                  <span class="step-dot" aria-hidden="true">03</span>
+                  <i class="fa-solid fa-rocket" aria-hidden="true"></i>
+                  <span>Turn on Pages and launch</span>
+                </div>
+              </div>
+
+              <span class="publish-badge">
+                <i class="fa-solid fa-check" aria-hidden="true"></i>
+                Free website live
+              </span>
             </div>
           </div>
-          <div class="hero-hud">
-            <i class="fa-solid fa-bolt" aria-hidden="true"></i>
-            <span>5 games queued</span>
-          </div>
+
+          <span class="hero-chip hero-chip-1" aria-hidden="true">
+            <i class="fa-solid fa-bolt"></i> HTML / CSS / JS
+          </span>
+          <span class="hero-chip hero-chip-2" aria-hidden="true">
+            <i class="fa-solid fa-globe"></i> Free public link
+          </span>
         </div>
       </div>
     </section>
 
-    <section class="section games-section" id="games">
+    <section class="section guide-section" id="guide">
       <div class="section-heading reveal">
         <div class="eyebrow-row">
           <span class="section-num" aria-hidden="true">01 /</span>
-          <p class="eyebrow">Playground</p>
+          <p class="eyebrow">Featured Trick</p>
         </div>
-        <h2>Experiments <span class="grad-text">worth playing.</span></h2>
-        <p>Pick a game, jump in fast, and come back anytime for the next small creative build.</p>
+        <h2>Host Free Website <span class="grad-text">on GitHub.</span></h2>
+        <p>
+          A simple path from one HTML file to a public website, using GitHub Pages and the same curious build-and-learn energy as the main portfolio.
+        </p>
 
         <div class="chip-strip" aria-hidden="true">
-          <span class="chip"><i class="fa-solid fa-circle"></i> Arcade</span>
-          <span class="chip"><i class="fa-solid fa-circle"></i> Strategy</span>
-          <span class="chip"><i class="fa-solid fa-circle"></i> Action</span>
-          <span class="chip"><i class="fa-solid fa-circle"></i> Skill</span>
+          <span class="chip"><i class="fa-solid fa-circle"></i> Beginner</span>
+          <span class="chip"><i class="fa-solid fa-circle"></i> 9 Steps</span>
+          <span class="chip"><i class="fa-solid fa-circle"></i> ~5 min</span>
+          <span class="chip"><i class="fa-solid fa-circle"></i> Free</span>
         </div>
       </div>
 
-      <a href="https://halfanhossenhabib.github.io/chess/" class="featured-card reveal" target="_blank" rel="noopener noreferrer" data-magnetic>
-        <div class="featured-info">
-          <span class="card-badge"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Powered by Lovable AI</span>
-          <span class="game-icon"><i class="fa-solid fa-chess-knight" aria-hidden="true"></i></span>
-          <h3>Chess Mastery (Powered by Lovable AI)</h3>
-          <p>Think ahead, protect your pieces, and make every move count in the highlighted strategy pick.</p>
-          <span class="play-btn featured-cta">
-            <span>Play Now</span>
-            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
-          </span>
+      <article class="guide-card tilt-card reveal">
+        <div class="guide-card-inner">
+          <div class="guide-main">
+            <p class="guide-kicker">
+              <span class="kicker-icon"><i class="fa-brands fa-github" aria-hidden="true"></i></span>
+              GitHub Pages guide
+            </p>
+            <h3 class="guide-title">Build it, upload it, <span class="grad-text">publish it.</span></h3>
+            <p class="guide-summary">
+              Start with a tiny HTML file, place it in a public GitHub repository, then let GitHub Pages turn it into a real link you can share.
+            </p>
+
+            <ol class="step-list">
+              <li>
+                <div class="step-copy">
+                  <strong>Create a file</strong>
+                  <span>Open Notepad or VS Code and write your HTML code. Use ChatGPT if you need help shaping the first draft.</span>
+                </div>
+              </li>
+              <li>
+                <div class="step-copy">
+                  <strong>Save it</strong>
+                  <span>Name the file <span class="inline-code">index.html</span> so GitHub Pages knows what to open first.</span>
+                </div>
+              </li>
+              <li>
+                <div class="step-copy">
+                  <strong>Create your GitHub account</strong>
+                  <span>Go to github.com and sign in or create a new account.</span>
+                </div>
+              </li>
+              <li>
+                <div class="step-copy">
+                  <strong>Make a public repository</strong>
+                  <span>Create a new repository, give it a clear name, and set it to Public.</span>
+                </div>
+              </li>
+              <li>
+                <div class="step-copy">
+                  <strong>Upload your site file</strong>
+                  <span>Choose &ldquo;Upload an existing file&rdquo; and drag your <span class="inline-code">index.html</span> into the repository.</span>
+                </div>
+              </li>
+              <li>
+                <div class="step-copy">
+                  <strong>Commit the change</strong>
+                  <span>Click &ldquo;Commit changes&rdquo; so the file is saved into the repo.</span>
+                </div>
+              </li>
+              <li>
+                <div class="step-copy">
+                  <strong>Open Pages settings</strong>
+                  <span>Go to Settings, then Pages from the left sidebar.</span>
+                </div>
+              </li>
+              <li>
+                <div class="step-copy">
+                  <strong>Deploy from main</strong>
+                  <span>Change Branch from None to Main, then click Save.</span>
+                </div>
+              </li>
+              <li>
+                <div class="step-copy">
+                  <strong>Wait for the link</strong>
+                  <span>Give it 1-2 minutes. Your website link will appear near the top of the Pages screen.</span>
+                </div>
+              </li>
+            </ol>
+
+            <div class="note-strip" aria-label="Guide highlights">
+              <span><i class="fa-solid fa-bolt" aria-hidden="true"></i> Beginner friendly</span>
+              <span><i class="fa-solid fa-code" aria-hidden="true"></i> One HTML file</span>
+              <span><i class="fa-solid fa-globe" aria-hidden="true"></i> Free public link</span>
+            </div>
+          </div>
+
+          <aside class="guide-side" id="tutorial" aria-label="Tutorial link">
+            <span class="side-icon">
+              <i class="fa-solid fa-play" aria-hidden="true"></i>
+            </span>
+            <span class="side-pill"><i class="fa-solid fa-circle"></i> Video walkthrough</span>
+            <h3>Need a walkthrough?</h3>
+            <p>
+              NetworkChuck explains the GitHub Pages flow on YouTube if you want to watch each step happen on screen.
+            </p>
+
+            <div class="guide-actions">
+              <a class="guide-link is-youtube" href="https://www.youtube.com/watch?v=EXfFBEuCAr0" target="_blank" rel="noopener noreferrer" data-magnetic>
+                <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+                <span>Watch Tutorial</span>
+              </a>
+              <a class="guide-link" href="https://halfanhossenhabib.github.io/mysite/" data-magnetic>
+                <i class="fa-solid fa-house" aria-hidden="true"></i>
+                <span>Back Home</span>
+              </a>
+            </div>
+          </aside>
         </div>
-        <div class="featured-art" aria-hidden="true">
-          <div class="chessboard">
-            <span></span><span class="dark"></span><span></span><span class="dark"></span><span></span><span class="dark"></span><span></span><span class="dark"></span>
-            <span class="dark"></span><span></span><span class="dark"></span><span></span><span class="dark glow"></span><span></span><span class="dark"></span><span></span>
-            <span></span><span class="dark"></span><span></span><span class="dark"></span><span></span><span class="dark"></span><span></span><span class="dark"></span>
-            <span class="dark"></span><span></span><span class="dark"></span><span></span><span class="dark"></span><span></span><span class="dark"></span><span></span>
-            <span></span><span class="dark"></span><span></span><span class="dark"></span><span></span><span class="dark"></span><span></span><span class="dark"></span>
-            <span class="dark"></span><span></span><span class="dark"></span><span></span><span class="dark"></span><span></span><span class="dark"></span><span></span>
-            <span></span><span class="dark"></span><span></span><span class="dark"></span><span></span><span class="dark"></span><span></span><span class="dark"></span>
-            <span class="dark"></span><span></span><span class="dark"></span><span></span><span class="dark"></span><span></span><span class="dark"></span><span></span>
-          </div>
-          <span class="featured-knight"><i class="fa-solid fa-chess-knight"></i></span>
-        </div>
-      </a>
-
-      <div class="games-grid">
-        <a href="https://halfanhossenhabib.github.io/snakegame/" class="game-card snake-card reveal" target="_blank" rel="noopener noreferrer" data-magnetic>
-          <div class="tile-art tile-art-snake" aria-hidden="true">
-            <div class="tile-art-grid"></div>
-            <div class="snake-trail">
-              <span></span><span></span><span></span><span></span><span></span>
-              <span></span><span></span><span></span><span></span><span></span>
-            </div>
-            <span class="tile-meta"><span class="meta-num">02</span><span class="meta-tag">Arcade</span></span>
-          </div>
-          <div class="game-body">
-            <h3>Snake Game</h3>
-            <p>Guide the classic growing snake, collect points, and stay sharp as the board gets tighter.</p>
-            <span class="play-btn">Play Now <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
-          </div>
-        </a>
-
-        <a href="https://halfanhossenhabib.github.io/tic-tac-toe/" class="game-card tic-card reveal" target="_blank" rel="noopener noreferrer" data-magnetic>
-          <div class="tile-art tile-art-tic" aria-hidden="true">
-            <div class="tile-art-grid"></div>
-            <div class="tic-board">
-              <span class="x">X</span><span></span><span class="o">O</span>
-              <span></span><span class="x">X</span><span></span>
-              <span class="o">O</span><span></span><span class="x">X</span>
-            </div>
-            <span class="tile-meta"><span class="meta-num">03</span><span class="meta-tag">Strategy</span></span>
-          </div>
-          <div class="game-body">
-            <h3>Tic Tac Toe</h3>
-            <p>A quick strategy duel with clean moves, instant rounds, and familiar grid logic.</p>
-            <span class="play-btn">Play Now <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
-          </div>
-        </a>
-
-        <a href="https://halfanhossenhabib.github.io/neongravity/" class="game-card gravity-card reveal" target="_blank" rel="noopener noreferrer" data-magnetic>
-          <div class="tile-art tile-art-gravity" aria-hidden="true">
-            <div class="tile-art-grid"></div>
-            <div class="orbit-rings">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span class="planet"></span>
-            </div>
-            <span class="tile-meta"><span class="meta-num">04</span><span class="meta-tag">Action</span></span>
-          </div>
-          <div class="game-body">
-            <h3>Neon Gravity</h3>
-            <p>Dodge, jump, and ride a glowing gravity challenge with playful arcade energy.</p>
-            <span class="play-btn">Play Now <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
-          </div>
-        </a>
-
-        <a href="https://halfanhossenhabib.github.io/neonstack/" class="game-card stack-card reveal" target="_blank" rel="noopener noreferrer" data-magnetic>
-          <div class="tile-art tile-art-stack" aria-hidden="true">
-            <div class="tile-art-grid"></div>
-            <div class="stack-blocks">
-              <span></span><span></span><span></span><span></span><span></span><span></span>
-            </div>
-            <span class="tile-meta"><span class="meta-num">05</span><span class="meta-tag">Skill</span></span>
-          </div>
-          <div class="game-body">
-            <h3>Neon Stack</h3>
-            <p>Stack glowing blocks with timing, precision, and a little bit of neon confidence.</p>
-            <span class="play-btn">Play Now <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
-          </div>
-        </a>
-      </div>
+      </article>
     </section>
 
     <section class="marquee-section" aria-hidden="true">
       <div class="marquee" id="marquee">
-        <span>Chess Mastery <span class="tag">Featured</span></span>
+        <span>Build <span class="tag">Step 01</span></span>
         <span class="dot">&#9679;</span>
-        <span>Snake Game <span class="tag">Arcade</span></span>
+        <span>Save <span class="tag">index.html</span></span>
         <span class="dot">&#9679;</span>
-        <span>Tic Tac Toe <span class="tag">Strategy</span></span>
+        <span>Upload <span class="tag">Public Repo</span></span>
         <span class="dot">&#9679;</span>
-        <span>Neon Gravity <span class="tag">Action</span></span>
+        <span>Commit <span class="tag">Save Changes</span></span>
         <span class="dot">&#9679;</span>
-        <span>Neon Stack <span class="tag">Skill</span></span>
+        <span>Pages <span class="tag">Deploy</span></span>
         <span class="dot">&#9679;</span>
-        <span>Chess Mastery <span class="tag">Featured</span></span>
+        <span>Launch <span class="tag">Free Public Link</span></span>
         <span class="dot">&#9679;</span>
-        <span>Snake Game <span class="tag">Arcade</span></span>
+        <span>Build <span class="tag">Step 01</span></span>
         <span class="dot">&#9679;</span>
-        <span>Tic Tac Toe <span class="tag">Strategy</span></span>
+        <span>Save <span class="tag">index.html</span></span>
         <span class="dot">&#9679;</span>
-        <span>Neon Gravity <span class="tag">Action</span></span>
+        <span>Upload <span class="tag">Public Repo</span></span>
         <span class="dot">&#9679;</span>
-        <span>Neon Stack <span class="tag">Skill</span></span>
+        <span>Commit <span class="tag">Save Changes</span></span>
+        <span class="dot">&#9679;</span>
+        <span>Pages <span class="tag">Deploy</span></span>
+        <span class="dot">&#9679;</span>
+        <span>Launch <span class="tag">Free Public Link</span></span>
         <span class="dot">&#9679;</span>
       </div>
     </section>
@@ -1709,10 +1689,10 @@
       <div>
         <div class="eyebrow-row">
           <span class="section-num" aria-hidden="true">02 /</span>
-          <p class="eyebrow">Creative Web</p>
+          <p class="eyebrow">Build &amp; Learn</p>
         </div>
-        <h2>A playful extension of the <span class="grad-text">main portfolio.</span></h2>
-        <p>Same builder energy, same modern tech atmosphere, with a little extra game-night glow.</p>
+        <h2>A learner-friendly extension of the <span class="grad-text">main portfolio.</span></h2>
+        <p>Same builder energy, same modern tech atmosphere, with a little extra room to share useful tricks.</p>
       </div>
       <a class="btn btn-ghost" href="https://halfanhossenhabib.github.io/mysite/" data-magnetic>
         <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
@@ -1724,13 +1704,13 @@
   <footer class="site-footer">
     <p>&copy; 2026 Halfan Hossen Habib</p>
     <div class="footer-links" aria-label="Footer links">
-      <a href="https://halfanhossenhabib.github.io/mysite/" data-magnetic>
+      <a href="https://halfanhossenhabib.github.io/mysite/" aria-label="Home" data-magnetic>
         <i class="fa-solid fa-house" aria-hidden="true"></i>
         <span>Home</span>
       </a>
-      <a href="https://halfanhossenhabib.github.io/mysite/#projects" data-magnetic>
-        <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
-        <span>Projects</span>
+      <a href="https://www.youtube.com/watch?v=EXfFBEuCAr0" target="_blank" rel="noopener noreferrer" aria-label="YouTube tutorial" data-magnetic>
+        <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+        <span>YouTube</span>
       </a>
     </div>
   </footer>
@@ -1741,7 +1721,7 @@
 
   <script>
     /* =========================================================
-       Games Hub - Midnight Lab interactions
+       Tricks & Tips - Midnight Lab interactions
        ========================================================= */
     const $  = (sel, root = document) => root.querySelector(sel);
     const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -1752,7 +1732,7 @@
     const navLinks      = $$(".nav-menu a");
     const heroTitle     = $("#heroTitle");
     const revealItems   = $$(".reveal");
-    const tiltCards     = $$(".game-card, .featured-card");
+    const tiltCards     = $$(".tilt-card");
     const magnetics     = $$("[data-magnetic]");
     const particleCanvas= $("#particleCanvas");
     const scrollProgress= $("#scrollProgress");
@@ -1784,6 +1764,27 @@
         menuToggle.setAttribute("aria-expanded", String(isOpen));
       });
       navLinks.forEach((link) => link.addEventListener("click", closeMenu));
+
+      // Active nav highlight for in-page sections
+      const sections = navLinks
+        .map((link) => {
+          const href = link.getAttribute("href");
+          return href && href.startsWith("#") ? document.querySelector(href) : null;
+        })
+        .filter(Boolean);
+
+      if (sections.length && "IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            navLinks.forEach((link) => {
+              const href = link.getAttribute("href");
+              link.classList.toggle("is-active", href === `#${entry.target.id}`);
+            });
+          });
+        }, { rootMargin: "-45% 0px -45% 0px" });
+        sections.forEach((section) => observer.observe(section));
+      }
     }
 
     /* ------------ Live clock ------------ */
@@ -1818,7 +1819,6 @@
         });
       }, { threshold: 0.16 });
       revealItems.forEach((item) => observer.observe(item));
-      // hero title reveal kicks in immediately after layout
       requestAnimationFrame(() => heroTitle && heroTitle.classList.add("is-in"));
     }
 
@@ -1833,7 +1833,7 @@
             const y = (event.clientY - rect.top) / rect.height - 0.5;
             card.style.setProperty("--mx", `${(x + 0.5) * 100}%`);
             card.style.setProperty("--my", `${(y + 0.5) * 100}%`);
-            card.style.transform = `perspective(900px) rotateX(${y * -5}deg) rotateY(${x * 7}deg) translateY(-4px)`;
+            card.style.transform = `perspective(900px) rotateX(${y * -4}deg) rotateY(${x * 6}deg) translateY(-3px)`;
           });
         }
         card.addEventListener("pointerdown", () => card.classList.add("is-touched"));
@@ -1884,7 +1884,7 @@
       };
       tick();
 
-      const hoverTargets = "a, button, [data-magnetic], .game-card, .featured-card";
+      const hoverTargets = "a, button, [data-magnetic], .guide-card, .hero-panel, .step-list li, .code-line";
       document.addEventListener("pointerover", (event) => {
         if (event.target.closest(hoverTargets)) cursor.classList.add("is-hover");
       });

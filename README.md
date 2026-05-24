@@ -1,22 +1,19 @@
-# Games Hub - Halfan Hossen Habib
+# Tricks & Tips - Halfan Hossen Habib
 
-A modern, single-page Games Hub for Halfan Hossen Habib's GitHub Pages site, restyled to match the "Midnight Lab" theme of the main portfolio at [halfanhossenhabib.github.io/mysite](https://halfanhossenhabib.github.io/mysite/).
+A modern, single-page Tricks & Tips site for Halfan Hossen Habib's GitHub Pages, restyled to match the "Midnight Lab" theme of the main portfolio at [halfanhossenhabib.github.io/mysite](https://halfanhossenhabib.github.io/mysite/) and the [Games Hub](https://halfanhossenhabib.github.io/mysite-games/) companion site.
 
-The page lists playful HTML / CSS / JavaScript games and links out to each one. It uses a deep teal/mint/cyan dark theme, glassmorphism cards, an animated dot-grid background, ambient particles, gradient text, smooth reveal-on-scroll, and tilt + spotlight game cards.
+The page collects simple, learner-friendly tech tricks and walks through publishing a free website with GitHub Pages, step by step. It uses a deep teal/mint/cyan dark theme, glassmorphism guide cards, an animated dot-grid background, ambient particles, gradient text, smooth reveal-on-scroll, and tilt + spotlight cards.
 
-## Featured Games
+## Featured Trick
 
-- [Chess Mastery (Powered by Lovable AI)](https://halfanhossenhabib.github.io/chess/)
-- [Snake Game](https://halfanhossenhabib.github.io/snakegame/)
-- [Tic Tac Toe](https://halfanhossenhabib.github.io/tic-tac-toe/)
-- [Neon Gravity](https://halfanhossenhabib.github.io/neongravity/)
-- [Neon Stack](https://halfanhossenhabib.github.io/neonstack/)
+- **Host Free Website on GitHub** - a 9-step beginner-friendly guide that takes you from a single `index.html` file to a public GitHub Pages link.
+- Companion video: [NetworkChuck on YouTube](https://www.youtube.com/watch?v=EXfFBEuCAr0).
 
 ## Technologies Used
 
 - HTML5
-- CSS3 (custom properties, glassmorphism, gradients, dot-grid background)
-- Vanilla JavaScript (IntersectionObserver, Canvas particles, tilt/spotlight cards)
+- CSS3 (custom properties, glassmorphism, gradients, dot-grid background, gradient-mask borders)
+- Vanilla JavaScript (IntersectionObserver, Canvas particles, tilt/spotlight cards, magnetic hover, custom cursor)
 - Font Awesome (icons)
 - Google Fonts (Inter, Space Grotesk, JetBrains Mono)
 - GitHub Pages
@@ -70,14 +67,13 @@ The site uses the Midnight Lab palette from the main portfolio:
 
 ## Accessibility
 
-- Semantic landmarks (`header`, `main`, `section`, `footer`).
-- Skip link to the games grid.
+- Semantic landmarks (`header`, `main`, `section`, `article`, `aside`, `footer`).
+- Skip link to the main content.
 - Visible 2px teal focus rings on all interactive elements.
-- ARIA labels on the navigation, mobile menu toggle, hero visual, and footer.
-- Honors `prefers-reduced-motion` (animations and transitions collapse to ~1ms).
+- ARIA labels on the navigation, mobile menu toggle, hero panel, tutorial aside, and footer.
+- Honors `prefers-reduced-motion` (animations and transitions collapse to ~1ms, hero title revealed immediately).
 
 ## External Links Preserved
 
 - Home (portfolio): `https://halfanhossenhabib.github.io/mysite/`
-- Projects: `https://halfanhossenhabib.github.io/mysite/#projects`
-- Contact: `https://halfanhossenhabib.github.io/mysite/#contact`
+- YouTube tutorial (NetworkChuck on GitHub Pages): `https://www.youtube.com/watch?v=EXfFBEuCAr0`
