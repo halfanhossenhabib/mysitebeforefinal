@@ -3,59 +3,103 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="Chess Mastery, a polished browser chess game with a strong Web Worker AI, multiple modes, chess clocks, PGN/FEN tools, and a mobile-first responsive design." />
-  <meta name="theme-color" content="#07111f" />
+  <meta name="description" content="Chess Mastery — a clean, fast, mobile-friendly browser chess game with a strong AI, multiple modes, chess clocks, and PGN/FEN tools." />
+  <meta name="theme-color" content="#262320" />
   <title>Chess Mastery</title>
 
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 
   <!-- chess.js loaded synchronously so window.Chess is ready before app.js runs -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
   <script src="js/app.js" defer></script>
 </head>
-<body data-theme="midnight" data-piece-style="classic">
+<body data-theme="wood" data-piece-style="classic">
   <a class="skip-link" href="#board">Skip to chess board</a>
 
   <!-- =========================================================
-       Top app bar
+       SVG piece library (hidden) — referenced via <use href="#pc-X" />
+       Each symbol is color-agnostic; CSS controls fill/stroke per side.
+       ========================================================= -->
+  <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
+    <defs>
+      <!-- Pawn -->
+      <symbol id="pc-p" viewBox="0 0 45 45">
+        <path d="M22.5 9 C19.46 9 17 11.46 17 14.5 C17 15.66 17.36 16.73 17.97 17.62 C15.36 18.93 13.5 21.71 13.5 25 C13.5 27.45 14.62 29.66 16.41 31.13 C13.4 32.97 11 36.18 11 40 V41 H34 V40 C34 36.18 31.6 32.97 28.59 31.13 C30.38 29.66 31.5 27.45 31.5 25 C31.5 21.71 29.64 18.93 27.03 17.62 C27.64 16.73 28 15.66 28 14.5 C28 11.46 25.54 9 22.5 9 Z M9.5 41 H35.5 V44 H9.5 Z" />
+      </symbol>
+
+      <!-- Rook -->
+      <symbol id="pc-r" viewBox="0 0 45 45">
+        <path d="M10 14 V9 H14 V12 H17 V9 H21 V12 H24 V9 H28 V12 H31 V9 H35 V14 Z M11 14 H34 V18 H11 Z M14 18 H31 V33 H14 Z M11 33 H34 V36 H11 Z M9 36 H36 V40 H9 Z M9.5 40 H35.5 V44 H9.5 Z" />
+      </symbol>
+
+      <!-- Bishop -->
+      <symbol id="pc-b" viewBox="0 0 45 45">
+        <circle cx="22.5" cy="9" r="2.2" />
+        <path d="M22.5 11 C18 11 15 14 15 19 C15 22 16 25 18 27 C16 28 14 29 14 31 H31 C31 29 29 28 27 27 C29 25 30 22 30 19 C30 14 27 11 22.5 11 Z" />
+        <path d="M14 31 H31 V34 H14 Z M12 34 H33 V37 C33 38 32 38 30 38 H15 C13 38 12 38 12 37 Z M9 38 H36 V41 H9 Z M9.5 41 H35.5 V44 H9.5 Z" />
+        <line x1="22.5" y1="14" x2="22.5" y2="22" stroke-width="1.2" stroke-linecap="round" />
+      </symbol>
+
+      <!-- Knight -->
+      <symbol id="pc-n" viewBox="0 0 45 45">
+        <path d="M22 10 C18.5 10 15 12 13 15 C11.5 17 11 19.5 12 22 C10 24 9 26.5 9 29 C9 31 9.5 33 11 34 V36 H34 V34 C34 30 33 26 31 22 C30 20 30.5 18 32 16 C33 14 32 12 30 11 C28 10 26 11 25 12 C24 11 23 10 22 10 Z M19 16 C19.6 16 20 16.4 20 17 C20 17.6 19.6 18 19 18 C18.4 18 18 17.6 18 17 C18 16.4 18.4 16 19 16 Z M11 36 H34 V40 H11 Z M9.5 40 H35.5 V44 H9.5 Z" />
+      </symbol>
+
+      <!-- Queen -->
+      <symbol id="pc-q" viewBox="0 0 45 45">
+        <circle cx="9" cy="11" r="2.2" />
+        <circle cx="16" cy="9" r="2.2" />
+        <circle cx="22.5" cy="8" r="2.4" />
+        <circle cx="29" cy="9" r="2.2" />
+        <circle cx="36" cy="11" r="2.2" />
+        <path d="M9 13 L13 22 L11 26 H34 L32 22 L36 13 L33 14 L30 18 L28 13 L25 16 L22.5 11 L20 16 L17 13 L15 18 L12 14 Z" />
+        <path d="M11 26 H34 V30 H11 Z M11 30 C11 33 14 36 22.5 36 C31 36 34 33 34 30 V35 H11 Z M10 36 H35 V40 H10 Z M9.5 40 H35.5 V44 H9.5 Z" />
+      </symbol>
+
+      <!-- King -->
+      <symbol id="pc-k" viewBox="0 0 45 45">
+        <path d="M22.5 6 V13 M19.5 9 H25.5" stroke-width="2.2" stroke-linecap="round" fill="none" />
+        <path d="M22.5 13 C19 13 16 16 14 19 V24 H31 V19 C29 16 26 13 22.5 13 Z M14 24 H31 V28 H14 Z M11 28 C11 32 15 35 22.5 35 C30 35 34 32 34 28 V34 H11 Z M10 35 H35 V40 H10 Z M9.5 40 H35.5 V44 H9.5 Z" />
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- =========================================================
+       Top bar
        ========================================================= -->
   <header class="appbar" role="banner">
     <div class="appbar-inner">
       <a class="brand" href="#" aria-label="Chess Mastery home">
-        <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M8 2h8l1 3h-2v3l3 4v2H6v-2l3-4V5H7l1-3Zm-2 12h12l1 4H5l1-4Zm-1 6h14v2H5v-2Z"/></svg>
-        </span>
-        <span class="brand-text">
-          <span class="brand-title">Chess Mastery</span>
-          <span class="brand-sub">play. think. improve.</span>
-        </span>
+        <svg class="brand-logo" viewBox="0 0 45 45" width="22" height="22" aria-hidden="true">
+          <use href="#pc-k" />
+        </svg>
+        <span class="brand-title">Chess Mastery</span>
       </a>
 
       <nav class="appbar-actions" aria-label="Primary">
-        <button class="iconbtn" id="settingsBtn" type="button" aria-label="Open settings" aria-haspopup="dialog">
-          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm9.4 4 2-1.7-2-3.4-2.6.7a8 8 0 0 0-1.7-1L16.5 4h-4l-.6 2.6a8 8 0 0 0-1.7 1L7.6 7l-2 3.4 2 1.7a7.9 7.9 0 0 0 0 1.8l-2 1.7 2 3.4 2.6-.7a8 8 0 0 0 1.7 1l.6 2.6h4l.6-2.6a8 8 0 0 0 1.7-1l2.6.7 2-3.4-2-1.7c.1-.6.1-1.2 0-1.8Z"/></svg>
-        </button>
-        <button class="iconbtn" id="soundToggle" type="button" aria-label="Toggle sound" aria-pressed="false">
+        <button class="iconbtn" id="soundToggle" type="button" aria-label="Toggle sound" aria-pressed="false" title="Sound">
           <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M3 10v4h4l5 4V6L7 10H3Zm13 2a4 4 0 0 0-2-3.5v7A4 4 0 0 0 16 12Zm-2-7v2.1a6 6 0 0 1 0 9.8V19a8 8 0 0 0 0-14Z"/></svg>
+        </button>
+        <button class="iconbtn" id="settingsBtn" type="button" aria-label="Open settings" aria-haspopup="dialog" title="Settings">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm9.4 4 2-1.7-2-3.4-2.6.7a8 8 0 0 0-1.7-1L16.5 4h-4l-.6 2.6a8 8 0 0 0-1.7 1L7.6 7l-2 3.4 2 1.7a7.9 7.9 0 0 0 0 1.8l-2 1.7 2 3.4 2.6-.7a8 8 0 0 0 1.7 1l.6 2.6h4l.6-2.6a8 8 0 0 0 1.7-1l2.6.7 2-3.4-2-1.7c.1-.6.1-1.2 0-1.8Z"/></svg>
         </button>
       </nav>
     </div>
   </header>
 
   <main class="shell" id="mainShell">
-    <!-- Status / clocks bar (priority on mobile, right after board) -->
+    <!-- Status / clocks bar -->
     <section class="topbar" aria-label="Game status">
       <div class="clock clock-black" id="clockBlack" data-active="false" aria-label="Black clock">
-        <span class="clock-label">Black</span>
-        <span class="clock-time" id="clockBlackTime">--:--</span>
+        <span class="clock-dot" aria-hidden="true"></span>
+        <span class="clock-time" id="clockBlackTime">—</span>
       </div>
 
       <div class="status" role="status" aria-live="polite">
-        <span class="turn-dot" id="turnDot" aria-hidden="true"></span>
         <span class="status-text" id="statusText">Ready to play</span>
         <span class="thinking" id="thinkingDots" hidden>
           <span></span><span></span><span></span>
@@ -63,13 +107,13 @@
       </div>
 
       <div class="clock clock-white" id="clockWhite" data-active="false" aria-label="White clock">
-        <span class="clock-label">White</span>
-        <span class="clock-time" id="clockWhiteTime">--:--</span>
+        <span class="clock-dot is-white" aria-hidden="true"></span>
+        <span class="clock-time" id="clockWhiteTime">—</span>
       </div>
     </section>
 
     <!-- =========================================================
-         Board (primary focus on mobile)
+         Board area
          ========================================================= -->
     <section class="board-area">
       <div class="captured captured-top" id="capturedTop" aria-label="Pieces captured by black">
@@ -90,12 +134,20 @@
         <div class="coord-ranks coord-ranks-right" id="coordRanksRight" aria-hidden="true"></div>
         <div class="coord-files coord-files-bottom" id="coordFilesBottom" aria-hidden="true"></div>
 
-        <!-- Promotion popover (in-board, near destination square) -->
+        <!-- Promotion popover (shown near destination square) -->
         <div class="promo" id="promoPopover" hidden role="dialog" aria-modal="true" aria-label="Choose promotion piece">
-          <button class="promo-piece" data-piece="q" type="button" aria-label="Promote to queen"><span class="piece-glyph"></span></button>
-          <button class="promo-piece" data-piece="r" type="button" aria-label="Promote to rook"><span class="piece-glyph"></span></button>
-          <button class="promo-piece" data-piece="b" type="button" aria-label="Promote to bishop"><span class="piece-glyph"></span></button>
-          <button class="promo-piece" data-piece="n" type="button" aria-label="Promote to knight"><span class="piece-glyph"></span></button>
+          <button class="promo-piece" data-piece="q" type="button" aria-label="Promote to queen">
+            <svg class="piece" viewBox="0 0 45 45" aria-hidden="true"><use href="#pc-q" /></svg>
+          </button>
+          <button class="promo-piece" data-piece="r" type="button" aria-label="Promote to rook">
+            <svg class="piece" viewBox="0 0 45 45" aria-hidden="true"><use href="#pc-r" /></svg>
+          </button>
+          <button class="promo-piece" data-piece="b" type="button" aria-label="Promote to bishop">
+            <svg class="piece" viewBox="0 0 45 45" aria-hidden="true"><use href="#pc-b" /></svg>
+          </button>
+          <button class="promo-piece" data-piece="n" type="button" aria-label="Promote to knight">
+            <svg class="piece" viewBox="0 0 45 45" aria-hidden="true"><use href="#pc-n" /></svg>
+          </button>
           <button class="promo-cancel" id="promoCancel" type="button" aria-label="Cancel promotion">×</button>
         </div>
       </div>
@@ -107,29 +159,29 @@
     </section>
 
     <!-- =========================================================
-         Quick controls (touch-friendly, large tap targets)
+         Controls below the board
          ========================================================= -->
     <section class="controls" aria-label="Game controls">
-      <button class="ctl ctl-primary" id="newGameBtn" type="button">
-        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 4v4l5-5-5-5v4a8 8 0 1 0 8 8h-2a6 6 0 1 1-6-6Z"/></svg>
-        <span>New game</span>
+      <button class="ctl ctl-primary" id="newGameBtn" type="button" title="New game">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 4V1L8 5l4 4V6a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8Z"/></svg>
+        <span>New</span>
       </button>
-      <button class="ctl" id="undoBtn" type="button" aria-label="Undo last move">
-        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 5V1L6 7l6 6V9a6 6 0 0 1 0 12v2a8 8 0 0 0 0-16Z" transform="scale(-1 1) translate(-24 0)"/></svg>
+      <button class="ctl" id="undoBtn" type="button" aria-label="Undo last move" title="Undo">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M7 13H4l4 4 4-4H9V8a3 3 0 1 1 6 0v3h2V8a5 5 0 1 0-10 0v5Z"/></svg>
         <span>Undo</span>
       </button>
-      <button class="ctl" id="flipBtn" type="button" aria-label="Flip board">
-        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M7 4 3 8l4 4V9h10V7H7V4Zm10 16 4-4-4-4v3H7v2h10v3Z"/></svg>
+      <button class="ctl" id="flipBtn" type="button" aria-label="Flip board" title="Flip">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M3 12a9 9 0 0 1 14.5-7.1L20 3v6h-6l2.5-2.4A7 7 0 0 0 5 12H3Zm18 0a9 9 0 0 1-14.5 7.1L4 21v-6h6l-2.5 2.4A7 7 0 0 0 19 12h2Z"/></svg>
         <span>Flip</span>
       </button>
-      <button class="ctl ctl-danger" id="resignBtn" type="button" aria-label="Resign game">
-        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M5 21V3h2v3h12l-3 5 3 5H7v5H5Z"/></svg>
+      <button class="ctl ctl-danger" id="resignBtn" type="button" aria-label="Resign game" title="Resign">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M5 3h2v18H5V3Zm3 1h11l-2 4 2 4H8V4Z"/></svg>
         <span>Resign</span>
       </button>
     </section>
 
     <!-- =========================================================
-         Side panel: tabs (Moves / Tools)
+         Side panel: Moves / Tools
          ========================================================= -->
     <aside class="panel" aria-label="Game panel">
       <div class="panel-tabs" role="tablist">
@@ -140,21 +192,21 @@
       <div class="panel-body">
         <div role="tabpanel" id="tab-moves" aria-labelledby="tabMovesBtn" class="panel-pane is-active">
           <ol class="movelist" id="moveList" aria-label="Move history"></ol>
-          <div class="movelist-empty" id="moveListEmpty">No moves yet — make the first move.</div>
+          <div class="movelist-empty" id="moveListEmpty">Game starts now. Make your move.</div>
         </div>
 
         <div role="tabpanel" id="tab-tools" aria-labelledby="tabToolsBtn" class="panel-pane" hidden>
           <div class="tool-row">
-            <label class="tool-label">FEN</label>
+            <label class="tool-label">Position (FEN)</label>
             <div class="tool-actions">
               <button class="ctl ctl-sm" id="copyFenBtn" type="button">Copy</button>
-              <button class="ctl ctl-sm" id="loadFenBtn" type="button">Load…</button>
+              <button class="ctl ctl-sm" id="loadFenBtn" type="button">Load</button>
             </div>
           </div>
           <textarea id="fenView" class="tool-text" readonly aria-label="Current FEN" rows="2"></textarea>
 
           <div class="tool-row">
-            <label class="tool-label">PGN</label>
+            <label class="tool-label">Game (PGN)</label>
             <div class="tool-actions">
               <button class="ctl ctl-sm" id="copyPgnBtn" type="button">Copy</button>
               <button class="ctl ctl-sm" id="downloadPgnBtn" type="button">Download</button>
@@ -163,27 +215,23 @@
           <textarea id="pgnView" class="tool-text" readonly aria-label="Current PGN" rows="4"></textarea>
 
           <div class="tool-row">
-            <label class="tool-label">Save / Resume</label>
+            <label class="tool-label">Save</label>
             <div class="tool-actions">
               <button class="ctl ctl-sm" id="saveBtn" type="button">Save</button>
               <button class="ctl ctl-sm" id="loadSaveBtn" type="button">Resume</button>
               <button class="ctl ctl-sm ctl-danger" id="clearSaveBtn" type="button">Clear</button>
             </div>
           </div>
-          <p class="tool-hint" id="saveHint">Auto-saves every move to this device.</p>
+          <p class="tool-hint" id="saveHint">Auto-saves to this device after every move.</p>
         </div>
       </div>
     </aside>
   </main>
 
-  <!-- =========================================================
-       Toast notifications
-       ========================================================= -->
+  <!-- Toast -->
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-  <!-- =========================================================
-       Settings dialog
-       ========================================================= -->
+  <!-- Settings dialog -->
   <dialog class="dialog" id="settingsDialog" aria-labelledby="settingsTitle">
     <form method="dialog" class="dialog-form">
       <header class="dialog-head">
@@ -197,14 +245,14 @@
         <fieldset class="field">
           <legend>Mode</legend>
           <div class="seg" role="radiogroup" aria-label="Mode">
-            <label><input type="radio" name="mode" value="hva" checked /><span>Human vs AI</span></label>
-            <label><input type="radio" name="mode" value="hvh" /><span>Human vs Human</span></label>
-            <label><input type="radio" name="mode" value="ava" /><span>AI vs AI demo</span></label>
+            <label><input type="radio" name="mode" value="hva" checked /><span>vs AI</span></label>
+            <label><input type="radio" name="mode" value="hvh" /><span>2 Player</span></label>
+            <label><input type="radio" name="mode" value="ava" /><span>AI vs AI</span></label>
           </div>
         </fieldset>
 
         <fieldset class="field">
-          <legend>Play as (Human vs AI)</legend>
+          <legend>Play as</legend>
           <div class="seg" role="radiogroup" aria-label="Color">
             <label><input type="radio" name="playerColor" value="w" checked /><span>White</span></label>
             <label><input type="radio" name="playerColor" value="b" /><span>Black</span></label>
@@ -237,43 +285,33 @@
         <fieldset class="field">
           <legend>Board theme</legend>
           <div class="seg seg-grid" role="radiogroup" aria-label="Board theme">
-            <label><input type="radio" name="theme" value="midnight" checked /><span>Midnight</span></label>
-            <label><input type="radio" name="theme" value="classic" /><span>Classic</span></label>
-            <label><input type="radio" name="theme" value="mint" /><span>Mint</span></label>
-            <label><input type="radio" name="theme" value="slate" /><span>Slate</span></label>
+            <label><input type="radio" name="theme" value="wood" checked /><span>Wood</span></label>
+            <label><input type="radio" name="theme" value="green" /><span>Green</span></label>
+            <label><input type="radio" name="theme" value="blue" /><span>Blue</span></label>
+            <label><input type="radio" name="theme" value="grey" /><span>Grey</span></label>
           </div>
         </fieldset>
 
         <fieldset class="field">
-          <legend>Piece style</legend>
-          <div class="seg" role="radiogroup" aria-label="Piece style">
-            <label><input type="radio" name="pieceStyle" value="classic" checked /><span>Classic</span></label>
-            <label><input type="radio" name="pieceStyle" value="outline" /><span>Outline</span></label>
-          </div>
-        </fieldset>
-
-        <fieldset class="field">
-          <legend>Other</legend>
+          <legend>Options</legend>
           <label class="checkrow"><input type="checkbox" id="settingsShowHints" checked /> <span>Show legal-move hints</span></label>
           <label class="checkrow"><input type="checkbox" id="settingsShowCoords" checked /> <span>Show coordinates</span></label>
-          <label class="checkrow"><input type="checkbox" id="settingsAutoFlip" /> <span>Auto-flip on each move (Human vs Human)</span></label>
+          <label class="checkrow"><input type="checkbox" id="settingsAutoFlip" /> <span>Auto-flip in 2-player mode</span></label>
           <label class="checkrow"><input type="checkbox" id="settingsSound" /> <span>Sound effects</span></label>
         </fieldset>
       </div>
 
       <footer class="dialog-foot">
-        <button class="ctl" type="button" id="settingsApplyNew" aria-label="Apply settings and start a new game">Apply &amp; new game</button>
+        <button class="ctl" type="button" id="settingsApplyNew">Apply &amp; new game</button>
         <button class="ctl ctl-primary" type="submit" value="ok">Done</button>
       </footer>
     </form>
   </dialog>
 
-  <!-- =========================================================
-       Game-end dialog
-       ========================================================= -->
+  <!-- Game-end dialog -->
   <dialog class="dialog dialog-result" id="resultDialog" aria-labelledby="resultTitle">
     <div class="result-card">
-      <div class="result-icon" id="resultIcon" aria-hidden="true">♚</div>
+      <svg class="result-icon" id="resultIcon" viewBox="0 0 45 45" width="64" height="64" aria-hidden="true"><use href="#pc-k" /></svg>
       <h2 id="resultTitle">Game over</h2>
       <p class="result-reason" id="resultReason"></p>
       <div class="result-actions">
@@ -284,9 +322,7 @@
     </div>
   </dialog>
 
-  <!-- =========================================================
-       FEN load dialog
-       ========================================================= -->
+  <!-- FEN load dialog -->
   <dialog class="dialog" id="fenDialog" aria-labelledby="fenDialogTitle">
     <form method="dialog" class="dialog-form">
       <header class="dialog-head">
@@ -308,7 +344,7 @@
   </dialog>
 
   <noscript>
-    <p style="padding:2rem;text-align:center">Chess Mastery requires JavaScript to run.</p>
+    <p style="padding:2rem;text-align:center">Chess Mastery requires JavaScript.</p>
   </noscript>
 </body>
 </html>
