@@ -1,79 +1,54 @@
-# Tricks & Tips - Halfan Hossen Habib
+# Chess Mastery
 
-A modern, single-page Tricks & Tips site for Halfan Hossen Habib's GitHub Pages, restyled to match the "Midnight Lab" theme of the main portfolio at [halfanhossenhabib.github.io/mysite](https://halfanhossenhabib.github.io/mysite/) and the [Games Hub](https://halfanhossenhabib.github.io/mysite-games/) companion site.
+A polished, mobile-first browser chess game with AI, multiple modes, and modern UX.
 
-The page collects simple, learner-friendly tech tricks and walks through publishing a free website with GitHub Pages, step by step. It uses a deep teal/mint/cyan dark theme, glassmorphism guide cards, an animated dot-grid background, ambient particles, gradient text, smooth reveal-on-scroll, and tilt + spotlight cards.
+**Live:** [https://halfanhossenhabib.github.io/mysitebeforefinal/](https://halfanhossenhabib.github.io/mysitebeforefinal/)
 
-## Featured Trick
+## Features
 
-- **Host Free Website on GitHub** - a 9-step beginner-friendly guide that takes you from a single `index.html` file to a public GitHub Pages link.
-- Companion video: [NetworkChuck on YouTube](https://www.youtube.com/watch?v=EXfFBEuCAr0).
+- **Gameplay:** Click + drag moves, legal-move hints, capture indicators, last-move & check highlights, smooth piece animations
+- **Pawn promotion:** Modal chooser (Queen, Rook, Bishop, Knight)
+- **Modes:** Human vs AI, Human vs Human, AI vs AI demo
+- **AI engine:** Web Worker with alpha-beta pruning, iterative deepening, piece-square tables, quiescence search, move ordering, mobility, and endgame awareness — 5 difficulty levels from Beginner to Master
+- **Chess clocks:** Presets: Untimed, 1+0, 3+2, 5+0, 10+0
+- **Game-end screens:** Checkmate, stalemate, draw, resignation, timeout
+- **Tools:** FEN copy/load, PGN copy/download, localStorage auto-save/resume
+- **Board themes:** Midnight, Classic, Mint, Slate + Classic/Outline piece styles
+- **Sound effects:** Synthesized move/capture/check/castle/promote/end sounds with mute toggle
+- **Accessibility:** Keyboard navigation (arrow keys + Enter), ARIA labels, focus states, prefers-reduced-motion support
+- **Mobile-first:** Responsive from 320px to desktop, no horizontal scroll, 44px+ touch targets
 
-## Technologies Used
+## Tech
 
-- HTML5
-- CSS3 (custom properties, glassmorphism, gradients, dot-grid background, gradient-mask borders)
-- Vanilla JavaScript (IntersectionObserver, Canvas particles, tilt/spotlight cards, magnetic hover, custom cursor)
-- Font Awesome (icons)
-- Google Fonts (Inter, Space Grotesk, JetBrains Mono)
-- GitHub Pages
+- **chess.js** (0.10.3 CDN) — legal move validation
+- **Vanilla JS** — no framework, no build step
+- **Web Worker** — AI never blocks the UI thread
+- **CSS Grid + Flexbox** — responsive layout with `clamp()`, `min()`, `max()`
+- **Web Audio API** — lightweight synthesized sounds
 
-No build step. No frameworks. The page is a single `index.html` with inlined CSS and JS plus a small `favicon.svg`.
+## File structure
 
-## Local Setup
-
-Serve the folder with any static web server, for example:
-
-```bash
-python3 -m http.server 4173
+```
+index.html          — semantic HTML shell, dialogs, a11y
+css/style.css       — mobile-first responsive CSS, themes
+js/app.js           — UI logic, board rendering, input, clocks, save/resume
+js/ai.worker.js     — alpha-beta AI engine (runs in Web Worker)
+favicon.svg         — app icon
 ```
 
-Then open:
+## How to test
 
-```text
-http://localhost:4173
-```
+1. Open `index.html` in any modern browser or deploy to GitHub Pages.
+2. Play a game — click or drag pieces.
+3. Try keyboard: Tab to board, arrow keys to navigate, Enter/Space to select/move.
+4. Open Settings to switch mode, difficulty, time control, or theme.
+5. Test on mobile — the board scales perfectly with no horizontal scroll.
+6. Use Tools tab for FEN/PGN export, save/resume.
 
-## Build and Deploy
+## Deploy
 
-This is a plain static site, so there is nothing to compile.
+Push to any GitHub repo with Pages enabled — no build step needed.
 
-1. Edit `index.html` (or `favicon.svg`).
-2. Test locally with a static server.
-3. Commit and push to the GitHub Pages branch.
-4. GitHub Pages will publish the updated files automatically.
+## License
 
-## Theme
-
-The site uses the Midnight Lab palette from the main portfolio:
-
-```css
---bg: #02110f;
---bg-2: #06211f;
---bg-3: #082f2d;
---surface: rgba(8, 47, 45, 0.68);
---surface-2: rgba(6, 33, 31, 0.86);
---ink: #f0fdfa;
---ink-2: #ccfbf1;
---muted: #8bb8b1;
---line: rgba(45, 212, 191, 0.18);
---line-2: rgba(45, 212, 191, 0.28);
---line-bright: rgba(45, 212, 191, 0.58);
---cyan: #06b6d4;
---teal: #2dd4bf;
---mint: #10b981;
---grad: linear-gradient(135deg, #06b6d4 0%, #2dd4bf 55%, #10b981 100%);
-```
-
-## Accessibility
-
-- Semantic landmarks (`header`, `main`, `section`, `article`, `aside`, `footer`).
-- Skip link to the main content.
-- Visible 2px teal focus rings on all interactive elements.
-- ARIA labels on the navigation, mobile menu toggle, hero panel, tutorial aside, and footer.
-- Honors `prefers-reduced-motion` (animations and transitions collapse to ~1ms, hero title revealed immediately).
-
-## External Links Preserved
-
-- Home (portfolio): `https://halfanhossenhabib.github.io/mysite/`
-- YouTube tutorial (NetworkChuck on GitHub Pages): `https://www.youtube.com/watch?v=EXfFBEuCAr0`
+MIT — Halfan Hossen Habib
