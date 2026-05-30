@@ -30,11 +30,11 @@
 
   /** AI level → worker config (time budget ms + skill) */
   const LEVEL_CONFIG = {
-    1: { name: "Beginner", maxDepth: 2, timeMs: 200,  blunder: 0.45, randomTopN: 5 },
-    2: { name: "Easy",     maxDepth: 3, timeMs: 400,  blunder: 0.20, randomTopN: 3 },
-    3: { name: "Medium",   maxDepth: 5, timeMs: 1200, blunder: 0.05, randomTopN: 2 },
-    4: { name: "Hard",     maxDepth: 7, timeMs: 2200, blunder: 0.0,  randomTopN: 1 },
-    5: { name: "Master",   maxDepth: 10, timeMs: 3800, blunder: 0.0, randomTopN: 1 },
+    1: { name: "Beginner", maxDepth: 2, timeMs: 150,  blunder: 0.50, randomTopN: 6 },
+    2: { name: "Easy",     maxDepth: 3, timeMs: 350,  blunder: 0.20, randomTopN: 3 },
+    3: { name: "Medium",   maxDepth: 4, timeMs: 800,  blunder: 0.05, randomTopN: 2 },
+    4: { name: "Hard",     maxDepth: 5, timeMs: 1500, blunder: 0.0,  randomTopN: 1 },
+    5: { name: "Master",   maxDepth: 6, timeMs: 2500, blunder: 0.0,  randomTopN: 1 },
   };
 
   const SAVE_KEY = "chess-mastery:save:v1";
@@ -61,6 +61,7 @@
     pendingAi: null,            // resolver awaiting bestmove
     boardRectCache: null,
     soundCtx: null,
+    aiReqId: 0,                 // monotonic, lets us discard stale AI replies
   };
 
   // ---------- Element cache ----------
@@ -860,60 +861,318 @@
   }
 
   // ---------- AI worker ----------
+  //
+  // The AI runs in a Web Worker for non-blocking thinking. To avoid any
+  // file-path / CORS / file:// issues we build the worker from an inline
+  // Blob URL. If Worker is unavailable for any reason we fall back to a
+  // shallow synchronous AI so the game is still playable.
+
+  /** Inline AI source (runs inside the Worker). Kept self-contained. */
+  const WORKER_SOURCE = `
+    "use strict";
+    importScripts("https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js");
+
+    const MATE = 99999;
+    const QDEPTH = 4;
+    const VAL = { p:100, n:320, b:330, r:500, q:900, k:20000 };
+    const PST = {
+      p:[0,0,0,0,0,0,0,0,50,50,50,50,50,50,50,50,10,10,20,30,30,20,10,10,5,5,10,25,25,10,5,5,0,0,0,20,20,0,0,0,5,-5,-10,0,0,-10,-5,5,5,10,10,-20,-20,10,10,5,0,0,0,0,0,0,0,0],
+      n:[-50,-40,-30,-30,-30,-30,-40,-50,-40,-20,0,0,0,0,-20,-40,-30,0,10,15,15,10,0,-30,-30,5,15,20,20,15,5,-30,-30,0,15,20,20,15,0,-30,-30,5,10,15,15,10,5,-30,-40,-20,0,5,5,0,-20,-40,-50,-40,-30,-30,-30,-30,-40,-50],
+      b:[-20,-10,-10,-10,-10,-10,-10,-20,-10,0,0,0,0,0,0,-10,-10,0,10,10,10,10,0,-10,-10,5,5,10,10,5,5,-10,-10,0,5,10,10,5,0,-10,-10,5,5,5,5,5,5,-10,-10,5,0,0,0,0,5,-10,-20,-10,-10,-10,-10,-10,-10,-20],
+      r:[0,0,0,0,0,0,0,0,5,10,10,10,10,10,10,5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,0,0,0,5,5,0,0,0],
+      q:[-20,-10,-10,-5,-5,-10,-10,-20,-10,0,0,0,0,0,0,-10,-10,0,5,5,5,5,0,-10,-5,0,5,5,5,5,0,-5,0,0,5,5,5,5,0,-5,-10,5,5,5,5,5,0,-10,-10,0,5,0,0,0,0,-10,-20,-10,-10,-5,-5,-10,-10,-20],
+      k:[-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-20,-30,-30,-40,-40,-30,-30,-20,-10,-20,-20,-20,-20,-20,-20,-10,20,20,0,0,0,0,20,20,20,30,10,0,0,10,30,20],
+      ke:[-50,-40,-30,-20,-20,-30,-40,-50,-30,-20,-10,0,0,-10,-20,-30,-30,-10,20,30,30,20,-10,-30,-30,-10,30,40,40,30,-10,-30,-30,-10,30,40,40,30,-10,-30,-30,-10,20,30,30,20,-10,-30,-30,-30,0,0,0,0,-30,-30,-50,-30,-30,-30,-30,-30,-30,-50]
+    };
+    const mirror = (i) => ((7 - (i>>3)) << 3) + (i & 7);
+
+    function evaluate(g) {
+      const b = g.board();
+      let queens = 0, minors = 0, score = 0;
+      for (let r=0; r<8; r++) for (let c=0; c<8; c++) {
+        const p = b[r][c]; if (!p) continue;
+        if (p.type === "q") queens++;
+        else if (p.type === "n" || p.type === "b") minors++;
+      }
+      const eg = queens === 0 || (queens <= 2 && minors <= 2);
+      for (let r=0; r<8; r++) for (let c=0; c<8; c++) {
+        const p = b[r][c]; if (!p) continue;
+        const idx = r*8 + c;
+        const sign = p.color === "w" ? 1 : -1;
+        score += VAL[p.type] * sign;
+        const t = p.type === "k" && eg ? PST.ke : PST[p.type];
+        if (t) score += t[p.color === "w" ? idx : mirror(idx)] * sign;
+      }
+      const mob = g.moves().length * 2;
+      score += g.turn() === "w" ? mob : -mob;
+      if (g.in_check()) score += g.turn() === "w" ? -25 : 25;
+      return score;
+    }
+
+    function order(moves) {
+      return moves.slice().sort((a,b) => mvscore(b) - mvscore(a));
+    }
+    function mvscore(m) {
+      let s = 0;
+      if (m.captured) s += (VAL[m.captured]||0) * 10 - (VAL[m.piece]||0) + 100000;
+      if (m.promotion) s += (VAL[m.promotion]||0) + 80000;
+      if (m.flags.includes("k") || m.flags.includes("q")) s += 50;
+      return s;
+    }
+
+    function quiesce(g, alpha, beta, d) {
+      const stand = evaluate(g);
+      const w = g.turn() === "w";
+      if (d <= 0) return stand;
+      if (w) { if (stand >= beta) return beta; if (stand > alpha) alpha = stand; }
+      else   { if (stand <= alpha) return alpha; if (stand < beta) beta = stand; }
+      const caps = g.moves({verbose:true}).filter(m => m.captured || m.promotion);
+      const sorted = order(caps);
+      for (const m of sorted) {
+        g.move(m.san);
+        const v = quiesce(g, alpha, beta, d - 1);
+        g.undo();
+        if (w) { if (v > alpha) alpha = v; if (alpha >= beta) return beta; }
+        else   { if (v < beta) beta = v;  if (alpha >= beta) return alpha; }
+      }
+      return w ? alpha : beta;
+    }
+
+    function ab(g, depth, alpha, beta, deadline) {
+      if (g.in_checkmate()) return g.turn() === "w" ? -(MATE + depth) : (MATE + depth);
+      if (g.in_draw() || g.in_stalemate() || g.insufficient_material() || g.in_threefold_repetition()) return 0;
+      if (depth <= 0) return quiesce(g, alpha, beta, QDEPTH);
+      if (performance.now() > deadline) return evaluate(g);
+      const moves = order(g.moves({verbose:true}));
+      const w = g.turn() === "w";
+      if (w) {
+        let best = -Infinity;
+        for (const m of moves) {
+          g.move(m.san);
+          const v = ab(g, depth - 1, alpha, beta, deadline);
+          g.undo();
+          if (v > best) best = v;
+          if (v > alpha) alpha = v;
+          if (alpha >= beta) break;
+        }
+        return best;
+      } else {
+        let best = Infinity;
+        for (const m of moves) {
+          g.move(m.san);
+          const v = ab(g, depth - 1, alpha, beta, deadline);
+          g.undo();
+          if (v < best) best = v;
+          if (v < beta) beta = v;
+          if (alpha >= beta) break;
+        }
+        return best;
+      }
+    }
+
+    function findBest(g, maxDepth, timeMs, randomTopN, blunder) {
+      const deadline = performance.now() + timeMs;
+      const moves = order(g.moves({verbose:true}));
+      if (moves.length === 0) return null;
+      if (moves.length === 1) return moves[0];
+      const w = g.turn() === "w";
+      let best = moves[0], bestScore = w ? -Infinity : Infinity;
+      let scored = [];
+      for (let d = 1; d <= maxDepth; d++) {
+        const arr = [];
+        let dBest = null, dScore = w ? -Infinity : Infinity;
+        for (const m of moves) {
+          if (performance.now() > deadline) break;
+          g.move(m.san);
+          const v = ab(g, d - 1, -Infinity, Infinity, deadline);
+          g.undo();
+          arr.push({m, v});
+          if (w ? (v > dScore) : (v < dScore)) { dScore = v; dBest = m; }
+        }
+        if (dBest) { best = dBest; bestScore = dScore; scored = arr; }
+        if (performance.now() > deadline) break;
+        if (Math.abs(bestScore) > MATE - 100) break;
+      }
+      // Difficulty modulation: random top-N or chance to blunder
+      if (scored.length && (randomTopN > 1 || blunder > 0)) {
+        scored.sort((a,b) => w ? b.v - a.v : a.v - b.v);
+        if (blunder > 0 && Math.random() < blunder) {
+          const pool = scored.slice(0, Math.min(scored.length, 8));
+          return pool[Math.floor(Math.random() * pool.length)].m;
+        }
+        if (randomTopN > 1) {
+          const pool = scored.slice(0, Math.min(scored.length, randomTopN));
+          return pool[Math.floor(Math.random() * pool.length)].m;
+        }
+      }
+      return best;
+    }
+
+    self.onmessage = function (ev) {
+      const m = ev.data;
+      if (m.type === "init") { self.postMessage({type:"ready"}); return; }
+      if (m.type === "go") {
+        try {
+          const g = new Chess(m.fen);
+          const best = findBest(g, m.maxDepth || 4, m.timeMs || 1000, m.randomTopN || 1, m.blunder || 0);
+          if (best) self.postMessage({ type:"bestmove", from:best.from, to:best.to, promotion:best.promotion || undefined });
+          else self.postMessage({ type:"bestmove", from:null, to:null });
+        } catch (err) {
+          self.postMessage({ type:"bestmove", from:null, to:null, error:String(err && err.message || err) });
+        }
+      }
+    };
+  `;
 
   function ensureWorker() {
-    if (S.worker) return S.worker;
+    if (S.worker || S.workerFailed) return S.worker;
     try {
-      S.worker = new Worker("js/ai.worker.js");
+      const blob = new Blob([WORKER_SOURCE], { type: "application/javascript" });
+      const url = URL.createObjectURL(blob);
+      S.worker = new Worker(url);
       S.worker.onmessage = onWorkerMessage;
       S.worker.onerror = (err) => {
-        console.error("AI worker error:", err);
-        showToast("AI failed to start. Reverting to easier mode.");
-        S.aiThinking = false;
-        E.thinkingDots.hidden = true;
+        console.error("[ChessMastery] AI worker error:", err.message || err);
+        S.workerFailed = true;
+        try { S.worker.terminate(); } catch (_) {}
+        S.worker = null;
+        // If a request is in flight, resolve it so requestAiMove can fall back.
+        if (S.pendingAi) {
+          const r = S.pendingAi; S.pendingAi = null;
+          r({ from: null, to: null, error: "worker-error" });
+        }
       };
       S.worker.postMessage({ type: "init" });
     } catch (e) {
-      console.error("Worker not supported", e);
+      console.error("[ChessMastery] Worker creation failed:", e);
+      S.workerFailed = true;
+      S.worker = null;
     }
     return S.worker;
   }
 
   function onWorkerMessage(ev) {
     const msg = ev.data;
-    if (msg.type === "ready") {
-      S.workerReady = true;
-      return;
-    }
+    if (msg.type === "ready") { S.workerReady = true; return; }
     if (msg.type === "bestmove") {
-      const resolver = S.pendingAi;
-      S.pendingAi = null;
-      resolver?.(msg);
+      const r = S.pendingAi; S.pendingAi = null;
+      r?.(msg);
     }
   }
 
-  function requestAiMove() {
-    const w = ensureWorker();
-    if (!w) {
-      // Fallback: random legal
-      const moves = S.game.moves({ verbose: true });
-      const m = moves[Math.floor(Math.random() * moves.length)];
-      if (m) executeMove({ from: m.from, to: m.to, promotion: m.promotion });
-      return;
-    }
-    if (S.aiThinking) return;
-    S.aiThinking = true;
-    E.thinkingDots.hidden = false;
-    updateStatus();
+  /**
+   * Synchronous shallow AI — only used when the Web Worker is unavailable.
+   * Fixed-depth alpha-beta on top of chess.js. Runs on the main thread,
+   * so we keep depth small to avoid noticeable jank.
+   */
+  function fallbackBestMove() {
+    const game = S.game;
+    const moves = game.moves({ verbose: true });
+    if (moves.length === 0) return null;
+    if (moves.length === 1) return moves[0];
 
-    const cfg = LEVEL_CONFIG[S.settings.level];
+    const VAL = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 0 };
+    const score = (g) => {
+      let s = 0;
+      const b = g.board();
+      for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) {
+        const p = b[r][c]; if (!p) continue;
+        s += (VAL[p.type] || 0) * (p.color === "w" ? 1 : -1);
+      }
+      return s;
+    };
+    const cfg = LEVEL_CONFIG[S.settings.level] || LEVEL_CONFIG[3];
+    const depth = Math.min(2, cfg.maxDepth);
+    const isWhite = game.turn() === "w";
+
+    const search = (g, d, alpha, beta) => {
+      if (d <= 0 || g.game_over()) return score(g);
+      const w = g.turn() === "w";
+      const list = g.moves({ verbose: true });
+      if (w) {
+        let best = -Infinity;
+        for (const m of list) {
+          g.move(m.san);
+          const v = search(g, d - 1, alpha, beta);
+          g.undo();
+          if (v > best) best = v;
+          if (v > alpha) alpha = v;
+          if (alpha >= beta) break;
+        }
+        return best;
+      }
+      let best = Infinity;
+      for (const m of list) {
+        g.move(m.san);
+        const v = search(g, d - 1, alpha, beta);
+        g.undo();
+        if (v < best) best = v;
+        if (v < beta) beta = v;
+        if (alpha >= beta) break;
+      }
+      return best;
+    };
+
+    let bestMove = moves[0];
+    let bestScore = isWhite ? -Infinity : Infinity;
+    const sorted = moves.slice().sort((a, b) => {
+      const av = (a.captured ? VAL[a.captured] * 10 : 0) + (a.promotion ? VAL[a.promotion] : 0);
+      const bv = (b.captured ? VAL[b.captured] * 10 : 0) + (b.promotion ? VAL[b.promotion] : 0);
+      return bv - av;
+    });
+    for (const m of sorted) {
+      game.move(m.san);
+      const v = search(game, depth - 1, -Infinity, Infinity);
+      game.undo();
+      if (isWhite ? v > bestScore : v < bestScore) { bestScore = v; bestMove = m; }
+    }
+    // For lower levels, occasionally pick a different reasonable move.
+    if (cfg.randomTopN > 1 && Math.random() < 0.5) {
+      const pool = sorted.slice(0, Math.min(sorted.length, cfg.randomTopN));
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+    return bestMove;
+  }
+
+  function requestAiMove() {
+    if (S.aiThinking) return;
+    if (S.game.game_over()) return;
+
+    const cfg = LEVEL_CONFIG[S.settings.level] || LEVEL_CONFIG[3];
     const useTime = !!TIME_PRESETS[S.clocks.preset];
     const remaining = useTime ? S.clocks[S.game.turn()] : Number.POSITIVE_INFINITY;
     const budget = Math.max(80, Math.min(cfg.timeMs, useTime ? Math.floor(remaining / 25) : cfg.timeMs));
 
+    S.aiThinking = true;
+    E.thinkingDots.hidden = false;
+    updateStatus();
     const t0 = performance.now();
-    new Promise((resolve) => {
-      S.pendingAi = resolve;
+    const reqId = ++S.aiReqId;
+
+    const w = ensureWorker();
+
+    if (!w) {
+      // No Worker available — use the synchronous fallback after a short
+      // yield so the UI gets a chance to repaint the "thinking" indicator.
+      setTimeout(() => {
+        if (reqId !== S.aiReqId) return;        // stale (newGame, undo, etc.)
+        const m = fallbackBestMove();
+        if (!m) { playAiMove({ from: null, to: null }); return; }
+        playAiMove({ from: m.from, to: m.to, promotion: m.promotion });
+      }, 30);
+      return;
+    }
+
+    // Worker path: race the worker against a hard timeout. If the worker
+    // doesn't reply within budget + 4s we fall back to a quick move so the
+    // game can never hang.
+    const aiPromise = new Promise((resolve) => { S.pendingAi = resolve; });
+    const hardTimeout = budget + 4000;
+    const timeoutPromise = new Promise((resolve) =>
+      setTimeout(() => resolve({ __timeout: true }), hardTimeout)
+    );
+
+    try {
       w.postMessage({
         type: "go",
         fen: S.game.fen(),
@@ -923,12 +1182,42 @@
         randomTopN: cfg.randomTopN,
         blunder: cfg.blunder,
       });
-    }).then((msg) => {
-      // Ensure a minimum "human-like" thinking delay for low levels
+    } catch (e) {
+      console.error("[ChessMastery] postMessage failed:", e);
+      S.workerFailed = true;
+      S.pendingAi = null;
+      setTimeout(() => {
+        const m = fallbackBestMove();
+        if (m) playAiMove({ from: m.from, to: m.to, promotion: m.promotion });
+        else playAiMove({ from: null, to: null });
+      }, 30);
+      return;
+    }
+
+    Promise.race([aiPromise, timeoutPromise]).then((msg) => {
+      // If user started a new game / undid / loaded FEN, drop the result.
+      if (reqId !== S.aiReqId) return;
+      // If timeout won the race, clean up the resolver and use a quick fallback.
+      if (msg && msg.__timeout) {
+        console.warn("[ChessMastery] AI worker timed out, using fallback move");
+        S.pendingAi = null;
+        const m = fallbackBestMove();
+        msg = m ? { from: m.from, to: m.to, promotion: m.promotion } : { from: null, to: null };
+      }
+      // If the worker reported an error, also fall back.
+      if (msg && (msg.error || (!msg.from && !msg.__timeout))) {
+        if (msg.error) console.warn("[ChessMastery] Worker returned error:", msg.error);
+        const m = fallbackBestMove();
+        if (m) msg = { from: m.from, to: m.to, promotion: m.promotion };
+      }
+      // Pad to a minimum think time so it doesn't snap instantly on easy levels.
       const elapsed = performance.now() - t0;
-      const minThink = (S.settings.level <= 2) ? 350 : 180;
+      const minThink = (S.settings.level <= 2) ? 320 : 160;
       const wait = Math.max(0, minThink - elapsed);
-      setTimeout(() => playAiMove(msg), wait);
+      setTimeout(() => {
+        if (reqId !== S.aiReqId) return;
+        playAiMove(msg);
+      }, wait);
     });
   }
 
@@ -951,6 +1240,9 @@
     stopClocks();
     if (S.aiVsAiTimerId) { clearTimeout(S.aiVsAiTimerId); S.aiVsAiTimerId = null; }
     S.aiThinking = false;
+    S.aiReqId++;                   // invalidate any in-flight AI request
+    S.pendingAi = null;
+    E.thinkingDots.hidden = true;
     S.pendingPromotion = null;
     S.lastMove = null;
     S.selected = null;
@@ -1015,6 +1307,8 @@
 
   function undoMove() {
     if (S.aiThinking || S.pendingPromotion) return;
+    S.aiReqId++;                   // invalidate any pending AI reply
+    S.pendingAi = null;
     if (S.settings.mode === "hva") {
       // Undo the player's last move plus the AI response (if any) so it's the player's turn again.
       const undoTwo = (S.game.history().length >= 1 && S.game.turn() === resolvedPlayerColor());
