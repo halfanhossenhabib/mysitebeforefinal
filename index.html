@@ -1,1991 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="Simple tech tricks Halfan Hossen Habib uses while learning and building on the web.">
-  <meta name="theme-color" content="#02110f">
-  <title>Tricks &amp; Tips | Halfan Hossen Habib</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <script>document.documentElement.classList.add("js");</script>
-
-  <style>
-    /* =========================================================
-       Tricks & Tips - "Midnight Lab" redesign
-       Visual language matched to halfanhossenhabib.github.io/mysite
-       and the Games Hub site.
-       ========================================================= */
-
-    :root {
-      --bg: #02110f;
-      --bg-2: #06211f;
-      --bg-3: #082f2d;
-      --surface: rgba(8, 47, 45, 0.68);
-      --surface-2: rgba(6, 33, 31, 0.86);
-      --surface-3: rgba(8, 47, 45, 0.42);
-
-      --ink: #f0fdfa;
-      --ink-2: #ccfbf1;
-      --muted: #8bb8b1;
-
-      --line: rgba(45, 212, 191, 0.18);
-      --line-2: rgba(45, 212, 191, 0.28);
-      --line-bright: rgba(45, 212, 191, 0.58);
-
-      --cyan: #06b6d4;
-      --teal: #2dd4bf;
-      --mint: #10b981;
-      --warning: #fbbf24;
-
-      --grad: linear-gradient(135deg, #06b6d4 0%, #2dd4bf 55%, #10b981 100%);
-      --grad-soft: linear-gradient(135deg, rgba(6,182,212,0.22), rgba(45,212,191,0.18), rgba(16,185,129,0.16));
-
-      --r-xs: 8px;
-      --r-sm: 12px;
-      --r: 18px;
-      --r-lg: 26px;
-      --r-xl: 32px;
-      --r-pill: 999px;
-
-      --e-out: cubic-bezier(.22,.61,.36,1);
-      --e-spring: cubic-bezier(.2,.8,.2,1.2);
-
-      --shadow: 0 22px 70px rgba(0, 0, 0, 0.4);
-      --shadow-lg: 0 36px 90px rgba(0, 0, 0, 0.55);
-
-      color-scheme: dark;
-    }
-
-    * { box-sizing: border-box; }
-    html, body { overflow-x: clip; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      min-height: 100vh;
-      margin: 0;
-      color: var(--ink);
-      background: var(--bg);
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-feature-settings: "ss01", "cv11";
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      line-height: 1.6;
-    }
-
-    /* Aurora background */
-    body::before {
-      content: "";
-      position: fixed; inset: 0; z-index: -4;
-      pointer-events: none;
-      background:
-        radial-gradient(720px 520px at 8% -6%, rgba(6, 182, 212, 0.32), transparent 60%),
-        radial-gradient(700px 560px at 100% 2%, rgba(45, 212, 191, 0.22), transparent 60%),
-        radial-gradient(900px 700px at 60% 120%, rgba(16, 185, 129, 0.20), transparent 60%),
-        radial-gradient(600px 500px at 0% 100%, rgba(6, 182, 212, 0.20), transparent 60%),
-        linear-gradient(180deg, #02110f 0%, #04211f 55%, #02110f 100%);
-    }
-
-    /* Animated dot grid */
-    body::after {
-      content: "";
-      position: fixed; inset: 0; z-index: -3;
-      pointer-events: none;
-      background-image: radial-gradient(rgba(45, 212, 191, 0.16) 1px, transparent 1.4px);
-      background-size: 26px 26px;
-      mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, rgba(0,0,0,0.9), transparent 75%);
-      -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, rgba(0,0,0,0.9), transparent 75%);
-      animation: gridDrift 40s linear infinite;
-    }
-    @keyframes gridDrift { to { background-position: 520px 520px; } }
-
-    a { color: inherit; text-decoration: none; }
-    button, a { -webkit-tap-highlight-color: transparent; }
-    button { font: inherit; color: inherit; cursor: pointer; border: 0; background: transparent; }
-    img, svg { max-width: 100%; display: block; }
-    ::selection { background: rgba(45, 212, 191, 0.45); color: #fff; }
-
-    a:focus-visible, button:focus-visible {
-      outline: 2px solid var(--teal);
-      outline-offset: 3px;
-      border-radius: var(--r-sm);
-    }
-
-    h1, h2, h3 {
-      font-family: "Space Grotesk", "Inter", sans-serif;
-      letter-spacing: -0.025em;
-      margin: 0;
-      color: var(--ink);
-    }
-    p { margin: 0; }
-    h1, h2, h3, p { overflow-wrap: anywhere; }
-
-    .grad-text {
-      background: var(--grad);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      color: transparent;
-      background-size: 200% 200%;
-      animation: gradSlide 10s ease-in-out infinite;
-    }
-    @keyframes gradSlide {
-      0%,100% { background-position: 0% 50%; }
-      50%     { background-position: 100% 50%; }
-    }
-
-    /* =========================================================
-       Ambient layers
-       ========================================================= */
-    #particleCanvas {
-      position: fixed; inset: 0; z-index: -2;
-      width: 100%; height: 100%;
-      pointer-events: none; opacity: 0.55;
-    }
-    .noise {
-      position: fixed; inset: 0; z-index: -1;
-      pointer-events: none;
-      opacity: 0.045;
-      mix-blend-mode: overlay;
-      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>");
-      background-size: 160px 160px;
-    }
-    .scroll-progress {
-      position: fixed; top: 0; left: 0; z-index: 60;
-      height: 2px; width: 0%;
-      background: var(--grad);
-      box-shadow: 0 0 18px rgba(45, 212, 191, 0.6);
-      transition: width 80ms linear;
-    }
-
-    /* Custom cursor (fine pointers only) */
-    .cursor { display: none; }
-    @media (pointer: fine) {
-      .js .cursor {
-        display: block;
-        position: fixed; top: 0; left: 0; z-index: 70;
-        pointer-events: none;
-        transform: translate3d(-50%, -50%, 0);
-      }
-      .cursor-dot, .cursor-ring {
-        position: absolute; top: 0; left: 0;
-        border-radius: 50%;
-      }
-      .cursor-dot {
-        width: 6px; height: 6px;
-        background: var(--teal);
-        box-shadow: 0 0 14px rgba(45, 212, 191, 0.85);
-        transform: translate(-50%, -50%);
-      }
-      .cursor-ring {
-        width: 36px; height: 36px;
-        border: 1px solid rgba(45, 212, 191, 0.55);
-        background: rgba(45, 212, 191, 0.05);
-        backdrop-filter: blur(2px);
-        transform: translate(-50%, -50%);
-        transition: width 220ms var(--e-out), height 220ms var(--e-out),
-                    border-color 220ms, background 220ms;
-      }
-      .cursor.is-hover .cursor-ring {
-        width: 60px; height: 60px;
-        border-color: rgba(45, 212, 191, 0.9);
-        background: rgba(45, 212, 191, 0.1);
-      }
-      .cursor.is-press .cursor-ring {
-        width: 28px; height: 28px;
-        border-color: var(--mint);
-      }
-    }
-
-    /* Skip link */
-    .skip-link {
-      position: fixed; left: 1rem; top: 1rem; z-index: 80;
-      transform: translateY(-180%);
-      border: 1px solid var(--teal);
-      border-radius: var(--r-sm);
-      padding: 0.75rem 1rem;
-      background: var(--bg); color: var(--ink); text-decoration: none;
-      transition: transform 220ms var(--e-out);
-    }
-    .skip-link:focus { transform: translateY(0); }
-
-    /* =========================================================
-       Header
-       ========================================================= */
-    .site-header {
-      position: fixed; top: 0; left: 0; z-index: 30;
-      width: 100%;
-      padding: 1rem clamp(1rem, 3vw, 2rem);
-      transition: padding 240ms var(--e-out), background 240ms var(--e-out),
-                  border-color 240ms var(--e-out), backdrop-filter 240ms var(--e-out);
-    }
-    .site-header.is-scrolled {
-      padding-block: 0.55rem;
-      border-bottom: 1px solid var(--line);
-      background: rgba(2, 17, 15, 0.72);
-      backdrop-filter: blur(22px) saturate(140%);
-      -webkit-backdrop-filter: blur(22px) saturate(140%);
-    }
-
-    .nav-shell {
-      display: flex; align-items: center; justify-content: space-between;
-      max-width: 1280px; margin: 0 auto;
-      gap: 1rem;
-    }
-
-    .brand-mark {
-      display: inline-flex; align-items: center; gap: 0.7rem;
-      color: var(--ink); text-decoration: none;
-    }
-    .brand-meta {
-      display: flex; flex-direction: column; line-height: 1.05;
-    }
-    .brand-name {
-      font-family: "Space Grotesk", sans-serif;
-      font-weight: 700; font-size: 0.98rem;
-      white-space: nowrap;
-    }
-    .brand-role {
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.65rem;
-      color: var(--muted);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-top: 0.18rem;
-    }
-
-    .brand-orbit {
-      position: relative;
-      width: 2.4rem; height: 2.4rem;
-      border-radius: 50%;
-      background: conic-gradient(from 210deg, #06b6d4, #2dd4bf, #10b981, #06b6d4);
-      box-shadow: 0 0 22px rgba(45, 212, 191, 0.45), inset 0 0 12px rgba(0,0,0,0.6);
-      animation: orbit 8s linear infinite;
-      flex-shrink: 0;
-    }
-    .brand-orbit::before {
-      content: ""; position: absolute; inset: 3px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #082f2d 0%, #02110f 80%);
-    }
-    .brand-orbit::after {
-      content: ""; position: absolute; inset: 38%;
-      border-radius: 50%;
-      background: var(--grad);
-      box-shadow: 0 0 14px rgba(45, 212, 191, 0.7);
-    }
-    @keyframes orbit { to { transform: rotate(360deg); } }
-
-    .nav-menu {
-      display: flex; align-items: center; gap: 0.15rem;
-      padding: 0.3rem;
-      border: 1px solid var(--line);
-      border-radius: var(--r-pill);
-      background: var(--surface);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-    }
-    .nav-menu a {
-      position: relative;
-      display: inline-flex; align-items: center; gap: 0.45rem;
-      min-height: 2.3rem;
-      border-radius: var(--r-pill);
-      padding: 0.45rem 1rem;
-      color: var(--ink-2); font-size: 0.88rem; font-weight: 600;
-      transition: color 200ms var(--e-out), background 200ms var(--e-out),
-                  box-shadow 200ms var(--e-out);
-    }
-    .nav-num {
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.7rem;
-      color: var(--teal);
-      letter-spacing: 0.06em;
-    }
-    .nav-menu a:hover { color: #fff; background: rgba(255,255,255,0.04); }
-    .nav-menu a.is-active {
-      color: #02110f;
-      background: var(--grad);
-      box-shadow: 0 6px 20px rgba(45, 212, 191, 0.28);
-    }
-    .nav-menu a.is-active .nav-num { color: rgba(2, 17, 15, 0.65); }
-
-    .nav-status {
-      display: inline-flex; align-items: center; gap: 0.55rem;
-      padding: 0.5rem 0.85rem;
-      border: 1px solid var(--line);
-      border-radius: var(--r-pill);
-      background: var(--surface);
-      backdrop-filter: blur(14px);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.72rem;
-      color: var(--ink-2);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-    .nav-status-dot {
-      width: 0.55rem; height: 0.55rem; border-radius: 50%;
-      background: var(--mint);
-      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12), 0 0 12px rgba(16, 185, 129, 0.85);
-      animation: pulseDot 2.2s var(--e-out) infinite;
-    }
-    .nav-status-clock { color: var(--teal); }
-    @keyframes pulseDot {
-      0%,100% { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.08), 0 0 12px rgba(16, 185, 129, 0.8); }
-      50%     { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0.02), 0 0 22px rgba(16, 185, 129, 1); }
-    }
-
-    .menu-toggle {
-      position: relative; display: none;
-      width: 2.75rem; height: 2.75rem;
-      align-items: center; justify-content: center;
-      border: 1px solid var(--line-2);
-      border-radius: var(--r-sm);
-      background: var(--surface-2);
-      color: var(--ink);
-    }
-    .menu-toggle span {
-      position: absolute; width: 1.15rem; height: 2px;
-      border-radius: 2px; background: var(--ink);
-      transition: transform 240ms var(--e-out), opacity 200ms;
-    }
-    .menu-toggle span:nth-child(1) { transform: translateY(-0.38rem); }
-    .menu-toggle span:nth-child(3) { transform: translateY(0.38rem); }
-    .menu-toggle.is-open span:nth-child(1) { transform: rotate(45deg); }
-    .menu-toggle.is-open span:nth-child(2) { opacity: 0; }
-    .menu-toggle.is-open span:nth-child(3) { transform: rotate(-45deg); }
-
-    /* =========================================================
-       Hero
-       ========================================================= */
-    .hero-section {
-      position: relative;
-      overflow: hidden;
-      isolation: isolate;
-    }
-    .hero-vignette {
-      position: absolute; inset: 0; z-index: -1;
-      background:
-        radial-gradient(60% 70% at 50% 100%, rgba(2, 17, 15, 0.85), transparent 70%),
-        radial-gradient(45% 50% at 50% 0%, rgba(2, 17, 15, 0.7), transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-grid {
-      display: grid;
-      min-height: 92svh;
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: clamp(7rem, 12vh, 9rem) clamp(1rem, 4vw, 2rem) clamp(3rem, 7vh, 5rem);
-      grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.82fr);
-      align-items: center;
-      gap: clamp(2rem, 6vw, 5rem);
-    }
-
-    .hero-copy { max-width: 48rem; }
-
-    .eyebrow-row {
-      display: inline-flex; align-items: center; gap: 0.7rem;
-      margin-bottom: 1rem;
-    }
-    .section-num {
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.8rem; color: var(--teal);
-      letter-spacing: 0.08em;
-    }
-    .eyebrow {
-      margin: 0;
-      color: var(--ink-2);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.78rem;
-      font-weight: 600; letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-
-    .hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 0.55rem;
-      padding: 0.45rem 0.95rem 0.45rem 0.7rem;
-      border: 1px solid var(--line-2);
-      border-radius: var(--r-pill);
-      background: var(--surface);
-      backdrop-filter: blur(14px);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.16em;
-      color: var(--ink-2); text-transform: uppercase;
-      margin-bottom: 1.5rem;
-    }
-    .hero-eyebrow-dot {
-      width: 0.5rem; height: 0.5rem; border-radius: 50%;
-      background: var(--mint);
-      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12), 0 0 14px rgba(16, 185, 129, 0.9);
-      animation: pulseDot 2.2s var(--e-out) infinite;
-    }
-
-    .hero-title {
-      margin: 0;
-      font-size: clamp(3.2rem, 10vw, 6.4rem);
-      line-height: 0.92;
-      font-weight: 700;
-      letter-spacing: -0.045em;
-      text-wrap: balance;
-    }
-    .hero-title .line {
-      display: block;
-      overflow: hidden;
-      padding-bottom: 0.06em;
-    }
-    .hero-title .word {
-      display: inline-block;
-      transform: translateY(110%);
-      opacity: 0;
-      transition: transform 900ms var(--e-out), opacity 700ms var(--e-out);
-    }
-    .js .hero-title .word { will-change: transform, opacity; }
-    .hero-title .line:nth-child(1) .word { transition-delay: 80ms; }
-    .hero-title .line:nth-child(2) .word { transition-delay: 220ms; }
-    .hero-title .line:nth-child(2) .word.amp { transition-delay: 160ms; }
-    .hero-title.is-in .word { transform: translateY(0); opacity: 1; }
-    .hero-title .amp {
-      color: var(--teal);
-      margin-right: 0.18em;
-      font-weight: 500;
-      opacity: 0.85;
-    }
-    .hero-title .punct {
-      display: inline-block;
-      transform: translateY(0);
-      width: 0.32em; height: 0.32em;
-      margin-left: 0.05em;
-      vertical-align: 0.06em;
-      border-radius: 50%;
-      background: var(--grad);
-      box-shadow: 0 0 28px rgba(45, 212, 191, 0.65);
-      opacity: 0;
-      transition: opacity 700ms var(--e-out) 360ms;
-    }
-    .hero-title.is-in .punct { opacity: 1; }
-
-    .hero-subtitle {
-      margin: 1.2rem 0 0;
-      display: inline-flex; align-items: center; gap: 0.7rem;
-      font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(1.15rem, 2.2vw, 1.6rem);
-      color: var(--ink-2);
-      font-weight: 500;
-      letter-spacing: -0.005em;
-    }
-    .hero-subtitle-mark {
-      width: 2.2rem; height: 2px; border-radius: 2px;
-      background: var(--grad);
-      box-shadow: 0 0 14px rgba(45, 212, 191, 0.6);
-      flex-shrink: 0;
-    }
-
-    .hero-text {
-      max-width: 38rem;
-      margin: 1.2rem 0 0;
-      color: var(--ink-2);
-      font-size: clamp(0.98rem, 1.4vw, 1.08rem);
-      line-height: 1.75;
-    }
-
-    .hero-actions {
-      display: flex; flex-wrap: wrap;
-      align-items: center; gap: 0.7rem;
-      margin-top: 1.9rem;
-    }
-
-    /* =========================================================
-       Buttons
-       ========================================================= */
-    .btn, .icon-link, .guide-link, .footer-links a {
-      display: inline-flex; align-items: center; justify-content: center;
-      gap: 0.6rem;
-      min-height: 2.95rem;
-      border: 1px solid transparent;
-      font-weight: 700;
-      transition: transform 220ms var(--e-out), border-color 220ms,
-                  background 220ms, box-shadow 220ms, color 220ms;
-      text-decoration: none;
-    }
-    .btn {
-      position: relative; overflow: hidden;
-      border-radius: var(--r-pill);
-      padding: 0.85rem 1.3rem;
-      font-size: 0.92rem;
-    }
-    .btn-primary {
-      background: var(--grad);
-      color: #02110f; font-weight: 700;
-      box-shadow:
-        0 10px 30px rgba(6, 182, 212, 0.25),
-        0 4px 14px rgba(16, 185, 129, 0.22),
-        inset 0 1px 0 rgba(255,255,255,0.4);
-    }
-    .btn-primary::after {
-      content: ""; position: absolute; inset: 0;
-      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
-      transform: translateX(-120%);
-      transition: transform 800ms var(--e-out);
-      pointer-events: none;
-    }
-    .btn-primary:hover::after { transform: translateX(120%); }
-    .btn-primary:hover {
-      box-shadow:
-        0 16px 44px rgba(6, 182, 212, 0.38),
-        0 6px 18px rgba(16, 185, 129, 0.35),
-        inset 0 1px 0 rgba(255,255,255,0.45);
-    }
-    .btn-ghost {
-      border-color: var(--line-2);
-      background: var(--surface);
-      color: var(--ink);
-      backdrop-filter: blur(14px);
-    }
-    .btn-ghost:hover {
-      border-color: var(--line-bright);
-      background: rgba(45, 212, 191, 0.1);
-      color: #fff;
-    }
-    .btn-youtube {
-      border-color: rgba(255, 79, 216, 0.34);
-      background:
-        linear-gradient(135deg, rgba(255, 79, 216, 0.22), rgba(45, 212, 191, 0.14)),
-        rgba(8, 47, 45, 0.72);
-      color: var(--ink);
-      box-shadow: 0 14px 40px rgba(255, 79, 216, 0.18);
-      backdrop-filter: blur(14px);
-    }
-    .btn-youtube:hover {
-      border-color: rgba(255, 79, 216, 0.6);
-      background:
-        linear-gradient(135deg, rgba(255, 79, 216, 0.32), rgba(45, 212, 191, 0.18)),
-        rgba(8, 47, 45, 0.78);
-      box-shadow: 0 18px 54px rgba(255, 79, 216, 0.28);
-    }
-    .icon-link {
-      width: 2.95rem;
-      border-color: var(--line-2);
-      border-radius: 50%;
-      background: var(--surface);
-      color: var(--ink);
-      backdrop-filter: blur(14px);
-      flex-shrink: 0;
-    }
-    .icon-link:hover {
-      border-color: var(--line-bright);
-      background: rgba(45, 212, 191, 0.12);
-      color: var(--teal);
-    }
-    .btn:hover, .icon-link:hover, .guide-link:hover { transform: translateY(-3px); }
-    .btn:active, .icon-link:active, .guide-link:active { transform: translateY(-1px) scale(0.98); }
-
-    /* =========================================================
-       Hero terminal panel (deploy preview)
-       ========================================================= */
-    .hero-visual {
-      position: relative;
-      min-height: 26rem;
-      display: grid;
-      place-items: center;
-    }
-
-    .hero-panel {
-      position: relative;
-      width: min(100%, 30rem);
-      overflow: hidden;
-      border: 1px solid var(--line-2);
-      border-radius: var(--r-lg);
-      background:
-        linear-gradient(160deg, rgba(8, 47, 45, 0.85), rgba(6, 33, 31, 0.78)),
-        linear-gradient(135deg, rgba(6, 182, 212, 0.18), transparent 36%);
-      box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255,255,255,0.04);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      transform-style: preserve-3d;
-      will-change: transform;
-      transition: border-color 240ms var(--e-out), box-shadow 240ms var(--e-out), transform 240ms var(--e-out);
-    }
-    .hero-panel::after {
-      content: "";
-      position: absolute; inset: 0;
-      border-radius: inherit;
-      padding: 1px;
-      background: linear-gradient(135deg, rgba(6,182,212,0), rgba(45,212,191,0.6), rgba(16,185,129,0.5), rgba(6,182,212,0));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor; mask-composite: exclude;
-      opacity: 0.55;
-      transition: opacity 320ms var(--e-out);
-      pointer-events: none;
-    }
-    .hero-panel:hover { border-color: var(--line-bright); }
-    .hero-panel:hover::after { opacity: 1; }
-
-    .hero-panel-grid {
-      position: absolute; inset: 0;
-      pointer-events: none;
-      background-image:
-        linear-gradient(rgba(45, 212, 191, 0.08) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(45, 212, 191, 0.08) 1px, transparent 1px);
-      background-size: 26px 26px;
-      mask-image: linear-gradient(180deg, rgba(0,0,0,0.7), transparent 80%);
-      -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0.7), transparent 80%);
-      opacity: 0.65;
-    }
-    .hero-panel-scan {
-      position: absolute;
-      left: 6%; right: 6%;
-      top: 8%;
-      height: 2px;
-      border-radius: 2px;
-      background: linear-gradient(90deg, transparent, var(--teal), transparent);
-      box-shadow: 0 0 18px rgba(45, 212, 191, 0.7);
-      animation: scanSweep 6s var(--e-out) infinite;
-      pointer-events: none;
-    }
-    @keyframes scanSweep {
-      0%,100% { top: 12%; opacity: 0; }
-      10%,90% { opacity: 1; }
-      50%     { top: 86%; opacity: 1; }
-    }
-
-    .terminal-window {
-      position: relative;
-      z-index: 1;
-      padding: 1.3rem;
-    }
-
-    .terminal-topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 1rem;
-      padding-bottom: 0.95rem;
-      border-bottom: 1px solid var(--line);
-    }
-    .window-controls {
-      display: flex; gap: 0.42rem;
-    }
-    .window-controls span {
-      width: 0.72rem; height: 0.72rem;
-      border-radius: 50%;
-      background: #ff4fd8;
-      box-shadow: 0 0 12px currentColor;
-    }
-    .window-controls span:nth-child(2) { background: var(--warning); }
-    .window-controls span:nth-child(3) { background: var(--mint); }
-
-    .terminal-label {
-      margin: 0;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.78rem;
-      letter-spacing: 0.08em;
-      color: var(--ink-2);
-      text-transform: lowercase;
-    }
-    .terminal-label .dot {
-      display: inline-block;
-      width: 0.4rem; height: 0.4rem;
-      margin-right: 0.45rem;
-      border-radius: 50%;
-      background: var(--teal);
-      box-shadow: 0 0 10px rgba(45, 212, 191, 0.85);
-      vertical-align: 0.15em;
-    }
-
-    .terminal-body {
-      display: grid;
-      gap: 0.7rem;
-      margin-top: 1.25rem;
-    }
-    .code-line {
-      display: flex; align-items: center; gap: 0.8rem;
-      border: 1px solid var(--line);
-      border-radius: var(--r-sm);
-      padding: 0.85rem 1rem;
-      background: rgba(2, 17, 15, 0.55);
-      color: var(--ink-2);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.88rem;
-      transition: border-color 240ms var(--e-out), background 240ms var(--e-out), transform 240ms var(--e-out);
-    }
-    .code-line .step-dot {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 1.6rem; height: 1.6rem;
-      border-radius: 50%;
-      border: 1px solid var(--line-bright);
-      background: rgba(45, 212, 191, 0.08);
-      color: var(--teal);
-      font-size: 0.78rem;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-    .code-line i { color: var(--teal); font-size: 0.95rem; }
-    .code-line strong {
-      color: var(--ink);
-      font-weight: 600;
-    }
-    .code-line:hover {
-      border-color: var(--line-2);
-      background: rgba(45, 212, 191, 0.06);
-      transform: translateX(3px);
-    }
-
-    .publish-badge {
-      display: inline-flex; width: fit-content;
-      align-items: center; gap: 0.55rem;
-      margin-top: 1.4rem;
-      padding: 0.65rem 1rem;
-      border: 1px solid rgba(16, 185, 129, 0.42);
-      border-radius: var(--r-pill);
-      background: rgba(16, 185, 129, 0.08);
-      color: var(--mint);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      box-shadow: 0 0 28px rgba(16, 185, 129, 0.22);
-    }
-    .publish-badge i {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 1.2rem; height: 1.2rem;
-      border-radius: 50%;
-      background: var(--mint);
-      color: #02110f;
-      font-size: 0.62rem;
-      box-shadow: 0 0 14px rgba(16, 185, 129, 0.85);
-    }
-
-    /* Floating accent chips around the panel */
-    .hero-chip {
-      position: absolute;
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.5rem 0.8rem;
-      border: 1px solid var(--line-2);
-      border-radius: var(--r-pill);
-      background: var(--surface-2);
-      backdrop-filter: blur(14px);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.08em;
-      color: var(--ink-2);
-      text-transform: uppercase;
-      box-shadow: var(--shadow), 0 0 18px rgba(45, 212, 191, 0.18);
-      animation: chipFloat 6s ease-in-out infinite;
-    }
-    .hero-chip i { color: var(--mint); }
-    .hero-chip-1 { left: -0.3rem; top: 1rem; animation-delay: -1s; }
-    .hero-chip-2 { right: -0.4rem; bottom: 2.4rem; animation-delay: -3s; }
-    @keyframes chipFloat {
-      0%,100% { transform: translateY(0); }
-      50%     { transform: translateY(-0.45rem); }
-    }
-
-    /* =========================================================
-       Sections
-       ========================================================= */
-    .section {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: clamp(4rem, 10vw, 6.5rem) clamp(1rem, 4vw, 2rem);
-    }
-
-    .section-heading {
-      max-width: 56rem;
-      margin-bottom: 2.6rem;
-    }
-    .section-heading h2 {
-      margin: 0;
-      font-size: clamp(2.2rem, 5.6vw, 4rem);
-      line-height: 1;
-      font-weight: 600;
-      letter-spacing: -0.035em;
-      text-wrap: balance;
-    }
-    .section-heading p:not(.eyebrow) {
-      margin: 1rem 0 0;
-      color: var(--ink-2);
-      font-size: 1.06rem;
-      line-height: 1.75;
-      max-width: 48rem;
-    }
-
-    .chip-strip {
-      display: flex; flex-wrap: wrap; gap: 0.5rem;
-      margin-top: 1.6rem;
-    }
-    .chip {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      padding: 0.4rem 0.85rem;
-      border: 1px solid var(--line-2);
-      border-radius: var(--r-pill);
-      background: var(--surface-3);
-      backdrop-filter: blur(10px);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      color: var(--ink-2);
-      text-transform: uppercase;
-    }
-    .chip i { color: var(--teal); font-size: 0.7rem; }
-
-    /* =========================================================
-       Guide card (featured trick)
-       ========================================================= */
-    .guide-card {
-      position: relative;
-      overflow: hidden;
-      border: 1px solid var(--line-2);
-      border-radius: var(--r-lg);
-      background:
-        linear-gradient(160deg, rgba(8, 47, 45, 0.85), rgba(6, 33, 31, 0.78)),
-        linear-gradient(135deg, rgba(6, 182, 212, 0.16), transparent 40%);
-      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.04);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      transform-style: preserve-3d;
-      transition: border-color 240ms var(--e-out), box-shadow 240ms var(--e-out), transform 240ms var(--e-out);
-    }
-    .guide-card::before {
-      content: "";
-      position: absolute; inset: 0;
-      background: radial-gradient(420px 320px at var(--mx, 50%) var(--my, 0%), rgba(45, 212, 191, 0.16), transparent 60%);
-      opacity: 0;
-      transition: opacity 320ms var(--e-out);
-      pointer-events: none;
-    }
-    .guide-card::after {
-      content: "";
-      position: absolute; inset: 0;
-      border-radius: inherit;
-      padding: 1px;
-      background: linear-gradient(135deg, rgba(6,182,212,0), rgba(45,212,191,0.55), rgba(16,185,129,0.45), rgba(6,182,212,0));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor; mask-composite: exclude;
-      opacity: 0.5;
-      transition: opacity 320ms var(--e-out);
-      pointer-events: none;
-    }
-    .guide-card:hover, .guide-card.is-touched {
-      border-color: var(--line-bright);
-      box-shadow: 0 36px 90px rgba(6, 182, 212, 0.22), 0 12px 32px rgba(16, 185, 129, 0.18);
-    }
-    .guide-card:hover::before, .guide-card.is-touched::before { opacity: 1; }
-    .guide-card:hover::after, .guide-card.is-touched::after { opacity: 1; }
-
-    .guide-card-inner {
-      position: relative; z-index: 1;
-      display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(17rem, 0.65fr);
-      gap: clamp(1.5rem, 3.5vw, 2.5rem);
-      padding: clamp(1.4rem, 3vw, 2.2rem);
-    }
-
-    .guide-main { min-width: 0; }
-
-    .guide-kicker {
-      display: inline-flex; align-items: center; gap: 0.7rem;
-      margin: 0 0 1.3rem;
-      color: var(--ink);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-    .guide-kicker .kicker-icon {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 2.6rem; height: 2.6rem;
-      border: 1px solid var(--line-bright);
-      border-radius: 12px;
-      background: linear-gradient(135deg, rgba(6, 182, 212, 0.22), rgba(45, 212, 191, 0.18));
-      color: var(--teal);
-      font-size: 1.05rem;
-      box-shadow: 0 0 24px rgba(45, 212, 191, 0.28), inset 0 1px 0 rgba(255,255,255,0.06);
-    }
-
-    .guide-main h3.guide-title {
-      margin: 0;
-      font-size: clamp(1.7rem, 3.4vw, 2.4rem);
-      line-height: 1.05;
-      font-weight: 600;
-      letter-spacing: -0.025em;
-    }
-
-    .guide-summary {
-      max-width: 44rem;
-      margin: 1rem 0 0;
-      color: var(--ink-2);
-      font-size: 1.02rem;
-      line-height: 1.75;
-    }
-
-    /* Step timeline */
-    .step-list {
-      position: relative;
-      display: grid;
-      gap: 0.85rem;
-      margin: 2.2rem 0 0;
-      padding: 0;
-      list-style: none;
-      counter-reset: guide-step;
-    }
-    .step-list::before {
-      content: "";
-      position: absolute;
-      left: 1.25rem;
-      top: 1.4rem;
-      bottom: 1rem;
-      width: 1px;
-      background: linear-gradient(180deg, rgba(6, 182, 212, 0.6), rgba(45, 212, 191, 0.4) 50%, rgba(16, 185, 129, 0.25));
-      pointer-events: none;
-    }
-    .step-list li {
-      position: relative;
-      display: grid;
-      grid-template-columns: 2.5rem minmax(0, 1fr);
-      gap: 0.95rem;
-      align-items: start;
-      padding: 0.95rem 1.05rem;
-      border: 1px solid var(--line);
-      border-radius: var(--r-sm);
-      background: rgba(2, 17, 15, 0.45);
-      backdrop-filter: blur(8px);
-      counter-increment: guide-step;
-      transition: border-color 220ms var(--e-out), background 220ms var(--e-out), transform 220ms var(--e-out);
-    }
-    .step-list li::before {
-      content: counter(guide-step, decimal-leading-zero);
-      position: relative;
-      z-index: 1;
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 2.5rem; height: 2.5rem;
-      border-radius: 50%;
-      border: 1px solid var(--line-bright);
-      background: linear-gradient(135deg, rgba(8, 47, 45, 0.96), rgba(6, 33, 31, 0.92));
-      color: var(--teal);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      box-shadow: 0 0 0 4px rgba(2, 17, 15, 0.85), 0 0 22px rgba(45, 212, 191, 0.2);
-      transition: color 220ms, background 220ms, box-shadow 220ms;
-    }
-    .step-list li:hover {
-      border-color: var(--line-2);
-      background: rgba(45, 212, 191, 0.06);
-      transform: translateX(3px);
-    }
-    .step-list li:hover::before {
-      color: #02110f;
-      background: var(--grad);
-      box-shadow: 0 0 0 4px rgba(2, 17, 15, 0.85), 0 0 30px rgba(45, 212, 191, 0.5);
-    }
-
-    .step-copy { min-width: 0; padding-top: 0.18rem; }
-    .step-copy strong {
-      display: block;
-      color: var(--ink);
-      font-family: "Space Grotesk", sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      line-height: 1.35;
-      letter-spacing: -0.01em;
-    }
-    .step-copy span {
-      display: block;
-      margin-top: 0.25rem;
-      color: var(--ink-2);
-      font-size: 0.94rem;
-      line-height: 1.65;
-    }
-
-    .inline-code {
-      display: inline-flex; align-items: center;
-      padding: 0.05rem 0.45rem;
-      border: 1px solid rgba(45, 212, 191, 0.32);
-      border-radius: 6px;
-      background: rgba(45, 212, 191, 0.08);
-      color: var(--teal);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.86em;
-      font-weight: 600;
-    }
-
-    .note-strip {
-      display: flex; flex-wrap: wrap; gap: 0.55rem;
-      margin-top: 1.8rem;
-    }
-    .note-strip span {
-      display: inline-flex; align-items: center; gap: 0.45rem;
-      min-height: 2.4rem;
-      padding: 0.55rem 0.9rem;
-      border: 1px solid var(--line-2);
-      border-radius: var(--r-pill);
-      background: var(--surface-3);
-      backdrop-filter: blur(10px);
-      color: var(--ink-2);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.74rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-    }
-    .note-strip i { color: var(--mint); }
-
-    /* Tutorial aside */
-    .guide-side {
-      position: relative;
-      align-self: stretch;
-      display: flex; flex-direction: column;
-      padding: 1.5rem;
-      border: 1px solid var(--line);
-      border-radius: var(--r);
-      background:
-        radial-gradient(circle at 80% 0%, rgba(255, 79, 216, 0.16), transparent 55%),
-        linear-gradient(160deg, rgba(8, 47, 45, 0.82), rgba(6, 33, 31, 0.74));
-      overflow: hidden;
-    }
-    .guide-side::after {
-      content: "";
-      position: absolute; inset: 0;
-      border-radius: inherit;
-      padding: 1px;
-      background: linear-gradient(135deg, rgba(255, 79, 216, 0.0), rgba(45, 212, 191, 0.45), rgba(16, 185, 129, 0.35), rgba(255, 79, 216, 0.0));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor; mask-composite: exclude;
-      opacity: 0.4;
-      pointer-events: none;
-    }
-
-    .side-icon {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 3rem; height: 3rem;
-      border: 1px solid var(--line-bright);
-      border-radius: 14px;
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(45, 212, 191, 0.16));
-      color: var(--mint);
-      font-size: 1.15rem;
-      box-shadow: 0 0 26px rgba(16, 185, 129, 0.3), inset 0 1px 0 rgba(255,255,255,0.06);
-    }
-    .side-pill {
-      display: inline-flex; align-items: center; gap: 0.45rem;
-      width: fit-content;
-      margin-top: 1.05rem;
-      padding: 0.35rem 0.75rem;
-      border: 1px solid var(--line-2);
-      border-radius: var(--r-pill);
-      background: rgba(2, 17, 15, 0.45);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 0.66rem;
-      letter-spacing: 0.1em;
-      color: var(--ink-2);
-      text-transform: uppercase;
-    }
-    .side-pill i { color: var(--teal); font-size: 0.65rem; }
-
-    .guide-side h3 {
-      margin: 1rem 0 0.75rem;
-      font-size: clamp(1.35rem, 2.2vw, 1.6rem);
-      line-height: 1.15;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-    }
-    .guide-side p {
-      margin: 0;
-      color: var(--ink-2);
-      line-height: 1.7;
-      font-size: 0.98rem;
-    }
-
-    .guide-actions {
-      display: grid;
-      gap: 0.7rem;
-      margin-top: 1.4rem;
-    }
-    .guide-link {
-      justify-content: flex-start;
-      min-height: 3.05rem;
-      gap: 0.7rem;
-      padding: 0.85rem 1.05rem;
-      border-color: var(--line);
-      border-radius: var(--r-sm);
-      background: rgba(2, 17, 15, 0.45);
-      color: var(--ink);
-      font-size: 0.9rem;
-      font-weight: 700;
-      backdrop-filter: blur(12px);
-    }
-    .guide-link i {
-      width: 1.2rem;
-      color: var(--teal);
-      font-size: 1rem;
-      text-align: center;
-    }
-    .guide-link:hover {
-      border-color: var(--line-bright);
-      background: rgba(45, 212, 191, 0.1);
-      color: #fff;
-    }
-    .guide-link.is-youtube {
-      border-color: rgba(255, 79, 216, 0.34);
-      background:
-        linear-gradient(135deg, rgba(255, 79, 216, 0.20), rgba(45, 212, 191, 0.10)),
-        rgba(8, 47, 45, 0.6);
-      box-shadow: 0 12px 30px rgba(255, 79, 216, 0.16);
-    }
-    .guide-link.is-youtube i { color: #ff4fd8; }
-    .guide-link.is-youtube:hover {
-      border-color: rgba(255, 79, 216, 0.6);
-      background:
-        linear-gradient(135deg, rgba(255, 79, 216, 0.28), rgba(45, 212, 191, 0.14)),
-        rgba(8, 47, 45, 0.66);
-      color: #fff;
-    }
-
-    /* =========================================================
-       Marquee
-       ========================================================= */
-    .marquee-section {
-      position: relative;
-      overflow: hidden;
-      margin: 1rem auto 0;
-      padding: 1rem 0;
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-      max-width: 1280px;
-      width: calc(100% - 2rem);
-      mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-      -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-    }
-    .marquee {
-      display: flex;
-      gap: 2.5rem;
-      width: max-content;
-      font-family: "Space Grotesk", sans-serif;
-      font-weight: 600;
-      font-size: clamp(1.05rem, 2.2vw, 1.4rem);
-      letter-spacing: -0.01em;
-      color: var(--ink);
-      animation: marqueeRoll 42s linear infinite;
-    }
-    .marquee:hover { animation-play-state: paused; }
-    .marquee span { display: inline-flex; align-items: center; gap: 0.6rem; white-space: nowrap; }
-    .marquee .dot { color: var(--teal); }
-    .marquee .tag { color: var(--muted); font-family: "JetBrains Mono", monospace; font-size: 0.85em; letter-spacing: 0.08em; text-transform: uppercase; }
-    @keyframes marqueeRoll {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
-    }
-
-    /* =========================================================
-       Closing band
-       ========================================================= */
-    .closing-band {
-      display: flex;
-      width: min(1280px, calc(100% - 2rem));
-      align-items: center;
-      justify-content: space-between;
-      gap: 1.6rem;
-      margin: 2rem auto 0;
-      padding: 2.4rem clamp(0.5rem, 2vw, 1rem);
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-    }
-    .closing-band h2 {
-      max-width: 38rem;
-      margin: 0;
-      font-size: clamp(1.6rem, 3.4vw, 2.25rem);
-      line-height: 1.05;
-      font-weight: 600;
-      letter-spacing: -0.025em;
-    }
-    .closing-band p {
-      max-width: 34rem;
-      margin: 0.7rem 0 0;
-      color: var(--ink-2);
-      line-height: 1.7;
-    }
-
-    /* =========================================================
-       Footer
-       ========================================================= */
-    .site-footer {
-      display: flex;
-      width: min(1280px, calc(100% - 2rem));
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      margin: 0 auto;
-      padding: 2rem 0 3rem;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-    .site-footer p { margin: 0; }
-
-    .footer-links {
-      display: flex; flex-wrap: wrap; gap: 0.55rem;
-    }
-    .footer-links a {
-      min-height: 2.6rem;
-      gap: 0.5rem;
-      border-color: var(--line);
-      border-radius: var(--r-pill);
-      padding: 0.5rem 0.95rem;
-      background: var(--surface);
-      color: var(--ink);
-      font-size: 0.85rem;
-      backdrop-filter: blur(14px);
-    }
-    .footer-links a:hover {
-      border-color: var(--line-bright);
-      background: rgba(45, 212, 191, 0.1);
-      color: var(--teal);
-      transform: translateY(-2px);
-    }
-
-    /* =========================================================
-       Back to top
-       ========================================================= */
-    .back-top {
-      position: fixed; right: 1.2rem; bottom: 1.2rem; z-index: 40;
-      display: inline-flex;
-      width: 3rem; height: 3rem;
-      align-items: center; justify-content: center;
-      border: 1px solid var(--line-bright);
-      border-radius: 50%;
-      background: var(--surface-2);
-      color: var(--ink);
-      backdrop-filter: blur(14px);
-      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.45), 0 0 22px rgba(45, 212, 191, 0.18);
-      opacity: 0;
-      transform: translateY(20px) scale(0.92);
-      pointer-events: none;
-      transition: opacity 280ms var(--e-out), transform 280ms var(--e-out),
-                  border-color 220ms, color 220ms;
-    }
-    .back-top.is-visible {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      pointer-events: auto;
-    }
-    .back-top:hover {
-      border-color: var(--mint);
-      color: var(--mint);
-    }
-
-    /* =========================================================
-       Reveal on scroll
-       ========================================================= */
-    .reveal { opacity: 1; transform: translateY(0); }
-    .js .reveal {
-      opacity: 0;
-      transform: translateY(22px);
-      transition: opacity 700ms var(--e-out), transform 700ms var(--e-out);
-    }
-    .js .reveal.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* =========================================================
-       Responsive
-       ========================================================= */
-    @media (max-width: 1080px) {
-      .nav-status { display: none; }
-    }
-
-    @media (max-width: 980px) {
-      .hero-grid {
-        grid-template-columns: 1fr;
-        gap: 2.5rem;
-        padding-top: 7rem;
-      }
-      .hero-visual { min-height: 22rem; order: -1; }
-      .hero-panel { width: min(38rem, 100%); }
-
-      .guide-card-inner { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 760px) {
-      .site-header {
-        padding-block: 0.65rem;
-        border-bottom: 1px solid var(--line);
-        background: rgba(2, 17, 15, 0.78);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-      }
-      .menu-toggle { display: inline-flex; }
-
-      .brand-role { display: none; }
-
-      .nav-menu {
-        position: fixed;
-        top: 4.95rem;
-        left: 1rem;
-        right: 1rem;
-        display: grid;
-        min-width: 0;
-        border-radius: var(--r);
-        padding: 0.65rem;
-        background: linear-gradient(160deg, rgba(8, 47, 45, 0.94), rgba(6, 33, 31, 0.9));
-        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
-        opacity: 0;
-        pointer-events: none;
-        transform: translateY(-0.5rem);
-        transition: opacity 200ms var(--e-out), transform 200ms var(--e-out);
-      }
-      .nav-menu.is-open {
-        opacity: 1;
-        pointer-events: auto;
-        transform: translateY(0);
-      }
-      .nav-menu a {
-        min-height: 3.1rem;
-        border: 1px solid var(--line);
-        border-radius: var(--r-sm);
-        padding: 0.8rem 0.95rem;
-        background: rgba(255, 255, 255, 0.025);
-      }
-
-      .hero-grid { min-height: auto; padding-bottom: 2.5rem; }
-      .hero-actions { align-items: stretch; }
-      .btn { flex: 1 1 calc(50% - 0.45rem); min-width: 0; padding-inline: 0.85rem; }
-      .icon-link { flex: 0 0 2.95rem; }
-
-      .hero-chip { display: none; }
-
-      .closing-band { align-items: flex-start; flex-direction: column; }
-      .site-footer { align-items: flex-start; flex-direction: column; }
-    }
-
-    @media (max-width: 520px) {
-      .site-header { padding-inline: 0.85rem; }
-      .brand-name { font-size: 0.86rem; }
-      .brand-orbit { width: 2rem; height: 2rem; }
-
-      .hero-grid, .section { padding-inline: 0.95rem; }
-      .hero-grid { padding-top: 5.8rem; }
-
-      .hero-visual { min-height: 18rem; }
-      .terminal-window { padding: 1rem; }
-      .code-line { padding: 0.75rem 0.85rem; font-size: 0.82rem; }
-
-      .btn { flex-basis: 100%; }
-
-      .section { padding-block: 3.6rem; }
-      .guide-main h3.guide-title { font-size: 1.7rem; }
-
-      .step-list::before { left: 1.15rem; }
-      .step-list li {
-        grid-template-columns: 2.3rem minmax(0, 1fr);
-        gap: 0.75rem;
-        padding: 0.85rem 0.9rem;
-      }
-      .step-list li::before {
-        width: 2.3rem; height: 2.3rem;
-        font-size: 0.74rem;
-      }
-
-      .note-strip span { flex: 1 1 auto; justify-content: center; }
-
-      .back-top { width: 2.7rem; height: 2.7rem; right: 0.85rem; bottom: 0.85rem; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        scroll-behavior: auto !important;
-        animation-duration: 1ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 1ms !important;
-      }
-      .hero-title .word { transform: none; opacity: 1; }
-      .hero-title .punct { opacity: 1; }
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Chess Mastery, a polished browser chess game with a strong Web Worker AI, multiple modes, chess clocks, PGN/FEN tools, and a mobile-first responsive design." />
+  <meta name="theme-color" content="#07111f" />
+  <title>Chess Mastery</title>
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- chess.js loaded synchronously so window.Chess is ready before app.js runs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  <script src="js/app.js" defer></script>
 </head>
-<body>
-  <canvas id="particleCanvas" aria-hidden="true"></canvas>
-  <div class="noise" aria-hidden="true"></div>
-  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
-  <div class="cursor" id="cursor" aria-hidden="true">
-    <div class="cursor-dot"></div>
-    <div class="cursor-ring"></div>
-  </div>
+<body data-theme="midnight" data-piece-style="classic">
+  <a class="skip-link" href="#board">Skip to chess board</a>
 
-  <a class="skip-link" href="#main">Skip to content</a>
-
-  <header class="site-header" id="siteHeader">
-    <nav class="nav-shell" aria-label="Primary navigation">
-      <a class="brand-mark" href="https://halfanhossenhabib.github.io/mysite/" aria-label="Halfan Hossen Habib home" data-magnetic>
-        <span class="brand-orbit" aria-hidden="true"></span>
-        <span class="brand-meta">
-          <span class="brand-name">Halfan Hossen Habib</span>
-          <span class="brand-role">Tricks &amp; Tips</span>
+  <!-- =========================================================
+       Top app bar
+       ========================================================= -->
+  <header class="appbar" role="banner">
+    <div class="appbar-inner">
+      <a class="brand" href="#" aria-label="Chess Mastery home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M8 2h8l1 3h-2v3l3 4v2H6v-2l3-4V5H7l1-3Zm-2 12h12l1 4H5l1-4Zm-1 6h14v2H5v-2Z"/></svg>
+        </span>
+        <span class="brand-text">
+          <span class="brand-title">Chess Mastery</span>
+          <span class="brand-sub">play. think. improve.</span>
         </span>
       </a>
 
-      <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navMenu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-
-      <div class="nav-menu" id="navMenu">
-        <a href="https://halfanhossenhabib.github.io/mysite/" data-magnetic><span class="nav-num" aria-hidden="true">01</span><span>Home</span></a>
-        <a href="#guide" data-magnetic><span class="nav-num" aria-hidden="true">02</span><span>Guide</span></a>
-        <a href="#tutorial" data-magnetic><span class="nav-num" aria-hidden="true">03</span><span>Tutorial</span></a>
-      </div>
-
-      <div class="nav-status" aria-hidden="true">
-        <span class="nav-status-dot"></span>
-        <span>Online</span>
-        <span class="nav-status-clock" id="navClock">--:--</span>
-      </div>
-    </nav>
+      <nav class="appbar-actions" aria-label="Primary">
+        <button class="iconbtn" id="settingsBtn" type="button" aria-label="Open settings" aria-haspopup="dialog">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm9.4 4 2-1.7-2-3.4-2.6.7a8 8 0 0 0-1.7-1L16.5 4h-4l-.6 2.6a8 8 0 0 0-1.7 1L7.6 7l-2 3.4 2 1.7a7.9 7.9 0 0 0 0 1.8l-2 1.7 2 3.4 2.6-.7a8 8 0 0 0 1.7 1l.6 2.6h4l.6-2.6a8 8 0 0 0 1.7-1l2.6.7 2-3.4-2-1.7c.1-.6.1-1.2 0-1.8Z"/></svg>
+        </button>
+        <button class="iconbtn" id="soundToggle" type="button" aria-label="Toggle sound" aria-pressed="false">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M3 10v4h4l5 4V6L7 10H3Zm13 2a4 4 0 0 0-2-3.5v7A4 4 0 0 0 16 12Zm-2-7v2.1a6 6 0 0 1 0 9.8V19a8 8 0 0 0 0-14Z"/></svg>
+        </button>
+      </nav>
+    </div>
   </header>
 
-  <main id="main">
-    <section class="hero-section" id="top">
-      <div class="hero-vignette" aria-hidden="true"></div>
-      <div class="hero-grid">
-        <div class="hero-copy reveal">
-          <span class="hero-eyebrow">
-            <span class="hero-eyebrow-dot" aria-hidden="true"></span>
-            Tricks / Tips
-          </span>
-          <h1 class="hero-title" id="heroTitle" aria-label="Tricks & Tips.">
-            <span class="line"><span class="word">Tricks</span></span>
-            <span class="line"><span class="word amp">&amp;</span><span class="word grad-text">Tips</span><span class="punct" aria-hidden="true"></span></span>
-          </h1>
-          <p class="hero-subtitle">
-            <span class="hero-subtitle-mark" aria-hidden="true"></span>
-            Simple tech tricks I actually use while learning and building.
-          </p>
-          <p class="hero-text">
-            A small learner-friendly guide space for useful web experiments, clean steps, and ideas worth trying in real projects.
-          </p>
+  <main class="shell" id="mainShell">
+    <!-- Status / clocks bar (priority on mobile, right after board) -->
+    <section class="topbar" aria-label="Game status">
+      <div class="clock clock-black" id="clockBlack" data-active="false" aria-label="Black clock">
+        <span class="clock-label">Black</span>
+        <span class="clock-time" id="clockBlackTime">--:--</span>
+      </div>
 
-          <div class="hero-actions" aria-label="Hero actions">
-            <a class="btn btn-primary" href="#guide" data-magnetic>
-              <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
-              <span>Explore Guide</span>
-            </a>
-            <a class="btn btn-ghost" href="https://halfanhossenhabib.github.io/mysite/" data-magnetic>
-              <i class="fa-solid fa-house" aria-hidden="true"></i>
-              <span>Home</span>
-            </a>
-            <a class="icon-link" href="https://www.youtube.com/watch?v=EXfFBEuCAr0" target="_blank" rel="noopener noreferrer" aria-label="Watch tutorial on YouTube" data-magnetic>
-              <i class="fa-brands fa-youtube" aria-hidden="true"></i>
-            </a>
-          </div>
+      <div class="status" role="status" aria-live="polite">
+        <span class="turn-dot" id="turnDot" aria-hidden="true"></span>
+        <span class="status-text" id="statusText">Ready to play</span>
+        <span class="thinking" id="thinkingDots" hidden>
+          <span></span><span></span><span></span>
+        </span>
+      </div>
+
+      <div class="clock clock-white" id="clockWhite" data-active="false" aria-label="White clock">
+        <span class="clock-label">White</span>
+        <span class="clock-time" id="clockWhiteTime">--:--</span>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         Board (primary focus on mobile)
+         ========================================================= -->
+    <section class="board-area">
+      <div class="captured captured-top" id="capturedTop" aria-label="Pieces captured by black">
+        <span class="captured-pieces" id="capturedTopPieces"></span>
+        <span class="captured-score" id="capturedTopScore" aria-hidden="true"></span>
+      </div>
+
+      <div class="board-wrap">
+        <div class="coord-files coord-files-top" id="coordFilesTop" aria-hidden="true"></div>
+        <div class="coord-ranks coord-ranks-left" id="coordRanksLeft" aria-hidden="true"></div>
+        <div
+          class="board"
+          id="board"
+          role="grid"
+          aria-label="Chess board, eight by eight"
+          tabindex="0"
+        ></div>
+        <div class="coord-ranks coord-ranks-right" id="coordRanksRight" aria-hidden="true"></div>
+        <div class="coord-files coord-files-bottom" id="coordFilesBottom" aria-hidden="true"></div>
+
+        <!-- Promotion popover (in-board, near destination square) -->
+        <div class="promo" id="promoPopover" hidden role="dialog" aria-modal="true" aria-label="Choose promotion piece">
+          <button class="promo-piece" data-piece="q" type="button" aria-label="Promote to queen"><span class="piece-glyph"></span></button>
+          <button class="promo-piece" data-piece="r" type="button" aria-label="Promote to rook"><span class="piece-glyph"></span></button>
+          <button class="promo-piece" data-piece="b" type="button" aria-label="Promote to bishop"><span class="piece-glyph"></span></button>
+          <button class="promo-piece" data-piece="n" type="button" aria-label="Promote to knight"><span class="piece-glyph"></span></button>
+          <button class="promo-cancel" id="promoCancel" type="button" aria-label="Cancel promotion">×</button>
+        </div>
+      </div>
+
+      <div class="captured captured-bottom" id="capturedBottom" aria-label="Pieces captured by white">
+        <span class="captured-pieces" id="capturedBottomPieces"></span>
+        <span class="captured-score" id="capturedBottomScore" aria-hidden="true"></span>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         Quick controls (touch-friendly, large tap targets)
+         ========================================================= -->
+    <section class="controls" aria-label="Game controls">
+      <button class="ctl ctl-primary" id="newGameBtn" type="button">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 4v4l5-5-5-5v4a8 8 0 1 0 8 8h-2a6 6 0 1 1-6-6Z"/></svg>
+        <span>New game</span>
+      </button>
+      <button class="ctl" id="undoBtn" type="button" aria-label="Undo last move">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 5V1L6 7l6 6V9a6 6 0 0 1 0 12v2a8 8 0 0 0 0-16Z" transform="scale(-1 1) translate(-24 0)"/></svg>
+        <span>Undo</span>
+      </button>
+      <button class="ctl" id="flipBtn" type="button" aria-label="Flip board">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M7 4 3 8l4 4V9h10V7H7V4Zm10 16 4-4-4-4v3H7v2h10v3Z"/></svg>
+        <span>Flip</span>
+      </button>
+      <button class="ctl ctl-danger" id="resignBtn" type="button" aria-label="Resign game">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M5 21V3h2v3h12l-3 5 3 5H7v5H5Z"/></svg>
+        <span>Resign</span>
+      </button>
+    </section>
+
+    <!-- =========================================================
+         Side panel: tabs (Moves / Tools)
+         ========================================================= -->
+    <aside class="panel" aria-label="Game panel">
+      <div class="panel-tabs" role="tablist">
+        <button role="tab" aria-selected="true" aria-controls="tab-moves" id="tabMovesBtn" class="panel-tab is-active" type="button">Moves</button>
+        <button role="tab" aria-selected="false" aria-controls="tab-tools" id="tabToolsBtn" class="panel-tab" type="button">Tools</button>
+      </div>
+
+      <div class="panel-body">
+        <div role="tabpanel" id="tab-moves" aria-labelledby="tabMovesBtn" class="panel-pane is-active">
+          <ol class="movelist" id="moveList" aria-label="Move history"></ol>
+          <div class="movelist-empty" id="moveListEmpty">No moves yet — make the first move.</div>
         </div>
 
-        <div class="hero-visual reveal" aria-label="Publishing preview">
-          <div class="hero-panel tilt-card">
-            <div class="hero-panel-grid" aria-hidden="true"></div>
-            <span class="hero-panel-scan" aria-hidden="true"></span>
-
-            <div class="terminal-window">
-              <div class="terminal-topbar">
-                <div class="window-controls" aria-hidden="true">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-                <p class="terminal-label"><span class="dot" aria-hidden="true"></span>github-pages.deploy</p>
-              </div>
-
-              <div class="terminal-body">
-                <div class="code-line">
-                  <span class="step-dot" aria-hidden="true">01</span>
-                  <i class="fa-regular fa-file-code" aria-hidden="true"></i>
-                  <span>Create <strong>index.html</strong></span>
-                </div>
-                <div class="code-line">
-                  <span class="step-dot" aria-hidden="true">02</span>
-                  <i class="fa-brands fa-github" aria-hidden="true"></i>
-                  <span>Upload to a public repo</span>
-                </div>
-                <div class="code-line">
-                  <span class="step-dot" aria-hidden="true">03</span>
-                  <i class="fa-solid fa-rocket" aria-hidden="true"></i>
-                  <span>Turn on Pages and launch</span>
-                </div>
-              </div>
-
-              <span class="publish-badge">
-                <i class="fa-solid fa-check" aria-hidden="true"></i>
-                Free website live
-              </span>
+        <div role="tabpanel" id="tab-tools" aria-labelledby="tabToolsBtn" class="panel-pane" hidden>
+          <div class="tool-row">
+            <label class="tool-label">FEN</label>
+            <div class="tool-actions">
+              <button class="ctl ctl-sm" id="copyFenBtn" type="button">Copy</button>
+              <button class="ctl ctl-sm" id="loadFenBtn" type="button">Load…</button>
             </div>
           </div>
+          <textarea id="fenView" class="tool-text" readonly aria-label="Current FEN" rows="2"></textarea>
 
-          <span class="hero-chip hero-chip-1" aria-hidden="true">
-            <i class="fa-solid fa-bolt"></i> HTML / CSS / JS
-          </span>
-          <span class="hero-chip hero-chip-2" aria-hidden="true">
-            <i class="fa-solid fa-globe"></i> Free public link
-          </span>
-        </div>
-      </div>
-    </section>
-
-    <section class="section guide-section" id="guide">
-      <div class="section-heading reveal">
-        <div class="eyebrow-row">
-          <span class="section-num" aria-hidden="true">01 /</span>
-          <p class="eyebrow">Featured Trick</p>
-        </div>
-        <h2>Host Free Website <span class="grad-text">on GitHub.</span></h2>
-        <p>
-          A simple path from one HTML file to a public website, using GitHub Pages and the same curious build-and-learn energy as the main portfolio.
-        </p>
-
-        <div class="chip-strip" aria-hidden="true">
-          <span class="chip"><i class="fa-solid fa-circle"></i> Beginner</span>
-          <span class="chip"><i class="fa-solid fa-circle"></i> 9 Steps</span>
-          <span class="chip"><i class="fa-solid fa-circle"></i> ~5 min</span>
-          <span class="chip"><i class="fa-solid fa-circle"></i> Free</span>
-        </div>
-      </div>
-
-      <article class="guide-card tilt-card reveal">
-        <div class="guide-card-inner">
-          <div class="guide-main">
-            <p class="guide-kicker">
-              <span class="kicker-icon"><i class="fa-brands fa-github" aria-hidden="true"></i></span>
-              GitHub Pages guide
-            </p>
-            <h3 class="guide-title">Build it, upload it, <span class="grad-text">publish it.</span></h3>
-            <p class="guide-summary">
-              Start with a tiny HTML file, place it in a public GitHub repository, then let GitHub Pages turn it into a real link you can share.
-            </p>
-
-            <ol class="step-list">
-              <li>
-                <div class="step-copy">
-                  <strong>Create a file</strong>
-                  <span>Open Notepad or VS Code and write your HTML code. Use ChatGPT if you need help shaping the first draft.</span>
-                </div>
-              </li>
-              <li>
-                <div class="step-copy">
-                  <strong>Save it</strong>
-                  <span>Name the file <span class="inline-code">index.html</span> so GitHub Pages knows what to open first.</span>
-                </div>
-              </li>
-              <li>
-                <div class="step-copy">
-                  <strong>Create your GitHub account</strong>
-                  <span>Go to github.com and sign in or create a new account.</span>
-                </div>
-              </li>
-              <li>
-                <div class="step-copy">
-                  <strong>Make a public repository</strong>
-                  <span>Create a new repository, give it a clear name, and set it to Public.</span>
-                </div>
-              </li>
-              <li>
-                <div class="step-copy">
-                  <strong>Upload your site file</strong>
-                  <span>Choose &ldquo;Upload an existing file&rdquo; and drag your <span class="inline-code">index.html</span> into the repository.</span>
-                </div>
-              </li>
-              <li>
-                <div class="step-copy">
-                  <strong>Commit the change</strong>
-                  <span>Click &ldquo;Commit changes&rdquo; so the file is saved into the repo.</span>
-                </div>
-              </li>
-              <li>
-                <div class="step-copy">
-                  <strong>Open Pages settings</strong>
-                  <span>Go to Settings, then Pages from the left sidebar.</span>
-                </div>
-              </li>
-              <li>
-                <div class="step-copy">
-                  <strong>Deploy from main</strong>
-                  <span>Change Branch from None to Main, then click Save.</span>
-                </div>
-              </li>
-              <li>
-                <div class="step-copy">
-                  <strong>Wait for the link</strong>
-                  <span>Give it 1-2 minutes. Your website link will appear near the top of the Pages screen.</span>
-                </div>
-              </li>
-            </ol>
-
-            <div class="note-strip" aria-label="Guide highlights">
-              <span><i class="fa-solid fa-bolt" aria-hidden="true"></i> Beginner friendly</span>
-              <span><i class="fa-solid fa-code" aria-hidden="true"></i> One HTML file</span>
-              <span><i class="fa-solid fa-globe" aria-hidden="true"></i> Free public link</span>
+          <div class="tool-row">
+            <label class="tool-label">PGN</label>
+            <div class="tool-actions">
+              <button class="ctl ctl-sm" id="copyPgnBtn" type="button">Copy</button>
+              <button class="ctl ctl-sm" id="downloadPgnBtn" type="button">Download</button>
             </div>
           </div>
+          <textarea id="pgnView" class="tool-text" readonly aria-label="Current PGN" rows="4"></textarea>
 
-          <aside class="guide-side" id="tutorial" aria-label="Tutorial link">
-            <span class="side-icon">
-              <i class="fa-solid fa-play" aria-hidden="true"></i>
-            </span>
-            <span class="side-pill"><i class="fa-solid fa-circle"></i> Video walkthrough</span>
-            <h3>Need a walkthrough?</h3>
-            <p>
-              NetworkChuck explains the GitHub Pages flow on YouTube if you want to watch each step happen on screen.
-            </p>
-
-            <div class="guide-actions">
-              <a class="guide-link is-youtube" href="https://www.youtube.com/watch?v=EXfFBEuCAr0" target="_blank" rel="noopener noreferrer" data-magnetic>
-                <i class="fa-brands fa-youtube" aria-hidden="true"></i>
-                <span>Watch Tutorial</span>
-              </a>
-              <a class="guide-link" href="https://halfanhossenhabib.github.io/mysite/" data-magnetic>
-                <i class="fa-solid fa-house" aria-hidden="true"></i>
-                <span>Back Home</span>
-              </a>
+          <div class="tool-row">
+            <label class="tool-label">Save / Resume</label>
+            <div class="tool-actions">
+              <button class="ctl ctl-sm" id="saveBtn" type="button">Save</button>
+              <button class="ctl ctl-sm" id="loadSaveBtn" type="button">Resume</button>
+              <button class="ctl ctl-sm ctl-danger" id="clearSaveBtn" type="button">Clear</button>
             </div>
-          </aside>
+          </div>
+          <p class="tool-hint" id="saveHint">Auto-saves every move to this device.</p>
         </div>
-      </article>
-    </section>
-
-    <section class="marquee-section" aria-hidden="true">
-      <div class="marquee" id="marquee">
-        <span>Build <span class="tag">Step 01</span></span>
-        <span class="dot">&#9679;</span>
-        <span>Save <span class="tag">index.html</span></span>
-        <span class="dot">&#9679;</span>
-        <span>Upload <span class="tag">Public Repo</span></span>
-        <span class="dot">&#9679;</span>
-        <span>Commit <span class="tag">Save Changes</span></span>
-        <span class="dot">&#9679;</span>
-        <span>Pages <span class="tag">Deploy</span></span>
-        <span class="dot">&#9679;</span>
-        <span>Launch <span class="tag">Free Public Link</span></span>
-        <span class="dot">&#9679;</span>
-        <span>Build <span class="tag">Step 01</span></span>
-        <span class="dot">&#9679;</span>
-        <span>Save <span class="tag">index.html</span></span>
-        <span class="dot">&#9679;</span>
-        <span>Upload <span class="tag">Public Repo</span></span>
-        <span class="dot">&#9679;</span>
-        <span>Commit <span class="tag">Save Changes</span></span>
-        <span class="dot">&#9679;</span>
-        <span>Pages <span class="tag">Deploy</span></span>
-        <span class="dot">&#9679;</span>
-        <span>Launch <span class="tag">Free Public Link</span></span>
-        <span class="dot">&#9679;</span>
       </div>
-    </section>
-
-    <section class="closing-band reveal" aria-label="Portfolio connection">
-      <div>
-        <div class="eyebrow-row">
-          <span class="section-num" aria-hidden="true">02 /</span>
-          <p class="eyebrow">Build &amp; Learn</p>
-        </div>
-        <h2>A learner-friendly extension of the <span class="grad-text">main portfolio.</span></h2>
-        <p>Same builder energy, same modern tech atmosphere, with a little extra room to share useful tricks.</p>
-      </div>
-      <a class="btn btn-ghost" href="https://halfanhossenhabib.github.io/mysite/" data-magnetic>
-        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-        <span>Back Home</span>
-      </a>
-    </section>
+    </aside>
   </main>
 
-  <footer class="site-footer">
-    <p>&copy; 2026 Halfan Hossen Habib</p>
-    <div class="footer-links" aria-label="Footer links">
-      <a href="https://halfanhossenhabib.github.io/mysite/" aria-label="Home" data-magnetic>
-        <i class="fa-solid fa-house" aria-hidden="true"></i>
-        <span>Home</span>
-      </a>
-      <a href="https://www.youtube.com/watch?v=EXfFBEuCAr0" target="_blank" rel="noopener noreferrer" aria-label="YouTube tutorial" data-magnetic>
-        <i class="fa-brands fa-youtube" aria-hidden="true"></i>
-        <span>YouTube</span>
-      </a>
+  <!-- =========================================================
+       Toast notifications
+       ========================================================= -->
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- =========================================================
+       Settings dialog
+       ========================================================= -->
+  <dialog class="dialog" id="settingsDialog" aria-labelledby="settingsTitle">
+    <form method="dialog" class="dialog-form">
+      <header class="dialog-head">
+        <h2 id="settingsTitle">Settings</h2>
+        <button class="iconbtn" type="button" id="settingsCloseBtn" aria-label="Close settings">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="m18.3 5.7-1.4-1.4L12 9.2 7.1 4.3 5.7 5.7 10.6 10.6 5.7 15.5l1.4 1.4L12 12l4.9 4.9 1.4-1.4-4.9-4.9 4.9-4.9Z"/></svg>
+        </button>
+      </header>
+
+      <div class="dialog-body">
+        <fieldset class="field">
+          <legend>Mode</legend>
+          <div class="seg" role="radiogroup" aria-label="Mode">
+            <label><input type="radio" name="mode" value="hva" checked /><span>Human vs AI</span></label>
+            <label><input type="radio" name="mode" value="hvh" /><span>Human vs Human</span></label>
+            <label><input type="radio" name="mode" value="ava" /><span>AI vs AI demo</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Play as (Human vs AI)</legend>
+          <div class="seg" role="radiogroup" aria-label="Color">
+            <label><input type="radio" name="playerColor" value="w" checked /><span>White</span></label>
+            <label><input type="radio" name="playerColor" value="b" /><span>Black</span></label>
+            <label><input type="radio" name="playerColor" value="r" /><span>Random</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Difficulty</legend>
+          <div class="seg seg-grid" role="radiogroup" aria-label="Difficulty">
+            <label><input type="radio" name="level" value="1" /><span>Beginner</span></label>
+            <label><input type="radio" name="level" value="2" /><span>Easy</span></label>
+            <label><input type="radio" name="level" value="3" checked /><span>Medium</span></label>
+            <label><input type="radio" name="level" value="4" /><span>Hard</span></label>
+            <label><input type="radio" name="level" value="5" /><span>Master</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Time control</legend>
+          <div class="seg seg-grid" role="radiogroup" aria-label="Time control">
+            <label><input type="radio" name="time" value="untimed" checked /><span>Untimed</span></label>
+            <label><input type="radio" name="time" value="1+0" /><span>1 + 0</span></label>
+            <label><input type="radio" name="time" value="3+2" /><span>3 + 2</span></label>
+            <label><input type="radio" name="time" value="5+0" /><span>5 + 0</span></label>
+            <label><input type="radio" name="time" value="10+0" /><span>10 + 0</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Board theme</legend>
+          <div class="seg seg-grid" role="radiogroup" aria-label="Board theme">
+            <label><input type="radio" name="theme" value="midnight" checked /><span>Midnight</span></label>
+            <label><input type="radio" name="theme" value="classic" /><span>Classic</span></label>
+            <label><input type="radio" name="theme" value="mint" /><span>Mint</span></label>
+            <label><input type="radio" name="theme" value="slate" /><span>Slate</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Piece style</legend>
+          <div class="seg" role="radiogroup" aria-label="Piece style">
+            <label><input type="radio" name="pieceStyle" value="classic" checked /><span>Classic</span></label>
+            <label><input type="radio" name="pieceStyle" value="outline" /><span>Outline</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Other</legend>
+          <label class="checkrow"><input type="checkbox" id="settingsShowHints" checked /> <span>Show legal-move hints</span></label>
+          <label class="checkrow"><input type="checkbox" id="settingsShowCoords" checked /> <span>Show coordinates</span></label>
+          <label class="checkrow"><input type="checkbox" id="settingsAutoFlip" /> <span>Auto-flip on each move (Human vs Human)</span></label>
+          <label class="checkrow"><input type="checkbox" id="settingsSound" /> <span>Sound effects</span></label>
+        </fieldset>
+      </div>
+
+      <footer class="dialog-foot">
+        <button class="ctl" type="button" id="settingsApplyNew" aria-label="Apply settings and start a new game">Apply &amp; new game</button>
+        <button class="ctl ctl-primary" type="submit" value="ok">Done</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- =========================================================
+       Game-end dialog
+       ========================================================= -->
+  <dialog class="dialog dialog-result" id="resultDialog" aria-labelledby="resultTitle">
+    <div class="result-card">
+      <div class="result-icon" id="resultIcon" aria-hidden="true">♚</div>
+      <h2 id="resultTitle">Game over</h2>
+      <p class="result-reason" id="resultReason"></p>
+      <div class="result-actions">
+        <button class="ctl ctl-primary" type="button" id="resultRematchBtn">Rematch</button>
+        <button class="ctl" type="button" id="resultReviewBtn">Review</button>
+        <button class="ctl" type="button" id="resultCloseBtn">Close</button>
+      </div>
     </div>
-  </footer>
+  </dialog>
 
-  <button class="back-top" id="backTop" type="button" aria-label="Back to top" data-magnetic>
-    <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
-  </button>
+  <!-- =========================================================
+       FEN load dialog
+       ========================================================= -->
+  <dialog class="dialog" id="fenDialog" aria-labelledby="fenDialogTitle">
+    <form method="dialog" class="dialog-form">
+      <header class="dialog-head">
+        <h2 id="fenDialogTitle">Load FEN</h2>
+        <button class="iconbtn" type="button" id="fenDialogCloseBtn" aria-label="Close">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="m18.3 5.7-1.4-1.4L12 9.2 7.1 4.3 5.7 5.7 10.6 10.6 5.7 15.5l1.4 1.4L12 12l4.9 4.9 1.4-1.4-4.9-4.9 4.9-4.9Z"/></svg>
+        </button>
+      </header>
+      <div class="dialog-body">
+        <label for="fenInput" class="tool-label">Paste a valid FEN string</label>
+        <textarea id="fenInput" rows="3" class="tool-text" placeholder="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"></textarea>
+        <p class="tool-hint" id="fenError" role="alert" hidden></p>
+      </div>
+      <footer class="dialog-foot">
+        <button class="ctl" type="submit" value="cancel">Cancel</button>
+        <button class="ctl ctl-primary" type="button" id="fenLoadConfirmBtn">Load position</button>
+      </footer>
+    </form>
+  </dialog>
 
-  <script>
-    /* =========================================================
-       Tricks & Tips - Midnight Lab interactions
-       ========================================================= */
-    const $  = (sel, root = document) => root.querySelector(sel);
-    const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
-
-    const header        = $("#siteHeader");
-    const menuToggle    = $(".menu-toggle");
-    const navMenu       = $("#navMenu");
-    const navLinks      = $$(".nav-menu a");
-    const heroTitle     = $("#heroTitle");
-    const revealItems   = $$(".reveal");
-    const tiltCards     = $$(".tilt-card");
-    const magnetics     = $$("[data-magnetic]");
-    const particleCanvas= $("#particleCanvas");
-    const scrollProgress= $("#scrollProgress");
-    const navClock      = $("#navClock");
-    const backTop       = $("#backTop");
-    const cursor        = $("#cursor");
-    const cursorRing    = $(".cursor-ring");
-    const cursorDot     = $(".cursor-dot");
-
-    const reduceMotion  = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const finePointer   = window.matchMedia("(pointer: fine)").matches;
-
-    /* ------------ Header / nav ------------ */
-    function setHeaderState() {
-      header.classList.toggle("is-scrolled", window.scrollY > 20);
-    }
-    function closeMenu() {
-      menuToggle.classList.remove("is-open");
-      navMenu.classList.remove("is-open");
-      menuToggle.setAttribute("aria-expanded", "false");
-    }
-    function setupNavigation() {
-      setHeaderState();
-      window.addEventListener("scroll", setHeaderState, { passive: true });
-
-      menuToggle.addEventListener("click", () => {
-        const isOpen = menuToggle.classList.toggle("is-open");
-        navMenu.classList.toggle("is-open", isOpen);
-        menuToggle.setAttribute("aria-expanded", String(isOpen));
-      });
-      navLinks.forEach((link) => link.addEventListener("click", closeMenu));
-
-      // Active nav highlight for in-page sections
-      const sections = navLinks
-        .map((link) => {
-          const href = link.getAttribute("href");
-          return href && href.startsWith("#") ? document.querySelector(href) : null;
-        })
-        .filter(Boolean);
-
-      if (sections.length && "IntersectionObserver" in window) {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
-            navLinks.forEach((link) => {
-              const href = link.getAttribute("href");
-              link.classList.toggle("is-active", href === `#${entry.target.id}`);
-            });
-          });
-        }, { rootMargin: "-45% 0px -45% 0px" });
-        sections.forEach((section) => observer.observe(section));
-      }
-    }
-
-    /* ------------ Live clock ------------ */
-    function tickClock() {
-      if (!navClock) return;
-      const now = new Date();
-      const hh = String(now.getHours()).padStart(2, "0");
-      const mm = String(now.getMinutes()).padStart(2, "0");
-      navClock.textContent = `${hh}:${mm}`;
-    }
-
-    /* ------------ Scroll progress + back-to-top ------------ */
-    function updateScrollUI() {
-      const docH = document.documentElement.scrollHeight - window.innerHeight;
-      const pct = docH > 0 ? Math.min(100, (window.scrollY / docH) * 100) : 0;
-      if (scrollProgress) scrollProgress.style.width = pct + "%";
-      if (backTop) backTop.classList.toggle("is-visible", window.scrollY > 480);
-    }
-
-    /* ------------ Reveal on scroll ------------ */
-    function setupReveal() {
-      if (reduceMotion || !("IntersectionObserver" in window)) {
-        revealItems.forEach((item) => item.classList.add("is-visible"));
-        if (heroTitle) heroTitle.classList.add("is-in");
-        return;
-      }
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry, i) => {
-          if (!entry.isIntersecting) return;
-          setTimeout(() => entry.target.classList.add("is-visible"), i * 40);
-          observer.unobserve(entry.target);
-        });
-      }, { threshold: 0.16 });
-      revealItems.forEach((item) => observer.observe(item));
-      requestAnimationFrame(() => heroTitle && heroTitle.classList.add("is-in"));
-    }
-
-    /* ------------ Tilt + spotlight cards ------------ */
-    function setupTiltCards() {
-      if (reduceMotion) return;
-      tiltCards.forEach((card) => {
-        if (finePointer) {
-          card.addEventListener("pointermove", (event) => {
-            const rect = card.getBoundingClientRect();
-            const x = (event.clientX - rect.left) / rect.width - 0.5;
-            const y = (event.clientY - rect.top) / rect.height - 0.5;
-            card.style.setProperty("--mx", `${(x + 0.5) * 100}%`);
-            card.style.setProperty("--my", `${(y + 0.5) * 100}%`);
-            card.style.transform = `perspective(900px) rotateX(${y * -4}deg) rotateY(${x * 6}deg) translateY(-3px)`;
-          });
-        }
-        card.addEventListener("pointerdown", () => card.classList.add("is-touched"));
-        card.addEventListener("pointerup", () => {
-          window.setTimeout(() => card.classList.remove("is-touched"), 140);
-        });
-        card.addEventListener("pointercancel", () => card.classList.remove("is-touched"));
-        card.addEventListener("pointerleave", () => {
-          card.style.transform = "";
-          card.classList.remove("is-touched");
-        });
-      });
-    }
-
-    /* ------------ Magnetic hover ------------ */
-    function setupMagnetic() {
-      if (reduceMotion || !finePointer) return;
-      magnetics.forEach((el) => {
-        el.addEventListener("pointermove", (event) => {
-          const rect = el.getBoundingClientRect();
-          const x = event.clientX - rect.left - rect.width / 2;
-          const y = event.clientY - rect.top - rect.height / 2;
-          const strength = el.classList.contains("brand-mark") ? 0.12 : 0.18;
-          el.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
-        });
-        el.addEventListener("pointerleave", () => {
-          el.style.transform = "";
-        });
-      });
-    }
-
-    /* ------------ Custom cursor ------------ */
-    function setupCustomCursor() {
-      if (reduceMotion || !finePointer || !cursor) return;
-      let tx = 0, ty = 0, rx = 0, ry = 0;
-
-      window.addEventListener("pointermove", (event) => {
-        tx = event.clientX;
-        ty = event.clientY;
-      });
-
-      const tick = () => {
-        rx += (tx - rx) * 0.18;
-        ry += (ty - ry) * 0.18;
-        if (cursorRing) cursorRing.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
-        if (cursorDot)  cursorDot.style.transform  = `translate(${tx}px, ${ty}px) translate(-50%, -50%)`;
-        requestAnimationFrame(tick);
-      };
-      tick();
-
-      const hoverTargets = "a, button, [data-magnetic], .guide-card, .hero-panel, .step-list li, .code-line";
-      document.addEventListener("pointerover", (event) => {
-        if (event.target.closest(hoverTargets)) cursor.classList.add("is-hover");
-      });
-      document.addEventListener("pointerout", (event) => {
-        if (event.target.closest(hoverTargets) && !event.relatedTarget?.closest(hoverTargets)) {
-          cursor.classList.remove("is-hover");
-        }
-      });
-      document.addEventListener("pointerdown", () => cursor.classList.add("is-press"));
-      document.addEventListener("pointerup",   () => cursor.classList.remove("is-press"));
-      document.addEventListener("pointerleave",() => cursor.classList.remove("is-press"));
-    }
-
-    /* ------------ Back-to-top ------------ */
-    function setupBackTop() {
-      if (!backTop) return;
-      backTop.addEventListener("click", () => {
-        window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
-      });
-    }
-
-    /* ------------ Particle canvas ------------ */
-    function setupParticles() {
-      if (!particleCanvas) return;
-      const ctx = particleCanvas.getContext("2d");
-      let width = 0, height = 0, particles = [];
-
-      function resize() {
-        const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
-        width  = window.innerWidth;
-        height = window.innerHeight;
-        particleCanvas.width  = Math.floor(width * ratio);
-        particleCanvas.height = Math.floor(height * ratio);
-        particleCanvas.style.width  = `${width}px`;
-        particleCanvas.style.height = `${height}px`;
-        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-
-        const count = Math.min(90, Math.max(36, Math.floor(width / 19)));
-        particles = Array.from({ length: count }, () => ({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.26,
-          vy: (Math.random() - 0.5) * 0.26,
-          size: 0.7 + Math.random() * 1.7,
-          hue: Math.random() > 0.66 ? "mint" : Math.random() > 0.5 ? "cyan" : "teal"
-        }));
-      }
-      function draw() {
-        ctx.clearRect(0, 0, width, height);
-        particles.forEach((p, i) => {
-          p.x += p.vx; p.y += p.vy;
-          if (p.x < 0 || p.x > width)  p.vx *= -1;
-          if (p.y < 0 || p.y > height) p.vy *= -1;
-
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fillStyle = p.hue === "mint"
-            ? "rgba(16, 185, 129, 0.65)"
-            : p.hue === "cyan"
-              ? "rgba(6, 182, 212, 0.7)"
-              : "rgba(45, 212, 191, 0.7)";
-          ctx.fill();
-
-          for (let j = i + 1; j < particles.length; j++) {
-            const o = particles[j];
-            const d = Math.hypot(p.x - o.x, p.y - o.y);
-            if (d > 120) continue;
-            ctx.strokeStyle = `rgba(45, 212, 191, ${0.12 * (1 - d / 120)})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(o.x, o.y);
-            ctx.stroke();
-          }
-        });
-        requestAnimationFrame(draw);
-      }
-      resize();
-      window.addEventListener("resize", resize, { passive: true });
-      if (!reduceMotion) draw();
-      else {
-        ctx.fillStyle = "rgba(45, 212, 191, 0.28)";
-        particles.forEach((p) => ctx.fillRect(p.x, p.y, 2, 2));
-      }
-    }
-
-    /* ------------ Bootstrap ------------ */
-    setupNavigation();
-    setupReveal();
-    setupTiltCards();
-    setupMagnetic();
-    setupCustomCursor();
-    setupBackTop();
-    setupParticles();
-
-    tickClock();
-    setInterval(tickClock, 30000);
-
-    updateScrollUI();
-    window.addEventListener("scroll", updateScrollUI, { passive: true });
-    window.addEventListener("resize", updateScrollUI, { passive: true });
-  </script>
+  <noscript>
+    <p style="padding:2rem;text-align:center">Chess Mastery requires JavaScript to run.</p>
+  </noscript>
 </body>
 </html>
