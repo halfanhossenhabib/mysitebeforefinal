@@ -251,14 +251,24 @@
         const sq = "abcdefgh"[f] + (8 - r);
         const cell = E.board.querySelector(`.square[data-id="${sq}"]`);
         if (!cell) continue;
-        const span = document.createElement("span");
-        span.className = "piece " + (piece.color === "w" ? "is-white" : "is-black");
-        span.dataset.color = piece.color;
-        span.dataset.type = piece.type;
-        span.textContent = PIECE_GLYPH[piece.color][piece.type];
-        cell.appendChild(span);
+        cell.appendChild(makePieceSvg(piece.color, piece.type));
       }
     }
+  }
+
+  function makePieceSvg(color, type) {
+    const ns = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(ns, "svg");
+    svg.setAttribute("class", "piece");
+    svg.setAttribute("viewBox", "0 0 45 45");
+    svg.setAttribute("aria-hidden", "true");
+    svg.dataset.color = color;
+    svg.dataset.type = type;
+    const use = document.createElementNS(ns, "use");
+    use.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#pc-" + type);
+    use.setAttribute("href", "#pc-" + type);
+    svg.appendChild(use);
+    return svg;
   }
 
   function squareAriaLabel(sq) {
@@ -586,23 +596,20 @@
     const cell = E.board.querySelector(`.square[data-id="${to}"]`);
     if (!cell) { callback(null); return; }
 
-    // Set glyphs (Q R B N) according to side to move
-    const pieces = ["q", "r", "b", "n"];
+    // Set color on popover (CSS picks up data-color to color the SVG pieces)
+    E.promoPopover.dataset.color = color;
+
     const buttons = E.promoPopover.querySelectorAll("button.promo-piece");
-    buttons.forEach((btn, i) => {
-      btn.querySelector(".piece-glyph").textContent = PIECE_GLYPH[color][pieces[i]];
-      btn.dataset.color = color;
-      btn.onclick = () => closePromotion(pieces[i]);
+    buttons.forEach((btn) => {
+      btn.onclick = () => closePromotion(btn.dataset.piece);
     });
     E.promoCancel.onclick = () => closePromotion(null);
 
     // Position popover near destination
     E.promoPopover.hidden = false;
     requestAnimationFrame(() => positionPromoPopover(cell));
-    // Focus first option
     buttons[0]?.focus();
 
-    // Esc cancels
     const onKey = (e) => {
       if (e.key === "Escape") {
         e.preventDefault();
@@ -994,10 +1001,9 @@
     showResult({ title, reason, icon });
   }
 
-  function showResult({ title, reason, icon }) {
+  function showResult({ title, reason }) {
     E.resultTitle.textContent = title;
     E.resultReason.textContent = reason;
-    E.resultIcon.textContent = icon || "\u265A";
     if (typeof E.resultDialog.showModal === "function") E.resultDialog.showModal();
     else E.resultDialog.setAttribute("open", "");
   }
